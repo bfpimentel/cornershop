@@ -12,8 +12,6 @@
 *.iws
 app/app.iml
 .idea/
-.idea/.name
-.idea/modules.xml
 
 # files for the dex VM
 *.dex
@@ -40,6 +38,5 @@ gen/
 /keys/*
 
 # Local configuration file (sdk path, etc)
-local.properties
 /captures
 report.xml

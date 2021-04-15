@@ -1,4 +1,3 @@
 package com.cornershop.counterstest.domain
 
-class MyClass {
-}
+class MyClass
