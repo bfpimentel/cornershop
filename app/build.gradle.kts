@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 buildscript {
     repositories {
         google()
@@ -12,6 +14,10 @@ buildscript {
     }
 }
 
+plugins {
+    id("io.gitlab.arturbosch.detekt") version "1.7.4"
+}
+
 allprojects {
     repositories {
         google()
@@ -20,6 +26,14 @@ allprojects {
     }
 }
 
+apply(from = "jacoco.gradle")
+
 tasks.create("clean", type = Delete::class) {
     delete(rootProject.buildDir)
+}
+
+tasks.withType<KotlinCompile> {
+    kotlinOptions {
+        languageVersion = "1.4"
+    }
 }
