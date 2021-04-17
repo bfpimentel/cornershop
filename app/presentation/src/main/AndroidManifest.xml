@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CountersNormal">
         <activity
-            android:name=".presentation.welcome.WelcomeActivity"
+            android:name=".presentation.welcome.MainActivity"
             android:theme="@style/Theme.CountersWelcome">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -4,9 +4,10 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.cornershop.counterstest.R
 
-class WelcomeActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_welcome)
+        setContentView(R.layout.counters_fragment)
     }
 }
