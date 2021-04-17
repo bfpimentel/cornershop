@@ -7,7 +7,9 @@ import androidx.fragment.app.viewModels
 import com.cornershop.counterstest.databinding.CountersFragmentBinding
 import com.cornershop.counterstest.shared.extensions.viewBinding
 import com.cornershop.counterstest.shared.extensions.watch
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class CountersFragment : Fragment() {
 
     private val binding by viewBinding(CountersFragmentBinding::bind)

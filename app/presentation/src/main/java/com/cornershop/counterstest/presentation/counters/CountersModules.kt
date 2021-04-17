@@ -10,14 +10,14 @@ import javax.inject.Qualifier
 
 @Module
 @InstallIn(ViewModelComponent::class)
-object CountersModule {
+object CountersViewModelModule {
 
     @Provides
     @ViewModelScoped
     @CountersStateQualifier
     fun provideInitialState(): CountersState = CountersState()
-
-    @Qualifier
-    @Retention(AnnotationRetention.BINARY)
-    annotation class CountersStateQualifier
 }
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class CountersStateQualifier

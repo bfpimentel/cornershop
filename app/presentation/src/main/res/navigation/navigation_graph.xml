@@ -9,6 +9,16 @@
         android:id="@+id/welcomeFragment"
         android:name="com.cornershop.counterstest.presentation.welcome.WelcomeFragment"
         android:label="WelcomeFragment"
-        tools:layout="@layout/welcome_fragment" />
+        tools:layout="@layout/welcome_fragment">
+        <action
+            android:id="@+id/toCountersFragment"
+            app:destination="@id/countersFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/countersFragment"
+        android:name="com.cornershop.counterstest.presentation.counters.CountersFragment"
+        android:label="CountersFragment"
+        tools:layout="@layout/counters_fragment" />
 
 </navigation>

@@ -12,6 +12,7 @@ buildscript {
         classpath(Libs.Gradle.junit5)
         classpath(Libs.Gradle.android)
         classpath(Libs.Gradle.hilt)
+        classpath(Libs.Gradle.navigation)
     }
 }
 

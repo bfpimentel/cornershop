@@ -1,12 +1,14 @@
 object Libs {
     private const val kotlinVersion = "1.4.32"
     private const val hiltVersion = "2.33-beta"
+    private const val navVersion = "2.3.5"
 
     object Gradle {
         const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         const val android = "com.android.tools.build:gradle:4.1.3"
         const val junit5 = "de.mannodermaus.gradle.plugins:android-junit5:1.7.1.1"
         const val hilt = "com.google.dagger:hilt-android-gradle-plugin:$hiltVersion"
+        const val navigation = "androidx.navigation:navigation-safe-args-gradle-plugin:$navVersion"
     }
 
     object Kotlin {
@@ -24,8 +26,8 @@ object Libs {
     }
 
     object Navigation {
-        const val fragment = "androidx.navigation:navigation-fragment-ktx:2.3.2"
-        const val ui = "androidx.navigation:navigation-ui-ktx:2.3.2"
+        const val fragment = "androidx.navigation:navigation-fragment-ktx:$navVersion"
+        const val ui = "androidx.navigation:navigation-ui-ktx:$navVersion"
     }
 
     object Networking {

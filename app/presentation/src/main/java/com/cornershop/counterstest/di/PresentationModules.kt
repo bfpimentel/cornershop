@@ -34,12 +34,13 @@ object PresentationModule {
     @NavigatorRouterQualifier
     @Provides
     fun provideNavigatorRouter(navigator: Navigator): NavigatorRouter = navigator
-
-    @Qualifier
-    @Retention(AnnotationRetention.BINARY)
-    annotation class NavigatorBinderQualifier
-
-    @Qualifier
-    @Retention(AnnotationRetention.BINARY)
-    annotation class NavigatorRouterQualifier
 }
+
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class NavigatorBinderQualifier
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class NavigatorRouterQualifier
