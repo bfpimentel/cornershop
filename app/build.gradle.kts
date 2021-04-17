@@ -28,7 +28,8 @@ tasks.create("clean", type = Delete::class) {
     delete(rootProject.buildDir)
 }
 
-val compileKotlin: KotlinCompile by tasks
-compileKotlin.kotlinOptions {
-    languageVersion = "1.4"
+tasks.withType<KotlinCompile> {
+    kotlinOptions {
+        languageVersion = "1.4"
+    }
 }

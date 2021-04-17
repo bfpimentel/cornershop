@@ -2,7 +2,6 @@ plugins {
     id("com.android.application")
     kotlin("android")
     id("de.mannodermaus.android-junit5")
-    jacoco
 }
 
 android {
