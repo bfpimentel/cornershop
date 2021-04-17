@@ -27,7 +27,7 @@
             android:exported="false"
             tools:node="merge">
             <meta-data
-                android:name="com.cornershop.counterstest.presentation.initializers.KoinInitializer"
+                android:name="com.cornershop.counterstest.initializers.KoinInitializer"
                 android:value="androidx.startup" />
         </provider>
     </application>

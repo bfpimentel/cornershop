@@ -1,9 +1,9 @@
-package com.cornershop.counterstest.presentation.shared.navigator
+package com.cornershop.counterstest.shared.navigator
 
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.navigation.NavController
 import androidx.navigation.NavDirections
-import com.cornershop.counterstest.presentation.shared.dispatchers.DispatchersProvider
+import com.cornershop.counterstest.shared.dispatchers.DispatchersProvider
 import kotlinx.coroutines.withContext
 
 interface NavigatorBinder {

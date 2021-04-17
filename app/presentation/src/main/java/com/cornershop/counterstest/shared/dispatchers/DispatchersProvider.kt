@@ -1,4 +1,4 @@
-package com.cornershop.counterstest.presentation.shared.dispatchers
+package com.cornershop.counterstest.shared.dispatchers
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers

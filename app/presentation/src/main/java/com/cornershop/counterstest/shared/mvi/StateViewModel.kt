@@ -1,8 +1,8 @@
-package com.cornershop.counterstest.presentation.shared.mvi
+package com.cornershop.counterstest.shared.mvi
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cornershop.counterstest.presentation.shared.dispatchers.DispatchersProvider
+import com.cornershop.counterstest.shared.dispatchers.DispatchersProvider
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -21,6 +21,8 @@ abstract class StateViewModelImpl<State, Intention>(
     initialState: State
 ) : ViewModel(), StateViewModel<State, Intention> {
 
+    final override val state: MutableStateFlow<State> = MutableStateFlow(initialState)
+
     private val publisher = MutableSharedFlow<Intention>()
 
     init {
@@ -28,8 +30,6 @@ abstract class StateViewModelImpl<State, Intention>(
             viewModelScope.launch(dispatchersProvider.io) { handleIntentions(intention) }
         }.shareIn(viewModelScope, SharingStarted.Eagerly)
     }
-
-    final override val state: MutableStateFlow<State> = MutableStateFlow(initialState)
 
     final override fun publish(intention: Intention) {
         viewModelScope.launch(dispatchersProvider.io) { publisher.emit(intention) }

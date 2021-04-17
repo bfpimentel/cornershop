@@ -1,4 +1,4 @@
-package com.cornershop.counterstest.presentation.initializers
+package com.cornershop.counterstest.initializers
 
 import android.content.Context
 import androidx.startup.Initializer
