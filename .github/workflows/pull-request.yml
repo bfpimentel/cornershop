@@ -3,29 +3,43 @@ name: Pull Request
 on:
   pull_request:
     branches:
-      - 'develop'
-      - 'master'
+      - "develop"
+      - "master"
 
 jobs:
   code-analysis:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@master
       - name: Setup JDK
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
       - name: Run Detekt
         run: bash app/gradlew detekt
-  test:
+  code-coverage:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@master
       - name: Setup JDK
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-      - name: Generate Jacoco test report
+      - name: Generate Test Report
         run: bash app/gradlew jacocoTestReport
-      - name: Check code coverage
-        run: bash <(curl -s https://codecov.io/bash) -t ${{ secrets.CODECOV_TOKEN }} -f app/build/reports/jacoco/jacocoTestReport.xml
+      - uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: app/build/reports/jacoco/jacocoTestReport.xml
+          fail_ci_if_error: true
+          verbose: true
+    # steps:
+    #   - uses: actions/checkout@v2
+    #   - name: Setup JDK
+    #     uses: actions/setup-java@v1
+    #     with:
+    #       java-version: 1.8
+    #   - name: Generate Jacoco test report
+    #     run: bash app/gradlew jacocoTestReport
+    #   - name: Check code coverage
+    #     run: bash <(curl -s https://codecov.io/bash) -t ${{ secrets.CODECOV_TOKEN }} -f app/build/reports/jacoco/jacocoTestReport.xml

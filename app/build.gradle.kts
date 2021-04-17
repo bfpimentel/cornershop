@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 buildscript {
     repositories {
         google()
@@ -20,6 +22,13 @@ allprojects {
     }
 }
 
+apply(from = "jacoco.gradle")
+
 tasks.create("clean", type = Delete::class) {
     delete(rootProject.buildDir)
+}
+
+val compileKotlin: KotlinCompile by tasks
+compileKotlin.kotlinOptions {
+    languageVersion = "1.4"
 }
