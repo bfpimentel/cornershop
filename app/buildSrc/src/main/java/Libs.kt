@@ -1,10 +1,12 @@
 object Libs {
     private const val kotlinVersion = "1.4.32"
+    private const val hiltVersion = "2.33-beta"
 
     object Gradle {
         const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         const val android = "com.android.tools.build:gradle:4.1.3"
         const val junit5 = "de.mannodermaus.gradle.plugins:android-junit5:1.7.1.1"
+        const val hilt = "com.google.dagger:hilt-android-gradle-plugin:$hiltVersion"
     }
 
     object Kotlin {
@@ -38,8 +40,9 @@ object Libs {
         const val compiler = "androidx.room:room-compiler:2.2.5"
     }
 
-    object Koin {
-        const val android = "io.insert-koin:koin-android:3.0.1"
+    object Hilt {
+        const val android = "com.google.dagger:hilt-android:$hiltVersion"
+        const val compiler = "com.google.dagger:hilt-compiler:$hiltVersion"
     }
 
     object Test {

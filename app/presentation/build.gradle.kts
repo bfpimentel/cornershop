@@ -1,6 +1,8 @@
 plugins {
     id("com.android.application")
     kotlin("android")
+    kotlin("kapt")
+    id("dagger.hilt.android.plugin")
     id("de.mannodermaus.android-junit5")
 }
 
@@ -51,10 +53,13 @@ dependencies {
     implementation(Libs.Android.startup)
     implementation(Libs.Android.lifecycleCommon)
 
+    implementation(Libs.Kotlin.coroutinesCore)
+
     implementation(Libs.Navigation.fragment)
     implementation(Libs.Navigation.ui)
 
-    implementation(Libs.Koin.android)
+    implementation(Libs.Hilt.android)
+    kapt(Libs.Hilt.compiler)
 
     testImplementation(Libs.Test.coroutinesCore)
     testImplementation(Libs.Test.mockk)

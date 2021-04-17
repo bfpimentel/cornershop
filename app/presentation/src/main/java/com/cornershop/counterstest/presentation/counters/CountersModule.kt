@@ -1,14 +1,23 @@
 package com.cornershop.counterstest.presentation.counters
 
 import com.cornershop.counterstest.presentation.counters.data.CountersState
-import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.dsl.module
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.scopes.ViewModelScoped
+import javax.inject.Qualifier
 
-val countersModule = module {
-    viewModel {
-        CountersViewModel(
-            dispatchersProvider = get(),
-            initialState = CountersState()
-        )
-    }
+@Module
+@InstallIn(ViewModelComponent::class)
+object CountersModule {
+
+    @Provides
+    @ViewModelScoped
+    @CountersStateQualifier
+    fun provideInitialState(): CountersState = CountersState()
+
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class CountersStateQualifier
 }

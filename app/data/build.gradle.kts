@@ -1,6 +1,8 @@
 plugins {
     id("com.android.library")
     kotlin("android")
+    kotlin("kapt")
+    id("dagger.hilt.android.plugin")
     id("de.mannodermaus.android-junit5")
 }
 
@@ -14,12 +16,14 @@ android {
     }
 
     buildTypes {
+        val apiUrlResName = "api_url"
+        val apiUrl = "http://localhost:3000/api/"
+
         getByName("release") {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            resValue("string", apiUrlResName, apiUrl)
+        }
+        getByName("debug") {
+            resValue("string", apiUrlResName, apiUrl)
         }
     }
 
@@ -35,6 +39,13 @@ android {
 
 dependencies {
     implementation(project(Config.Projects.domain))
+
+    implementation(Libs.Networking.moshi)
+    implementation(Libs.Networking.retrofit)
+    implementation(Libs.Networking.retrofitMoshi)
+
+    implementation(Libs.Hilt.android)
+    kapt(Libs.Hilt.compiler)
 
     testImplementation(Libs.Test.junitAPI)
     testRuntimeOnly(Libs.Test.junitEngine)

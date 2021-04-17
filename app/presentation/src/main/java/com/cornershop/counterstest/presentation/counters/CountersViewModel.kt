@@ -1,13 +1,17 @@
 package com.cornershop.counterstest.presentation.counters
 
+import com.cornershop.counterstest.presentation.counters.CountersModule.CountersStateQualifier
 import com.cornershop.counterstest.presentation.counters.data.CountersIntention
 import com.cornershop.counterstest.presentation.counters.data.CountersState
 import com.cornershop.counterstest.shared.dispatchers.DispatchersProvider
 import com.cornershop.counterstest.shared.mvi.StateViewModelImpl
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class CountersViewModel(
+@HiltViewModel
+class CountersViewModel @Inject constructor(
     dispatchersProvider: DispatchersProvider,
-    initialState: CountersState
+    @CountersStateQualifier initialState: CountersState
 ) : StateViewModelImpl<CountersState, CountersIntention>(
     dispatchersProvider = dispatchersProvider,
     initialState = initialState

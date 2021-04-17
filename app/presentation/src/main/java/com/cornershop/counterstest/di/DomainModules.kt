@@ -1,5 +1,5 @@
 package com.cornershop.counterstest.di
 
-import org.koin.core.module.Module
+object DomainModules {
 
-val domainModules = listOf<Module>()
+}
