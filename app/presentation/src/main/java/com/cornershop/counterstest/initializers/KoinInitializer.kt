@@ -9,8 +9,7 @@ import org.koin.core.context.GlobalContext.startKoin
 @Suppress("Unused")
 class KoinInitializer : Initializer<KoinApplication> {
 
-    override fun create(context: Context): KoinApplication =
-        startKoin { androidContext(context) }
+    override fun create(context: Context): KoinApplication = startKoin { androidContext(context) }
 
     override fun dependencies(): List<Class<out Initializer<*>>> = emptyList()
 }
