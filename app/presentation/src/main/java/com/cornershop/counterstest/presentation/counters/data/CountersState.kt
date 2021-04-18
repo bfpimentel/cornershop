@@ -1,4 +1,7 @@
 package com.cornershop.counterstest.presentation.counters.data
 
-class CountersState {
-}
+import com.cornershop.counterstest.shared.mvi.Event
+
+data class CountersState(
+    val countersEvent: Event<List<CounterViewData>>? = null
+)

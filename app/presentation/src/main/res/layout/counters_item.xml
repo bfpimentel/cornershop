@@ -8,24 +8,24 @@
     android:padding="24dp">
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/name"
+        android:id="@+id/title"
         style="@style/TextAppearance.MaterialComponents.Body1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/subtract"
+        app:layout_constraintEnd_toStartOf="@id/minus"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Cups of coffee" />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/subtract"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:id="@+id/minus"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_marginEnd="4dp"
         android:background="?attr/selectableItemBackground"
-        android:padding="6dp"
+        android:padding="8dp"
         android:text="-"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/count"
@@ -38,20 +38,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="4dp"
-        android:background="?attr/selectableItemBackground"
         android:gravity="center"
         android:minWidth="40dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/add"
+        app:layout_constraintEnd_toStartOf="@id/plus"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="10" />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/add"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:padding="6dp"
+        android:id="@+id/plus"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:background="?attr/selectableItemBackground"
+        android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

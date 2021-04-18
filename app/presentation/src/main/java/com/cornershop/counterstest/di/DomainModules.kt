@@ -5,15 +5,15 @@ import com.cornershop.counterstest.domain.usecase.GetCounters
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.scopes.ViewModelScoped
 
 @Module
-@InstallIn(SingletonComponent::class)
+@InstallIn(ViewModelComponent::class)
 object DomainUseCaseModule {
 
     @Provides
-    @Singleton
+    @ViewModelScoped
     fun provideGetCounters(countersRepository: CountersRepository): GetCounters =
         GetCounters(repository = countersRepository)
 }

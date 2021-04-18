@@ -17,7 +17,7 @@ android {
 
     buildTypes {
         val apiUrlResName = "api_url"
-        val apiUrl = "http://localhost:3000/api/"
+        val apiUrl = "http://10.0.2.2:3000/api/"
 
         getByName("release") {
             resValue("string", apiUrlResName, apiUrl)
