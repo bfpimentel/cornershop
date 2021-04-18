@@ -1,6 +1,9 @@
 plugins {
     id("com.android.application")
     kotlin("android")
+    kotlin("kapt")
+    id("dagger.hilt.android.plugin")
+    id("androidx.navigation.safeargs.kotlin")
     id("de.mannodermaus.android-junit5")
 }
 
@@ -43,19 +46,23 @@ android {
 }
 
 dependencies {
-    implementation(project(Config.Projects.domain))
-    implementation(project(Config.Projects.data))
+    api(project(Config.Projects.domain))
+    api(project(Config.Projects.data))
 
     implementation(Libs.Android.materialDesign)
     implementation(Libs.Android.fragment)
     implementation(Libs.Android.startup)
     implementation(Libs.Android.lifecycleCommon)
 
+    implementation(Libs.Kotlin.coroutinesCore)
+
     implementation(Libs.Navigation.fragment)
     implementation(Libs.Navigation.ui)
 
-    implementation(Libs.Koin.android)
+    implementation(Libs.Hilt.android)
+    kapt(Libs.Hilt.compiler)
 
+    testImplementation(Libs.Test.androidTestCore)
     testImplementation(Libs.Test.coroutinesCore)
     testImplementation(Libs.Test.mockk)
     testImplementation(Libs.Test.junitAPI)

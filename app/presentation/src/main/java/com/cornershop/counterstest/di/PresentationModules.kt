@@ -3,18 +3,44 @@ package com.cornershop.counterstest.di
 import com.cornershop.counterstest.shared.dispatchers.AppDispatchersProvider
 import com.cornershop.counterstest.shared.dispatchers.DispatchersProvider
 import com.cornershop.counterstest.shared.navigator.Navigator
+import com.cornershop.counterstest.shared.navigator.NavigatorBinder
 import com.cornershop.counterstest.shared.navigator.NavigatorImpl
-import org.koin.dsl.module
+import com.cornershop.counterstest.shared.navigator.NavigatorRouter
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Qualifier
+import javax.inject.Singleton
 
-private val dispatchersModule = module {
-    factory<DispatchersProvider> { AppDispatchersProvider() }
+@Module
+@InstallIn(SingletonComponent::class)
+object PresentationApplicationModule {
+
+    @Provides
+    @Singleton
+    fun provideDispatchersProvider(): DispatchersProvider = AppDispatchersProvider()
+
+    @Provides
+    @Singleton
+    fun provideNavigator(
+        dispatchersProvider: DispatchersProvider
+    ): Navigator = NavigatorImpl(dispatchersProvider = dispatchersProvider)
+
+    @NavigatorBinderQualifier
+    @Provides
+    fun provideNavigatorBinder(navigator: Navigator): NavigatorBinder = navigator
+
+    @NavigatorRouterQualifier
+    @Provides
+    fun provideNavigatorRouter(navigator: Navigator): NavigatorRouter = navigator
 }
 
-private val navigatorModule = module {
-    single<Navigator> { NavigatorImpl(dispatchersProvider = get()) }
-}
 
-val presentationModules = listOf(
-    dispatchersModule,
-    navigatorModule
-)
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class NavigatorBinderQualifier
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class NavigatorRouterQualifier

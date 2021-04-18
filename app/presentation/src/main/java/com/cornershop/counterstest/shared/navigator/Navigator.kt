@@ -1,13 +1,12 @@
 package com.cornershop.counterstest.shared.navigator
 
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.navigation.NavController
 import androidx.navigation.NavDirections
 import com.cornershop.counterstest.shared.dispatchers.DispatchersProvider
 import kotlinx.coroutines.withContext
 
 interface NavigatorBinder {
-    fun bind(navController: NavController, lifecycleScope: LifecycleCoroutineScope)
+    fun bind(navController: NavController)
     fun unbind()
 }
 
@@ -23,7 +22,7 @@ class NavigatorImpl(private val dispatchersProvider: DispatchersProvider) : Navi
 
     private var navController: NavController? = null
 
-    override fun bind(navController: NavController, lifecycleScope: LifecycleCoroutineScope) {
+    override fun bind(navController: NavController) {
         this.navController = navController
     }
 

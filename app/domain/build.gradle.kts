@@ -13,6 +13,7 @@ tasks.withType<Test> {
 }
 
 dependencies {
+    testImplementation(Libs.Test.coroutinesCore)
     testImplementation(Libs.Test.mockk)
     testImplementation(Libs.Test.junitAPI)
     testRuntimeOnly(Libs.Test.junitEngine)

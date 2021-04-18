@@ -1,16 +1,20 @@
 object Libs {
     private const val kotlinVersion = "1.4.32"
+    private const val hiltVersion = "2.33-beta"
+    private const val navVersion = "2.3.5"
 
     object Gradle {
         const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         const val android = "com.android.tools.build:gradle:4.1.3"
         const val junit5 = "de.mannodermaus.gradle.plugins:android-junit5:1.7.1.1"
+        const val hilt = "com.google.dagger:hilt-android-gradle-plugin:$hiltVersion"
+        const val navigation = "androidx.navigation:navigation-safe-args-gradle-plugin:$navVersion"
     }
 
     object Kotlin {
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
         const val reflect = "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
-        const val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1"
+        const val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3"
     }
 
     object Android {
@@ -22,8 +26,8 @@ object Libs {
     }
 
     object Navigation {
-        const val fragment = "androidx.navigation:navigation-fragment-ktx:2.3.2"
-        const val ui = "androidx.navigation:navigation-ui-ktx:2.3.2"
+        const val fragment = "androidx.navigation:navigation-fragment-ktx:$navVersion"
+        const val ui = "androidx.navigation:navigation-ui-ktx:$navVersion"
     }
 
     object Networking {
@@ -38,12 +42,13 @@ object Libs {
         const val compiler = "androidx.room:room-compiler:2.2.5"
     }
 
-    object Koin {
-        const val android = "io.insert-koin:koin-android:3.0.1"
+    object Hilt {
+        const val android = "com.google.dagger:hilt-android:$hiltVersion"
+        const val compiler = "com.google.dagger:hilt-compiler:$hiltVersion"
     }
 
     object Test {
-        const val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.9"
+        const val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.3"
         const val mockk = "io.mockk:mockk:1.10.3-jdk8"
         const val androidTestCore = "androidx.arch.core:core-testing:2.1.0"
         const val junitAPI = "org.junit.jupiter:junit-jupiter-api:5.7.0"

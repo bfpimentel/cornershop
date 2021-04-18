@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:padding="@dimen/spacing_large">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/title"
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:layout_width="@dimen/spacing_none"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_small"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/minus"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Cups of coffee" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/minus"
+        android:layout_width="@dimen/spacing_large"
+        android:layout_height="@dimen/spacing_large"
+        android:layout_marginEnd="@dimen/spacing_tiny"
+        android:background="?attr/selectableItemBackground"
+        android:padding="@dimen/spacing_small"
+        android:text="@string/counters_item_minus"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/count"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_counter_minus" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/count"
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_small"
+        android:gravity="center"
+        android:minWidth="@dimen/counters_item_count_min_width"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/plus"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="10" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/plus"
+        android:layout_width="@dimen/spacing_large"
+        android:layout_height="@dimen/spacing_large"
+        android:background="?attr/selectableItemBackground"
+        android:padding="@dimen/spacing_small"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_counter_plus" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

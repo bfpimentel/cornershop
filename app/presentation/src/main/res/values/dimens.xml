@@ -1,9 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <!-- Spacing Defaults -->
+    <dimen name="spacing_none">0dp</dimen>
+    <dimen name="spacing_tiny">4dp</dimen>
+    <dimen name="spacing_small">8dp</dimen>
+    <dimen name="spacing_normal">12dp</dimen>
+    <dimen name="spacing_medium">16dp</dimen>
+    <dimen name="spacing_large">24dp</dimen>
+    <dimen name="spacing_huge">32dp</dimen>
+    <!-- Spacing Defaults -->
+
+    <!-- Text Defaults -->
+    <dimen name="text_small">12sp</dimen>
+    <dimen name="text_normal">16sp</dimen>
+    <dimen name="text_medium">20sp</dimen>
+    <dimen name="text_large">24sp</dimen>
+    <dimen name="text_huge">32sp</dimen>
+    <!-- Text Defaults -->
+
+    <!-- Welcome Screen -->
     <dimen name="welcome_logo_size">200dp</dimen>
-    <dimen name="margin_big_2">90dp</dimen>
-    <dimen name="margin_big_1">60dp</dimen>
-    <dimen name="margin_normal_1">16dp</dimen>
-    <dimen name="margin_normal_2">24dp</dimen>
-    <dimen name="margin_normal_3">32dp</dimen>
+    <dimen name="welcome_logo_margin_top">90dp</dimen>
+    <dimen name="welcome_button_margin_bottom">60dp</dimen>
+    <!-- Welcome Screen -->
+
+    <!-- Counters Item -->
+    <dimen name="counters_item_count_min_width">40dp</dimen>
+    <!-- Counters Item -->
+
 </resources>

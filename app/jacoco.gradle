@@ -8,12 +8,10 @@ subprojects {
     }
 }
 
-task createTestReport(type: JacocoReport, dependsOn: [
-        "presentation:testDebugUnitTest",
-        "domain:test",
-        "data:testDebugUnitTest"
-]) {
+task createTestReport(type: JacocoReport) {
     group = "reporting"
+
+    dependsOn("presentation:testDebugUnitTest", "domain:test", "data:testDebugUnitTest")
 
     final commonFileExclusions = [
             '**/*Module*.*',
@@ -63,11 +61,11 @@ task createTestReport(type: JacocoReport, dependsOn: [
     reports {
         html {
             enabled = true
-            destination = file('build/reports/jacoco/html')
+            destination = file("build/reports/jacoco/html")
         }
         xml {
             enabled = true
-            destination = file('build/reports/jacoco/jacocoTestReport.xml')
+            destination = file("build/reports/jacoco/jacocoTestReport.xml")
         }
     }
 

@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.MainActivity">
+    android:theme="@style/Theme.Welcome">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageLogo"
         android:layout_width="@dimen/welcome_logo_size"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_big_2"
+        android:layout_marginTop="@dimen/welcome_logo_margin_top"
         android:importantForAccessibility="no"
         android:src="@drawable/ic_welcome_logo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/textTitle"
         style="@style/TextAppearance.AppCompat.Large"
         android:layout_width="wrap_content"
@@ -30,14 +29,14 @@
         app:layout_constraintVertical_bias="0.25"
         app:layout_constraintVertical_chainStyle="packed" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/textDescription"
         style="@style/TextAppearance.AppCompat.Medium"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_normal_3"
-        android:layout_marginTop="@dimen/margin_normal_1"
-        android:layout_marginEnd="@dimen/margin_normal_3"
+        android:layout_marginStart="@dimen/spacing_huge"
+        android:layout_marginTop="@dimen/spacing_medium"
+        android:layout_marginEnd="@dimen/spacing_huge"
         android:text="@string/welcome_description"
         android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@+id/startButton"
@@ -46,15 +45,15 @@
         app:layout_constraintTop_toBottomOf="@+id/textTitle"
         app:layout_constraintVertical_bias="0.0" />
 
-    <androidx.appcompat.widget.AppCompatButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/startButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_big_1"
+        android:layout_marginBottom="@dimen/welcome_button_margin_bottom"
         android:backgroundTint="@color/white"
-        android:paddingStart="@dimen/margin_normal_1"
-        android:paddingEnd="@dimen/margin_normal_1"
-        android:text="@string/get_started"
+        android:paddingStart="@dimen/spacing_medium"
+        android:paddingEnd="@dimen/spacing_medium"
+        android:text="@string/welcome_get_started"
         android:textColor="?attr/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

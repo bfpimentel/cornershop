@@ -11,6 +11,8 @@ buildscript {
         classpath(Libs.Gradle.kotlin)
         classpath(Libs.Gradle.junit5)
         classpath(Libs.Gradle.android)
+        classpath(Libs.Gradle.hilt)
+        classpath(Libs.Gradle.navigation)
     }
 }
 
@@ -32,8 +34,11 @@ tasks.create("clean", type = Delete::class) {
     delete(rootProject.buildDir)
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        languageVersion = "1.4"
+subprojects {
+    tasks.withType<KotlinCompile> {
+        kotlinOptions {
+            languageVersion = "1.4"
+            freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
+        }
     }
 }
