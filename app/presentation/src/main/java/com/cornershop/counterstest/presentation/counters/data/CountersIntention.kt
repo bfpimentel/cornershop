@@ -1,4 +1,6 @@
 package com.cornershop.counterstest.presentation.counters.data
 
-class CountersIntention {
+sealed class CountersIntention {
+
+    object GetCounters : CountersIntention()
 }

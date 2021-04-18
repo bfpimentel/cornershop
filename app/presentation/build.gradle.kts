@@ -46,8 +46,8 @@ android {
 }
 
 dependencies {
-    implementation(project(Config.Projects.domain))
-    implementation(project(Config.Projects.data))
+    api(project(Config.Projects.domain))
+    api(project(Config.Projects.data))
 
     implementation(Libs.Android.materialDesign)
     implementation(Libs.Android.fragment)

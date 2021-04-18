@@ -40,9 +40,9 @@ android {
 dependencies {
     implementation(project(Config.Projects.domain))
 
-    implementation(Libs.Networking.moshi)
-    implementation(Libs.Networking.retrofit)
-    implementation(Libs.Networking.retrofitMoshi)
+    api(Libs.Networking.moshi)
+    api(Libs.Networking.retrofit)
+    api(Libs.Networking.retrofitMoshi)
 
     implementation(Libs.Hilt.android)
     kapt(Libs.Hilt.compiler)
