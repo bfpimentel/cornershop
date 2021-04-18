@@ -13,6 +13,8 @@ tasks.withType<Test> {
 }
 
 dependencies {
+    implementation(Libs.Kotlin.coroutinesCore)
+
     testImplementation(Libs.Test.coroutinesCore)
     testImplementation(Libs.Test.mockk)
     testImplementation(Libs.Test.junitAPI)

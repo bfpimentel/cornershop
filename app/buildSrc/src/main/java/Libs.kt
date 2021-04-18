@@ -37,9 +37,10 @@ object Libs {
     }
 
     object Room {
-        const val runtime = "androidx.room:room-runtime:2.2.5"
-        const val ktx = "androidx.room:room-ktx:2.2.5"
-        const val compiler = "androidx.room:room-compiler:2.2.5"
+        private const val roomVersion = "2.2.6"
+        const val runtime = "androidx.room:room-runtime:$roomVersion"
+        const val ktx = "androidx.room:room-ktx:$roomVersion"
+        const val compiler = "androidx.room:room-compiler:$roomVersion"
     }
 
     object Hilt {
