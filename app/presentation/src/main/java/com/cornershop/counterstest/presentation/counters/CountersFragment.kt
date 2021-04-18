@@ -58,6 +58,11 @@ class CountersFragment : Fragment(R.layout.counters_fragment) {
 
     private fun bindOutputs() {
         watch(viewModel.state) { state ->
+            with(binding) {
+                totalItemCount.text = getString(R.string.counters_total_items_count, state.totalItemCount)
+                totalTimesCount.text = getString(R.string.counters_total_times_count, state.totalTimesCount)
+            }
+
             state.countersEvent?.handleEvent { counters ->
                 countersAdapter.submitList(counters)
             }

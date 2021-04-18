@@ -71,6 +71,8 @@ class CountersViewModelTest : ViewModelTest() {
 
         val secondCountersState = countersStateValues[1]
         assertEquals(secondCountersState.countersEvent!!.value, countersViewData)
+        assertEquals(secondCountersState.totalItemCount, 2)
+        assertEquals(secondCountersState.totalTimesCount, 3)
 
         coVerify(exactly = 1) {
             getCounters(getCountersParams)

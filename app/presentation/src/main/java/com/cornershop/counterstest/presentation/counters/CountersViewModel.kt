@@ -1,5 +1,6 @@
 package com.cornershop.counterstest.presentation.counters
 
+import com.cornershop.counterstest.domain.entity.Counter
 import com.cornershop.counterstest.domain.usecase.GetCounters
 import com.cornershop.counterstest.presentation.counters.data.CounterViewData
 import com.cornershop.counterstest.presentation.counters.data.CountersIntention
@@ -23,10 +24,8 @@ class CountersViewModel @Inject constructor(
     override suspend fun handleIntentions(intention: CountersIntention) {
         when (intention) {
             is CountersIntention.GetCounters -> getCounters()
-            is CountersIntention.Add -> {
-            }
-            is CountersIntention.Subtract -> {
-            }
+            is CountersIntention.Add -> Unit
+            is CountersIntention.Subtract -> Unit
         }
     }
 
@@ -42,7 +41,13 @@ class CountersViewModel @Inject constructor(
                 )
             }
 
-            updateState { copy(countersEvent = countersViewData.toEvent()) }
+            updateState {
+                copy(
+                    countersEvent = countersViewData.toEvent(),
+                    totalItemCount = counters.size,
+                    totalTimesCount = counters.sumBy(Counter::count)
+                )
+            }
         } catch (error: Exception) {
         }
     }

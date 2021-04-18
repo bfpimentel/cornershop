@@ -10,9 +10,9 @@
         style="@style/TextAppearance.MaterialComponents.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
-        android:text="4 items"
+        android:layout_marginStart="@dimen/spacing_large"
+        android:layout_marginTop="@dimen/spacing_large"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="4 items" />
@@ -22,9 +22,9 @@
         style="@style/TextAppearance.MaterialComponents.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="4 times"
+        android:layout_marginStart="@dimen/spacing_small"
         android:textColor="?android:textColorSecondary"
+        android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@id/totalItemCount"
         app:layout_constraintTop_toTopOf="@id/totalItemCount"
         tools:text="17 times" />
@@ -32,8 +32,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/counters"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="8dp"
+        android:layout_height="@dimen/spacing_none"
+        android:layout_marginTop="@dimen/spacing_small"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/totalItemCount" />
 
