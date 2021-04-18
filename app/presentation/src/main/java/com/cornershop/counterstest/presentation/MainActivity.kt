@@ -1,7 +1,6 @@
 package com.cornershop.counterstest.presentation
 
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.cornershop.counterstest.R
 import com.cornershop.counterstest.di.NavigatorBinderQualifier
@@ -23,7 +22,7 @@ class MainActivity : AppCompatActivity(R.layout.main_activity) {
             .findFragmentById(R.id.navHostFragment)!!
             .findNavController()
 
-        navigator.bind(navController, lifecycleScope)
+        navigator.bind(navController)
     }
 
     override fun onDestroy() {

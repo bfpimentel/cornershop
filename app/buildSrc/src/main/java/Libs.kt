@@ -14,7 +14,7 @@ object Libs {
     object Kotlin {
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
         const val reflect = "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
-        const val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1"
+        const val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3"
     }
 
     object Android {
@@ -48,7 +48,7 @@ object Libs {
     }
 
     object Test {
-        const val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.9"
+        const val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.3"
         const val mockk = "io.mockk:mockk:1.10.3-jdk8"
         const val androidTestCore = "androidx.arch.core:core-testing:2.1.0"
         const val junitAPI = "org.junit.jupiter:junit-jupiter-api:5.7.0"

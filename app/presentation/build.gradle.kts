@@ -62,6 +62,7 @@ dependencies {
     implementation(Libs.Hilt.android)
     kapt(Libs.Hilt.compiler)
 
+    testImplementation(Libs.Test.androidTestCore)
     testImplementation(Libs.Test.coroutinesCore)
     testImplementation(Libs.Test.mockk)
     testImplementation(Libs.Test.junitAPI)

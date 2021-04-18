@@ -34,8 +34,11 @@ tasks.create("clean", type = Delete::class) {
     delete(rootProject.buildDir)
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        languageVersion = "1.4"
+subprojects {
+    tasks.withType<KotlinCompile> {
+        kotlinOptions {
+            languageVersion = "1.4"
+            freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
+        }
     }
 }
