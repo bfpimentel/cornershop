@@ -44,6 +44,10 @@ dependencies {
     api(Libs.Networking.retrofit)
     api(Libs.Networking.retrofitMoshi)
 
+    api(Libs.Room.runtime)
+    implementation(Libs.Room.ktx)
+    kapt(Libs.Room.compiler)
+
     implementation(Libs.Hilt.android)
     kapt(Libs.Hilt.compiler)
 

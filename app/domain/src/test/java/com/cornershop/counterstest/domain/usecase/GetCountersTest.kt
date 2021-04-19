@@ -7,6 +7,8 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.confirmVerified
 import io.mockk.mockk
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -46,12 +48,9 @@ class GetCountersTest {
 
         val filter = "filter"
 
-        coEvery { countersRepository.getCounters(filter) } returns countersModels
+        coEvery { countersRepository.getCounters(filter) } returns flowOf(countersModels)
 
-        assertEquals(
-            useCase(GetCounters.Params(filter)),
-            counters
-        )
+        assertEquals(useCase(GetCounters.Params(filter)).first(), counters)
 
         coVerify(exactly = 1) { countersRepository.getCounters(filter) }
         confirmVerified(countersRepository)

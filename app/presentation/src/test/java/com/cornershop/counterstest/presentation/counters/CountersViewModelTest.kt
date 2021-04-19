@@ -2,7 +2,9 @@ package com.cornershop.counterstest.presentation.counters
 
 import com.cornershop.counterstest.ViewModelTest
 import com.cornershop.counterstest.domain.entity.Counter
+import com.cornershop.counterstest.domain.usecase.AddCount
 import com.cornershop.counterstest.domain.usecase.GetCounters
+import com.cornershop.counterstest.domain.usecase.SubtractCount
 import com.cornershop.counterstest.presentation.counters.data.CounterViewData
 import com.cornershop.counterstest.presentation.counters.data.CountersIntention
 import com.cornershop.counterstest.presentation.counters.data.CountersState
@@ -11,6 +13,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.confirmVerified
 import io.mockk.mockk
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -19,11 +22,15 @@ import org.junit.jupiter.api.Test
 class CountersViewModelTest : ViewModelTest() {
 
     private val getCounters = mockk<GetCounters>()
+    private val addCount = mockk<AddCount>()
+    private val subtractCount = mockk<SubtractCount>()
     private lateinit var viewModel: CountersContract.ViewModel
 
     override fun `setup subject`(dispatchersProvider: DispatchersProvider) {
         viewModel = CountersViewModel(
             getCounters = getCounters,
+            addCount = addCount,
+            subtractCount = subtractCount,
             dispatchersProvider = dispatchersProvider,
             initialState = initialState
         )
@@ -59,7 +66,7 @@ class CountersViewModelTest : ViewModelTest() {
 
         val getCountersParams = GetCounters.Params(null)
 
-        coEvery { getCounters(getCountersParams) } returns counters
+        coEvery { getCounters(getCountersParams) } returns flowOf(counters)
 
         val countersStateValues = arrayListOf<CountersState>()
         val countersStateJob = launch { viewModel.state.toList(countersStateValues) }

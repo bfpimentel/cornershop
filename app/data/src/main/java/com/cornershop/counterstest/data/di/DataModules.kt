@@ -1,8 +1,11 @@
 package com.cornershop.counterstest.data.di
 
 import android.content.Context
+import androidx.room.Room
 import com.cornershop.counterstest.data.R
+import com.cornershop.counterstest.data.database.CountersDatabase
 import com.cornershop.counterstest.data.repository.CountersRepositoryImpl
+import com.cornershop.counterstest.data.sources.local.CountersLocalDataSource
 import com.cornershop.counterstest.data.sources.remote.CountersRemoteDataSource
 import com.cornershop.counterstest.domain.repository.CountersRepository
 import com.squareup.moshi.Moshi
@@ -24,6 +27,7 @@ object DataModules {
 
     private const val REQUEST_TIMEOUT = 60L
 
+    // region NETWORKING
     @Provides
     @Singleton
     fun provideMoshi(): Moshi = Moshi.Builder()
@@ -55,9 +59,31 @@ object DataModules {
     @Singleton
     fun provideCountersRemoteDataSource(retrofit: Retrofit): CountersRemoteDataSource =
         retrofit.create(CountersRemoteDataSource::class.java)
+    // endregion
+
+    // region DATABASE
+    @Provides
+    @Singleton
+    fun provideDatabase(@ApplicationContext context: Context) =
+        Room.databaseBuilder(
+            context,
+            CountersDatabase::class.java,
+            CountersDatabase::class.simpleName!!
+        ).build()
 
     @Provides
     @Singleton
-    fun providesCountersRepository(remoteDataSource: CountersRemoteDataSource): CountersRepository =
-        CountersRepositoryImpl(remoteDataSource = remoteDataSource)
+    fun provideCountersLocalDataSource(countersDatabase: CountersDatabase): CountersLocalDataSource =
+        countersDatabase.createCountersLocalDataSource()
+    // endregion
+
+    @Provides
+    @Singleton
+    fun providesCountersRepository(
+        remoteDataSource: CountersRemoteDataSource,
+        localDataSource: CountersLocalDataSource
+    ): CountersRepository = CountersRepositoryImpl(
+        remoteDataSource = remoteDataSource,
+        localDataSource = localDataSource
+    )
 }

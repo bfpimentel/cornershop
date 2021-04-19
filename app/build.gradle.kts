@@ -39,6 +39,7 @@ subprojects {
         kotlinOptions {
             languageVersion = "1.4"
             freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
+            freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlinx.coroutines.FlowPreview"
         }
     }
 }
