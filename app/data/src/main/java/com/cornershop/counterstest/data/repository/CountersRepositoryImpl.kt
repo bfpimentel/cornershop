@@ -25,13 +25,13 @@ class CountersRepositoryImpl(
     externalScope: CoroutineScope = CoroutineScope(SupervisorJob())
 ) : CountersRepository {
 
-    private val _syncFlow = MutableSharedFlow<Unit>(replay = 0)
+    private val syncFlow = MutableSharedFlow<Unit>(replay = 0)
 
     private var isFirstAccess = true // TODO: Remove after persisting user information
 
     init {
         externalScope.launch {
-            _syncFlow.debounce(5000L).collect {
+            syncFlow.debounce(5000L).collect {
                 synchronizeCounters()
             }
         }
@@ -67,17 +67,17 @@ class CountersRepositoryImpl(
 
     override suspend fun addCount(counterId: String) {
         localDataSource.addCount(counterId)
-        _syncFlow.emit(Unit)
+        syncFlow.emit(Unit)
     }
 
     override suspend fun subtractCount(counterId: String) {
         localDataSource.subtractCount(counterId)
-        _syncFlow.emit(Unit)
+        syncFlow.emit(Unit)
     }
 
     override suspend fun deleteCounter(counterId: String) {
         localDataSource.deleteCounter(counterId)
-        _syncFlow.emit(Unit)
+        syncFlow.emit(Unit)
     }
 
     private suspend fun synchronizeCounters() {
@@ -105,7 +105,7 @@ class CountersRepositoryImpl(
                 )
             )
 
-            localDataSource.synchronizeCounters(counterIds = unsynchronizedCounters.map(CounterDTO::id))
+            localDataSource.synchronizeCounters(counterIds = countersToBeSynchronized.map(CounterBody::id))
             localDataSource.removeDeletedCounters(deletedCountersIds)
         } catch (error: Exception) {
             Log.d("SYNC_ERROR", "Couldn't sync database", error)
