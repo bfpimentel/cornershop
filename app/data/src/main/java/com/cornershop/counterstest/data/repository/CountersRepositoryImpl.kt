@@ -1,6 +1,8 @@
 package com.cornershop.counterstest.data.repository
 
 import android.util.Log
+import com.cornershop.counterstest.data.body.CounterBody
+import com.cornershop.counterstest.data.body.SyncCountersBody
 import com.cornershop.counterstest.data.dto.CounterDTO
 import com.cornershop.counterstest.data.model.CounterModelImpl
 import com.cornershop.counterstest.data.sources.local.CountersLocalDataSource
@@ -9,7 +11,6 @@ import com.cornershop.counterstest.domain.model.CounterModel
 import com.cornershop.counterstest.domain.repository.CountersRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collect
@@ -74,11 +75,40 @@ class CountersRepositoryImpl(
         _syncFlow.emit(Unit)
     }
 
+    override suspend fun deleteCounter(counterId: String) {
+        localDataSource.deleteCounter(counterId)
+        _syncFlow.emit(Unit)
+    }
+
     private suspend fun synchronizeCounters() {
-        val unsynchronizedCounters = localDataSource.getUnsynchronizedCounters()
-        Log.d("SYNC", "STARTED SYNCING: $unsynchronizedCounters")
-        delay(1000L)
-        localDataSource.synchronizeCounters(counterIds = unsynchronizedCounters.map(CounterDTO::id))
-        Log.d("SYNC", "FINISHED SYNCING")
+        try {
+            val unsynchronizedCounters = localDataSource.getUnsynchronizedCounters()
+
+            val deletedCountersIds = unsynchronizedCounters
+                .filter { it.hasBeenDeleted == true }
+                .map(CounterDTO::id)
+
+            val countersToBeSynchronized = unsynchronizedCounters
+                .filter { it.hasBeenDeleted == false }
+                .map { counter ->
+                    CounterBody(
+                        id = counter.id,
+                        title = counter.title,
+                        count = counter.count
+                    )
+                }
+
+            remoteDataSource.syncCounters(
+                SyncCountersBody(
+                    deletedCountersIds = deletedCountersIds,
+                    counters = countersToBeSynchronized
+                )
+            )
+
+            localDataSource.synchronizeCounters(counterIds = unsynchronizedCounters.map(CounterDTO::id))
+            localDataSource.removeDeletedCounters(deletedCountersIds)
+        } catch (error: Exception) {
+            Log.d("SYNC_ERROR", "Couldn't sync database", error)
+        }
     }
 }

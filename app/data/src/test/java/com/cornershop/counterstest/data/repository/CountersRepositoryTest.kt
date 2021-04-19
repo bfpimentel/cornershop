@@ -2,7 +2,7 @@ package com.cornershop.counterstest.data.repository
 
 import com.cornershop.counterstest.data.dto.CounterDTO
 import com.cornershop.counterstest.data.model.CounterModelImpl
-import com.cornershop.counterstest.data.responses.CounterResponse
+import com.cornershop.counterstest.data.body.CounterBody
 import com.cornershop.counterstest.data.sources.local.CountersLocalDataSource
 import com.cornershop.counterstest.data.sources.remote.CountersRemoteDataSource
 import com.cornershop.counterstest.domain.repository.CountersRepository
@@ -30,12 +30,12 @@ class CountersRepositoryTest {
     @Test
     fun `should get counters`() = runBlockingTest {
         val remoteCounters = listOf(
-            CounterResponse(
+            CounterBody(
                 id = "id1",
                 title = "title1",
                 count = 1,
             ),
-            CounterResponse(
+            CounterBody(
                 id = "id2",
                 title = "title2",
                 count = 2,

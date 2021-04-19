@@ -18,6 +18,7 @@ interface CountersLocalDataSource {
         """
         SELECT id, title, count 
         FROM Counters
+        WHERE hasBeenDeleted = '0'
         """
     )
     fun getCounters(): Flow<List<CounterDTO>>
@@ -26,7 +27,8 @@ interface CountersLocalDataSource {
         """
         SELECT id, title, count 
         FROM Counters 
-        WHERE title LIKE :filter
+        WHERE title LIKE :filter 
+        AND hasBeenDeleted = '0'
         """
     )
     fun getCounters(filter: String): Flow<List<CounterDTO>>
@@ -35,7 +37,7 @@ interface CountersLocalDataSource {
         """
         UPDATE Counters SET
             count = count + 1,
-            isSynchronized = 'false'
+            isSynchronized = '0'
         WHERE id = :counterId
         """
     )
@@ -45,7 +47,7 @@ interface CountersLocalDataSource {
         """
         UPDATE Counters SET
             count = count - 1,
-            isSynchronized = 'false'
+            isSynchronized = '0'
         WHERE id = :counterId
         """
     )
@@ -53,9 +55,18 @@ interface CountersLocalDataSource {
 
     @Query(
         """
-        SELECT id, title, count 
+        UPDATE Counters SET
+            hasBeenDeleted = '1'
+        WHERE id = :counterId 
+        """
+    )
+    suspend fun deleteCounter(counterId: String)
+
+    @Query(
+        """
+        SELECT id, title, count, hasBeenDeleted
         FROM Counters 
-        WHERE isSynchronized = 'false'
+        WHERE isSynchronized = '0'
         """
     )
     suspend fun getUnsynchronizedCounters(): List<CounterDTO>
@@ -63,9 +74,17 @@ interface CountersLocalDataSource {
     @Query(
         """
         UPDATE Counters SET
-            isSynchronized = 'true'
+            isSynchronized = '1'
         WHERE id IN (:counterIds)
         """
     )
     suspend fun synchronizeCounters(counterIds: List<String>)
+
+    @Query(
+        """
+        DELETE FROM Counters
+        WHERE id IN (:deletedCounterIds)
+        """
+    )
+    suspend fun removeDeletedCounters(deletedCounterIds: List<String>)
 }

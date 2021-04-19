@@ -21,14 +21,21 @@ export const create = async (title: string): Promise<Counter> => {
 export const sync = async (sync: Sync): Promise<Counter[]> => {
   Array.from(sync.deletedCounterIds).forEach((id) => {
     const index = counters.findIndex((counter) => counter.id == id);
-    counters.splice(index, 1);
+    const counterToBeDeleted = counters[index];
+    delete counters[index];
+    console.log(`SYNC: Deleted counter ${counterToBeDeleted}`);
   });
 
-  Array.from(sync.counters).forEach((counter) => {
-    const index = counters.findIndex((counter) => counter.id == counter.id);
+  Array.from(sync.counters).forEach((newCounter) => {
+    const index = counters.findIndex((counter) => counter.id == newCounter.id);
 
-    if (index == -1) counters.push(counter);
-    else counters[index] = counter;
+    if (index == -1) {
+      counters.push(newCounter);
+      console.log(`SYNC: Added new counter ${newCounter}`);
+    } else {
+      counters[index] = newCounter;
+      console.log(`SYNC: Updated counter ${newCounter}`);
+    }
   });
 
   return getAll();
