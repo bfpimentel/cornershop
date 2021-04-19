@@ -44,14 +44,13 @@ class CountersViewModel @Inject constructor(
 
     private suspend fun getCounters() {
         getCounters(NoParams).collect { counters ->
-            val countersViewData = counters
-                .map { counter ->
-                    CounterViewData(
-                        id = counter.id,
-                        title = counter.title,
-                        count = counter.count
-                    )
-                }
+            val countersViewData = counters.map { counter ->
+                CounterViewData(
+                    id = counter.id,
+                    title = counter.title,
+                    count = counter.count
+                )
+            }
 
             updateState {
                 copy(
