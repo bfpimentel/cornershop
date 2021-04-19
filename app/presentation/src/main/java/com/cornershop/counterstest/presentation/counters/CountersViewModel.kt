@@ -1,7 +1,8 @@
 package com.cornershop.counterstest.presentation.counters
 
-import androidx.lifecycle.viewModelScope
+import com.cornershop.counterstest.domain.usecase.AddCount
 import com.cornershop.counterstest.domain.usecase.GetCounters
+import com.cornershop.counterstest.domain.usecase.SubtractCount
 import com.cornershop.counterstest.presentation.counters.data.CounterViewData
 import com.cornershop.counterstest.presentation.counters.data.CountersIntention
 import com.cornershop.counterstest.presentation.counters.data.CountersState
@@ -10,14 +11,14 @@ import com.cornershop.counterstest.shared.mvi.StateViewModelImpl
 import com.cornershop.counterstest.shared.mvi.toEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CountersViewModel @Inject constructor(
     private val getCounters: GetCounters,
-    private val dispatchersProvider: DispatchersProvider,
+    private val addCount: AddCount,
+    private val subtractCount: SubtractCount,
+    dispatchersProvider: DispatchersProvider,
     @CountersStateQualifier initialState: CountersState
 ) : StateViewModelImpl<CountersState, CountersIntention>(
     dispatchersProvider = dispatchersProvider,
@@ -27,8 +28,8 @@ class CountersViewModel @Inject constructor(
     override suspend fun handleIntentions(intention: CountersIntention) {
         when (intention) {
             is CountersIntention.GetCounters -> watchCounters()
-            is CountersIntention.Add -> Unit
-            is CountersIntention.Subtract -> Unit
+            is CountersIntention.Add -> addCount(AddCount.Params(intention.counterId))
+            is CountersIntention.Subtract -> subtractCount(SubtractCount.Params(intention.counterId))
         }
     }
 

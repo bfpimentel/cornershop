@@ -9,5 +9,5 @@ data class CounterDTO(
     @PrimaryKey @ColumnInfo(name = "id") val id: String,
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "count") val count: Int,
-    @ColumnInfo(name = "isSynchronized") val isSynchronized: Boolean = true
+    @ColumnInfo(name = "isSynchronized") val isSynchronized: Boolean? = true
 )

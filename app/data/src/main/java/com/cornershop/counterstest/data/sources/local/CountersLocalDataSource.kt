@@ -16,7 +16,7 @@ interface CountersLocalDataSource {
 
     @Query(
         """
-        SELECT * 
+        SELECT id, title, count 
         FROM Counters
         """
     )
@@ -24,7 +24,7 @@ interface CountersLocalDataSource {
 
     @Query(
         """
-        SELECT * 
+        SELECT id, title, count 
         FROM Counters 
         WHERE title LIKE :filter
         """
@@ -35,7 +35,7 @@ interface CountersLocalDataSource {
         """
         UPDATE Counters SET
             count = count + 1,
-            isSynchronized = "false"
+            isSynchronized = 'false'
         WHERE id = :counterId
         """
     )
@@ -45,7 +45,7 @@ interface CountersLocalDataSource {
         """
         UPDATE Counters SET
             count = count - 1,
-            isSynchronized = "false"
+            isSynchronized = 'false'
         WHERE id = :counterId
         """
     )
@@ -53,9 +53,9 @@ interface CountersLocalDataSource {
 
     @Query(
         """
-        SELECT * 
+        SELECT id, title, count 
         FROM Counters 
-        WHERE isSynchronized = "false"
+        WHERE isSynchronized = 'false'
         """
     )
     suspend fun getUnsynchronizedCounters(): List<CounterDTO>
@@ -63,7 +63,7 @@ interface CountersLocalDataSource {
     @Query(
         """
         UPDATE Counters SET
-            isSynchronized = "true"
+            isSynchronized = 'true'
         WHERE id IN (:counterIds)
         """
     )
