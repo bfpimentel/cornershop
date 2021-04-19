@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -76,10 +75,10 @@ class CountersRepositoryImpl(
     }
 
     private suspend fun synchronizeCounters() {
-        val unsyncedCounters = localDataSource.getUnsynchronizedCounters()
-        Log.d("SYNC", "STARTED SYNCING: $unsyncedCounters")
+        val unsynchronizedCounters = localDataSource.getUnsynchronizedCounters()
+        Log.d("SYNC", "STARTED SYNCING: $unsynchronizedCounters")
         delay(1000L)
-        localDataSource.synchronizeCounters(counterIds = unsyncedCounters.map(CounterDTO::id))
+        localDataSource.synchronizeCounters(counterIds = unsynchronizedCounters.map(CounterDTO::id))
         Log.d("SYNC", "FINISHED SYNCING")
     }
 }
