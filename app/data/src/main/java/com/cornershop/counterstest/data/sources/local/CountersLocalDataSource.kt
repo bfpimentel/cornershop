@@ -11,17 +11,7 @@ import kotlinx.coroutines.flow.Flow
 interface CountersLocalDataSource {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-//    @Insert // TODO : Remove comment when ready. OnConflict will not be needed later.
     suspend fun insertCounters(counter: List<CounterDTO>)
-
-//    @Query(
-//        """
-//        SELECT id, title, count
-//        FROM Counters
-//        WHERE hasBeenDeleted = '0'
-//        """
-//    )
-//    fun getCounters(): Flow<List<CounterDTO>>
 
     @Query(
         """
