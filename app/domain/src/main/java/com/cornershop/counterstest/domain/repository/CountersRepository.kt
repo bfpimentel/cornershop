@@ -4,7 +4,8 @@ import com.cornershop.counterstest.domain.model.CounterModel
 import kotlinx.coroutines.flow.Flow
 
 interface CountersRepository {
-    fun getCounters(filter: String?): Flow<List<CounterModel>>
+    fun getCounters(): Flow<List<CounterModel>>
+    suspend fun searchCounters(query: String?)
     suspend fun addCount(counterId: String)
     suspend fun subtractCount(counterId: String)
     suspend fun deleteCounter(counterId: String)

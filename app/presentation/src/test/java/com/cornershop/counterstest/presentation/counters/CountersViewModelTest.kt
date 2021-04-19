@@ -71,7 +71,7 @@ class CountersViewModelTest : ViewModelTest() {
         val countersStateValues = arrayListOf<CountersState>()
         val countersStateJob = launch { viewModel.state.toList(countersStateValues) }
 
-        viewModel.publish(CountersIntention.GetCounters)
+        viewModel.publish(CountersIntention.SearchCounters)
 
         val firstCountersState = countersStateValues[0]
         assertEquals(firstCountersState, initialState)
