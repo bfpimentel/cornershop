@@ -2,6 +2,7 @@ package com.cornershop.counterstest.presentation.counters
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -53,7 +54,11 @@ class CountersFragment : Fragment(R.layout.counters_fragment) {
     }
 
     private fun bindInputs() {
-        viewModel.publish(CountersIntention.GetCounters)
+        binding.searchInput.doAfterTextChanged { editable ->
+            viewModel.publish(CountersIntention.SearchCounters(query = editable.toString()))
+        }
+
+        viewModel.publish(CountersIntention.SearchCounters())
     }
 
     private fun bindOutputs() {

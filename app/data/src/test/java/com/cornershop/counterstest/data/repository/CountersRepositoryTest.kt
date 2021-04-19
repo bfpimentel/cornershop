@@ -12,13 +12,19 @@ import io.mockk.coJustRun
 import io.mockk.coVerify
 import io.mockk.confirmVerified
 import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.TestCoroutineScope
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.setMain
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import kotlin.time.ExperimentalTime
 
 class CountersRepositoryTest {
 
@@ -27,14 +33,30 @@ class CountersRepositoryTest {
     private val dispatcher = TestCoroutineDispatcher()
     private val scope = TestCoroutineScope(dispatcher)
 
-    private val repository: CountersRepository = CountersRepositoryImpl(
-        remoteDataSource = remoteDataSource,
-        localDataSource = localDataSource,
-        externalScope = scope
-    )
+    private lateinit var repository: CountersRepository
 
+    @BeforeEach
+    fun `setup subject`() {
+        Dispatchers.setMain(dispatcher)
+
+        repository = CountersRepositoryImpl(
+            remoteDataSource = remoteDataSource,
+            localDataSource = localDataSource,
+            externalScope = scope
+        )
+    }
+
+    @AfterEach
+    fun `tear down`() {
+        Dispatchers.resetMain()
+        dispatcher.cleanupTestCoroutines()
+    }
+
+    @ExperimentalTime
     @Test
-    fun `should get counters`() = runBlockingTest {
+    fun `should get counters when searching for them`() = dispatcher.runBlockingTest {
+        val query = "query"
+
         val remoteCounters = listOf(
             CounterBody(
                 id = "id1",
@@ -76,14 +98,17 @@ class CountersRepositoryTest {
 
         coEvery { remoteDataSource.getCounters() } returns remoteCounters
         coJustRun { localDataSource.insertCounters(localCounters) }
-        coEvery { localDataSource.getCounters() } returns flowOf(localCounters)
+        coEvery { localDataSource.getCounters(query) } returns flowOf(localCounters)
 
-        assertEquals(repository.getCounters(null).first(), countersModels)
+        repository.searchCounters(query)
+        advanceTimeBy(1000L)
+
+        assertEquals(repository.getCounters().first(), countersModels)
 
         coVerify(exactly = 1) {
             remoteDataSource.getCounters()
             localDataSource.insertCounters(localCounters)
-            localDataSource.getCounters()
+            localDataSource.getCounters(query)
         }
         confirmVerified(remoteDataSource, localDataSource)
     }
@@ -292,4 +317,37 @@ class CountersRepositoryTest {
             }
             confirmVerified(remoteDataSource, localDataSource)
         }
+
+    @Test
+    fun `should do nothing after failing to sync`() = dispatcher.runBlockingTest {
+        val counterId = "counterId"
+        val deletedCounterId = "deletedCounterId"
+
+        val unsynchronizedCounters = listOf(
+            CounterDTO(id = counterId, title = "title1", count = 1, hasBeenDeleted = false),
+            CounterDTO(id = deletedCounterId, title = "title2", count = 1, hasBeenDeleted = true)
+        )
+
+        val deletedCounterIds = listOf(deletedCounterId)
+        val countersToBeSynchronized = listOf(CounterBody(id = counterId, title = "title1", count = 1))
+
+        val syncBody = SyncCountersBody(
+            deletedCountersIds = deletedCounterIds,
+            counters = countersToBeSynchronized
+        )
+
+        coJustRun { localDataSource.addCount(counterId) }
+        coEvery { localDataSource.getUnsynchronizedCounters() } returns unsynchronizedCounters
+        coEvery { remoteDataSource.syncCounters(syncBody) } throws IllegalStateException()
+
+        repository.addCount(counterId)
+        advanceTimeBy(5000L)
+
+        coVerify(exactly = 1) {
+            localDataSource.addCount(counterId)
+            localDataSource.getUnsynchronizedCounters()
+            remoteDataSource.syncCounters(syncBody)
+        }
+        confirmVerified(remoteDataSource, localDataSource)
+    }
 }

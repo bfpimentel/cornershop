@@ -46,13 +46,11 @@ class GetCountersTest {
             )
         )
 
-        val filter = "filter"
+        coEvery { countersRepository.getCounters() } returns flowOf(countersModels)
 
-        coEvery { countersRepository.getCounters(filter) } returns flowOf(countersModels)
+        assertEquals(useCase(NoParams).first(), counters)
 
-        assertEquals(useCase(GetCounters.Params(filter)).first(), counters)
-
-        coVerify(exactly = 1) { countersRepository.getCounters(filter) }
+        coVerify(exactly = 1) { countersRepository.getCounters() }
         confirmVerified(countersRepository)
     }
 }

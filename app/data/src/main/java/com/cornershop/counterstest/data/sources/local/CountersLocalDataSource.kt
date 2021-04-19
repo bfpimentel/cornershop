@@ -11,27 +11,17 @@ import kotlinx.coroutines.flow.Flow
 interface CountersLocalDataSource {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-//    @Insert // TODO : Remove comment when ready. OnConflict will not be needed later.
     suspend fun insertCounters(counter: List<CounterDTO>)
 
     @Query(
         """
         SELECT id, title, count 
-        FROM Counters
-        WHERE hasBeenDeleted = '0'
-        """
-    )
-    fun getCounters(): Flow<List<CounterDTO>>
-
-    @Query(
-        """
-        SELECT id, title, count 
         FROM Counters 
-        WHERE title LIKE :filter 
+        WHERE title LIKE '%' || :query || '%' 
         AND hasBeenDeleted = '0'
         """
     )
-    fun getCounters(filter: String): Flow<List<CounterDTO>>
+    fun getCounters(query: String): Flow<List<CounterDTO>>
 
     @Query(
         """

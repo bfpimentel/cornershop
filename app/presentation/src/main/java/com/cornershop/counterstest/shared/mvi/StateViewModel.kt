@@ -26,9 +26,9 @@ abstract class StateViewModelImpl<State, Intention>(
     private val publisher = MutableSharedFlow<Intention>()
 
     init {
-        publisher.onEach { intention ->
-            viewModelScope.launch(dispatchersProvider.io) { handleIntentions(intention) }
-        }.shareIn(viewModelScope, SharingStarted.Eagerly)
+        publisher
+            .onEach(::handleIntentions)
+            .shareIn(viewModelScope, SharingStarted.Eagerly)
     }
 
     final override fun publish(intention: Intention) {

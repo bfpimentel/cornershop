@@ -13,9 +13,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -25,20 +27,23 @@ class CountersRepositoryImpl(
     externalScope: CoroutineScope = CoroutineScope(SupervisorJob())
 ) : CountersRepository {
 
-    private val syncFlow = MutableSharedFlow<Unit>(replay = 0)
+    private val syncPublisher = MutableSharedFlow<Unit>(replay = 0)
+    private val searchPublisher = MutableStateFlow<String?>(null)
 
     private var isFirstAccess = true // TODO: Remove after persisting user information
 
     init {
         externalScope.launch {
-            syncFlow.debounce(5000L).collect {
-                synchronizeCounters()
-            }
+            syncPublisher
+                .debounce(SYNC_DEBOUNCE_INTERVAL)
+                .collect { synchronizeCounters() }
         }
     }
 
-    override fun getCounters(filter: String?): Flow<List<CounterModel>> =
-        localDataSource.getCounters()
+    override fun getCounters(): Flow<List<CounterModel>> =
+        searchPublisher
+            .debounce(SEARCH_DEBOUNCE_INTERVAL)
+            .flatMapLatest { query -> localDataSource.getCounters(query.orEmpty()) }
             .map {
                 if (isFirstAccess) {
                     remoteDataSource.getCounters()
@@ -65,19 +70,23 @@ class CountersRepositoryImpl(
                 }
             }
 
+    override suspend fun searchCounters(query: String?) {
+        searchPublisher.emit(query)
+    }
+
     override suspend fun addCount(counterId: String) {
         localDataSource.addCount(counterId)
-        syncFlow.emit(Unit)
+        syncPublisher.emit(Unit)
     }
 
     override suspend fun subtractCount(counterId: String) {
         localDataSource.subtractCount(counterId)
-        syncFlow.emit(Unit)
+        syncPublisher.emit(Unit)
     }
 
     override suspend fun deleteCounter(counterId: String) {
         localDataSource.deleteCounter(counterId)
-        syncFlow.emit(Unit)
+        syncPublisher.emit(Unit)
     }
 
     private suspend fun synchronizeCounters() {
@@ -110,5 +119,10 @@ class CountersRepositoryImpl(
         } catch (error: Exception) {
             Log.d("SYNC_ERROR", "Couldn't sync database", error)
         }
+    }
+
+    private companion object {
+        const val SYNC_DEBOUNCE_INTERVAL = 5000L
+        const val SEARCH_DEBOUNCE_INTERVAL = 500L
     }
 }

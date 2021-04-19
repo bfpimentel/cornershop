@@ -22,7 +22,7 @@ export const sync = async (sync: Sync): Promise<Counter[]> => {
   Array.from(sync.deletedCounterIds).forEach((id) => {
     const index = counters.findIndex((counter) => counter.id == id);
     const counterToBeDeleted = counters[index];
-    delete counters[index];
+    counters.splice(index, 1);
     console.log(`SYNC: Deleted counter ${counterToBeDeleted}`);
   });
 

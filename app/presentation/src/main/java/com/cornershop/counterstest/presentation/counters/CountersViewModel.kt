@@ -1,7 +1,10 @@
 package com.cornershop.counterstest.presentation.counters
 
+import androidx.lifecycle.viewModelScope
 import com.cornershop.counterstest.domain.usecase.AddCount
 import com.cornershop.counterstest.domain.usecase.GetCounters
+import com.cornershop.counterstest.domain.usecase.NoParams
+import com.cornershop.counterstest.domain.usecase.SearchCounters
 import com.cornershop.counterstest.domain.usecase.SubtractCount
 import com.cornershop.counterstest.presentation.counters.data.CounterViewData
 import com.cornershop.counterstest.presentation.counters.data.CountersIntention
@@ -11,11 +14,13 @@ import com.cornershop.counterstest.shared.mvi.StateViewModelImpl
 import com.cornershop.counterstest.shared.mvi.toEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CountersViewModel @Inject constructor(
     private val getCounters: GetCounters,
+    private val searchCounters: SearchCounters,
     private val addCount: AddCount,
     private val subtractCount: SubtractCount,
     dispatchersProvider: DispatchersProvider,
@@ -25,35 +30,35 @@ class CountersViewModel @Inject constructor(
     initialState = initialState
 ), CountersContract.ViewModel {
 
+    init {
+        viewModelScope.launch(dispatchersProvider.io) { getCounters() }
+    }
+
     override suspend fun handleIntentions(intention: CountersIntention) {
         when (intention) {
-            is CountersIntention.GetCounters -> watchCounters()
+            is CountersIntention.SearchCounters -> searchCounters(SearchCounters.Params(intention.query))
             is CountersIntention.Add -> addCount(AddCount.Params(intention.counterId))
             is CountersIntention.Subtract -> subtractCount(SubtractCount.Params(intention.counterId))
         }
     }
 
-    private suspend fun watchCounters() {
-        try {
-            getCounters(GetCounters.Params(null)).collect { counters ->
-                val countersViewData = counters
-                    .map { counter ->
-                        CounterViewData(
-                            id = counter.id,
-                            title = counter.title,
-                            count = counter.count
-                        )
-                    }
-
-                updateState {
-                    copy(
-                        countersEvent = countersViewData.toEvent(),
-                        totalItemCount = countersViewData.size,
-                        totalTimesCount = countersViewData.sumBy(CounterViewData::count)
-                    )
-                }
+    private suspend fun getCounters() {
+        getCounters(NoParams).collect { counters ->
+            val countersViewData = counters.map { counter ->
+                CounterViewData(
+                    id = counter.id,
+                    title = counter.title,
+                    count = counter.count
+                )
             }
-        } catch (error: Exception) {
+
+            updateState {
+                copy(
+                    countersEvent = countersViewData.toEvent(),
+                    totalItemCount = countersViewData.size,
+                    totalTimesCount = countersViewData.sumBy(CounterViewData::count)
+                )
+            }
         }
     }
 }
