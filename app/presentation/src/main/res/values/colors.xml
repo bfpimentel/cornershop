@@ -7,6 +7,12 @@
     <color name="gray">#888B90</color>
     <color name="light_gray">#DCDCDF</color>
 
+    <!-- Welcome Screen -->
     <color name="welcome_background">#F9F9F9</color>
+    <!-- Welcome Screen -->
+
+    <!-- Counters Screen -->
+    <color name="counters_add_counter_container_background">#CCFFFFFF</color>
+    <!-- Counters Screen -->
 
 </resources>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.CountersNormal" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
+    <style name="Theme.Default" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
         <item name="colorPrimary">@color/orange</item>
         <item name="colorOnPrimary">@color/black</item>
         <item name="colorSecondary">@color/white</item>
@@ -13,8 +13,20 @@
         <item name="android:windowLightStatusBar">true</item>
     </style>
 
-    <style name="Theme.Welcome" parent="Theme.CountersNormal">
+    <style name="Theme.Welcome" parent="Theme.Default">
         <item name="android:windowBackground">@color/welcome_background</item>
+    </style>
+
+    <style name="Theme.Counters" parent="Theme.Default">
+        <item name="android:windowBackground">@color/white</item>
+    </style>
+
+    <style name="Theme.CreateCounter" parent="Theme.Default" />
+
+    <style name="Theme.CreateCounter.OrangeMenu" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:textColor">@color/black</item>
+        <item name="titleTextColor">@color/black</item>
+        <item name="actionMenuTextColor">@color/orange</item>
     </style>
 
 </resources>

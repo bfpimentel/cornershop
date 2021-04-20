@@ -12,11 +12,9 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.CountersNormal"
+        android:theme="@style/Theme.Default"
         android:usesCleartextTraffic="true">
-        <activity
-            android:name=".presentation.MainActivity"
-            android:theme="@style/Theme.Welcome">
+        <activity android:name=".presentation.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

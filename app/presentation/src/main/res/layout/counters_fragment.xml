@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/searchInputLayout"
@@ -20,7 +21,7 @@
             android:id="@+id/searchInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Search Counters"
+            android:hint="@string/counters_search_counters"
             android:inputType="textFilter" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -54,7 +55,32 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_none"
         android:layout_marginTop="@dimen/spacing_small"
+        android:paddingBottom="@dimen/counters_add_counter_container_height"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/totalItemCount" />
+        app:layout_constraintTop_toBottomOf="@id/totalItemCount"
+        tools:listitem="@layout/counters_item" />
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/addCounter"
+        style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_large"
+        android:text="@string/counters_add_counters"
+        android:textColor="@color/white"
+        app:backgroundTint="@color/orange"
+        app:icon="@drawable/ic_plus"
+        app:iconSize="@dimen/spacing_medium"
+        app:iconTint="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/counters_add_counter_container_height"
+        android:background="@drawable/bg_add_counter_container"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
