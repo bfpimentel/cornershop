@@ -2,6 +2,7 @@ package com.cornershop.counterstest.di
 
 import com.cornershop.counterstest.domain.repository.CountersRepository
 import com.cornershop.counterstest.domain.usecase.AddCount
+import com.cornershop.counterstest.domain.usecase.CreateCounter
 import com.cornershop.counterstest.domain.usecase.GetCounters
 import com.cornershop.counterstest.domain.usecase.SearchCounters
 import com.cornershop.counterstest.domain.usecase.SubtractCount
@@ -24,6 +25,11 @@ object DomainUseCaseModule {
     @ViewModelScoped
     fun provideSearchCounters(countersRepository: CountersRepository): SearchCounters =
         SearchCounters(repository = countersRepository)
+
+    @Provides
+    @ViewModelScoped
+    fun provideCreateCounter(countersRepository: CountersRepository): CreateCounter =
+        CreateCounter(repository = countersRepository)
 
     @Provides
     @ViewModelScoped

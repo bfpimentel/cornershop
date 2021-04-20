@@ -23,6 +23,9 @@ interface CountersLocalDataSource {
     )
     fun getCounters(query: String): Flow<List<CounterDTO>>
 
+    @Insert
+    suspend fun createCounter(counter: CounterDTO)
+
     @Query(
         """
         UPDATE Counters SET
