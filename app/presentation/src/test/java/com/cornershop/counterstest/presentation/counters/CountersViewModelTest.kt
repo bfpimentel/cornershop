@@ -11,6 +11,7 @@ import com.cornershop.counterstest.presentation.counters.data.CounterViewData
 import com.cornershop.counterstest.presentation.counters.data.CountersIntention
 import com.cornershop.counterstest.presentation.counters.data.CountersState
 import com.cornershop.counterstest.shared.dispatchers.DispatchersProvider
+import com.cornershop.counterstest.shared.navigator.NavigatorRouter
 import io.mockk.coEvery
 import io.mockk.coJustRun
 import io.mockk.coVerify
@@ -24,6 +25,7 @@ import org.junit.jupiter.api.Test
 
 class CountersViewModelTest : ViewModelTest() {
 
+    private val navigator = mockk<NavigatorRouter>()
     private val getCounters = mockk<GetCounters>()
     private val searchCounters = mockk<SearchCounters>()
     private val addCount = mockk<AddCount>()
@@ -34,6 +36,7 @@ class CountersViewModelTest : ViewModelTest() {
         mockInit()
 
         viewModel = CountersViewModel(
+            navigator = navigator,
             getCounters = getCounters,
             searchCounters = searchCounters,
             addCount = addCount,
@@ -67,7 +70,7 @@ class CountersViewModelTest : ViewModelTest() {
         assertEquals(firstCountersState.totalTimesCount, 3)
 
         coVerify(exactly = 1) { getCounters(NoParams) }
-        confirmVerified(getCounters)
+        confirmEverythingVerified()
 
         countersStateJob.cancel()
     }
@@ -86,7 +89,7 @@ class CountersViewModelTest : ViewModelTest() {
             getCounters(NoParams)
             searchCounters(searchCountersParams)
         }
-        confirmVerified(getCounters)
+        confirmEverythingVerified()
     }
 
     @Test
@@ -103,7 +106,7 @@ class CountersViewModelTest : ViewModelTest() {
             getCounters(NoParams)
             addCount(addCountParams)
         }
-        confirmVerified(getCounters)
+        confirmEverythingVerified()
     }
 
     @Test
@@ -120,11 +123,36 @@ class CountersViewModelTest : ViewModelTest() {
             getCounters(NoParams)
             subtractCount(subtractCountParams)
         }
-        confirmVerified(getCounters)
+        confirmEverythingVerified()
+    }
+
+    @Test
+    fun `should navigate to counter creation`() = runBlockingTest {
+        val directions = CountersFragmentDirections.toCreateCounterFragment()
+
+        coJustRun { navigator.navigate(directions) }
+
+        viewModel.publish(CountersIntention.NavigateToCreateCounter)
+
+        coVerify(exactly = 1) {
+            getCounters(NoParams)
+            navigator.navigate(directions)
+        }
+        confirmEverythingVerified()
     }
 
     private fun mockInit() {
         coEvery { getCounters(NoParams) } returns flowOf(counters)
+    }
+
+    private fun confirmEverythingVerified() {
+        confirmVerified(
+            navigator,
+            getCounters,
+            searchCounters,
+            addCount,
+            subtractCount
+        )
     }
 
     private companion object {
