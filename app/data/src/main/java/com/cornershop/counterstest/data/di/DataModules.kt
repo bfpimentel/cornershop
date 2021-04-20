@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Room
 import com.cornershop.counterstest.data.R
 import com.cornershop.counterstest.data.database.CountersDatabase
+import com.cornershop.counterstest.data.generator.IdGenerator
+import com.cornershop.counterstest.data.generator.IdGeneratorImpl
 import com.cornershop.counterstest.data.repository.CountersRepositoryImpl
 import com.cornershop.counterstest.data.sources.local.CountersLocalDataSource
 import com.cornershop.counterstest.data.sources.remote.CountersRemoteDataSource
@@ -64,6 +66,10 @@ object DataModules {
     // region DATABASE
     @Provides
     @Singleton
+    fun provideIdGenerator(): IdGenerator = IdGeneratorImpl()
+
+    @Provides
+    @Singleton
     fun provideDatabase(@ApplicationContext context: Context) =
         Room.databaseBuilder(
             context,
@@ -81,9 +87,11 @@ object DataModules {
     @Singleton
     fun providesCountersRepository(
         remoteDataSource: CountersRemoteDataSource,
-        localDataSource: CountersLocalDataSource
+        localDataSource: CountersLocalDataSource,
+        idGenerator: IdGenerator,
     ): CountersRepository = CountersRepositoryImpl(
         remoteDataSource = remoteDataSource,
-        localDataSource = localDataSource
+        localDataSource = localDataSource,
+        idGenerator = idGenerator
     )
 }

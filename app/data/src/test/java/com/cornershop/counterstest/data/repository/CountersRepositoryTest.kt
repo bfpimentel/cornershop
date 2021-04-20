@@ -3,6 +3,7 @@ package com.cornershop.counterstest.data.repository
 import com.cornershop.counterstest.data.body.CounterBody
 import com.cornershop.counterstest.data.body.SyncCountersBody
 import com.cornershop.counterstest.data.dto.CounterDTO
+import com.cornershop.counterstest.data.generator.IdGenerator
 import com.cornershop.counterstest.data.model.CounterModelImpl
 import com.cornershop.counterstest.data.sources.local.CountersLocalDataSource
 import com.cornershop.counterstest.data.sources.remote.CountersRemoteDataSource
@@ -30,6 +31,7 @@ class CountersRepositoryTest {
 
     private val remoteDataSource = mockk<CountersRemoteDataSource>()
     private val localDataSource = mockk<CountersLocalDataSource>()
+    private val idGenerator = mockk<IdGenerator>()
     private val dispatcher = TestCoroutineDispatcher()
     private val scope = TestCoroutineScope(dispatcher)
 
@@ -42,7 +44,8 @@ class CountersRepositoryTest {
         repository = CountersRepositoryImpl(
             remoteDataSource = remoteDataSource,
             localDataSource = localDataSource,
-            externalScope = scope
+            externalScope = scope,
+            idGenerator = idGenerator
         )
     }
 
@@ -110,7 +113,58 @@ class CountersRepositoryTest {
             localDataSource.insertCounters(localCounters)
             localDataSource.getCounters(query)
         }
-        confirmVerified(remoteDataSource, localDataSource)
+        confirmVerified(remoteDataSource, localDataSource, idGenerator)
+    }
+
+    @Test
+    fun `should create counter and sync`() = dispatcher.runBlockingTest {
+        val newCounterId = "newCounterId"
+        val newCounterName = "newCounterName"
+
+        val deletedCounterId = "deletedCounterId"
+
+        val newCounter = CounterDTO(
+            id = newCounterId,
+            title = newCounterName,
+            count = 0,
+            isSynchronized = false,
+            hasBeenDeleted = false
+        )
+
+        val unsynchronizedCounters = listOf(
+            newCounter,
+            CounterDTO(id = deletedCounterId, title = "title2", count = 1, hasBeenDeleted = true)
+        )
+
+        val deletedCounterIds = listOf(deletedCounterId)
+        val countersToBeSynchronized = listOf(CounterBody(id = newCounterId, title = newCounterName, count = 0))
+
+        val syncBody = SyncCountersBody(
+            deletedCountersIds = deletedCounterIds,
+            counters = countersToBeSynchronized
+        )
+
+        val countersToBeSynchronizedIds = listOf(newCounterId)
+
+        coEvery { idGenerator.generateId(instant = any()) } returns newCounterId
+        coJustRun { localDataSource.createCounter(newCounter) }
+        coEvery { localDataSource.getUnsynchronizedCounters() } returns unsynchronizedCounters
+        coJustRun { remoteDataSource.syncCounters(syncBody) }
+        coJustRun { localDataSource.synchronizeCounters(countersToBeSynchronizedIds) }
+        coJustRun { localDataSource.removeDeletedCounters(deletedCounterIds) }
+
+        repository.createCounter(newCounterName)
+        advanceTimeBy(5000L)
+
+        coVerify(exactly = 1) {
+            idGenerator.generateId(instant = any())
+            localDataSource.createCounter(newCounter)
+            localDataSource.getUnsynchronizedCounters()
+            remoteDataSource.syncCounters(syncBody)
+            localDataSource.synchronizeCounters(countersToBeSynchronizedIds)
+            localDataSource.removeDeletedCounters(deletedCounterIds)
+        }
+        confirmVerified(remoteDataSource, localDataSource, idGenerator)
     }
 
     @Test
@@ -149,7 +203,7 @@ class CountersRepositoryTest {
             localDataSource.synchronizeCounters(countersToBeSynchronizedIds)
             localDataSource.removeDeletedCounters(deletedCounterIds)
         }
-        confirmVerified(remoteDataSource, localDataSource)
+        confirmVerified(remoteDataSource, localDataSource, idGenerator)
     }
 
     @Test
@@ -188,7 +242,7 @@ class CountersRepositoryTest {
             localDataSource.synchronizeCounters(countersToBeSynchronizedIds)
             localDataSource.removeDeletedCounters(deletedCounterIds)
         }
-        confirmVerified(remoteDataSource, localDataSource)
+        confirmVerified(remoteDataSource, localDataSource, idGenerator)
     }
 
     @Test
@@ -226,7 +280,7 @@ class CountersRepositoryTest {
             localDataSource.synchronizeCounters(countersToBeSynchronizedIds)
             localDataSource.removeDeletedCounters(deletedCounterIds)
         }
-        confirmVerified(remoteDataSource, localDataSource)
+        confirmVerified(remoteDataSource, localDataSource, idGenerator)
     }
 
     @Test
@@ -269,7 +323,7 @@ class CountersRepositoryTest {
             localDataSource.synchronizeCounters(countersToBeSynchronizedIds)
             localDataSource.removeDeletedCounters(deletedCounterIds)
         }
-        confirmVerified(remoteDataSource, localDataSource)
+        confirmVerified(remoteDataSource, localDataSource, idGenerator)
     }
 
     @Test
@@ -315,7 +369,7 @@ class CountersRepositoryTest {
                 localDataSource.synchronizeCounters(countersToBeSynchronizedIds)
                 localDataSource.removeDeletedCounters(deletedCounterIds)
             }
-            confirmVerified(remoteDataSource, localDataSource)
+            confirmVerified(remoteDataSource, localDataSource, idGenerator)
         }
 
     @Test
@@ -348,6 +402,6 @@ class CountersRepositoryTest {
             localDataSource.getUnsynchronizedCounters()
             remoteDataSource.syncCounters(syncBody)
         }
-        confirmVerified(remoteDataSource, localDataSource)
+        confirmVerified(remoteDataSource, localDataSource, idGenerator)
     }
 }

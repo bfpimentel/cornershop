@@ -4,6 +4,7 @@ import android.util.Log
 import com.cornershop.counterstest.data.body.CounterBody
 import com.cornershop.counterstest.data.body.SyncCountersBody
 import com.cornershop.counterstest.data.dto.CounterDTO
+import com.cornershop.counterstest.data.generator.IdGenerator
 import com.cornershop.counterstest.data.model.CounterModelImpl
 import com.cornershop.counterstest.data.sources.local.CountersLocalDataSource
 import com.cornershop.counterstest.data.sources.remote.CountersRemoteDataSource
@@ -24,6 +25,7 @@ import kotlinx.coroutines.launch
 class CountersRepositoryImpl(
     private val remoteDataSource: CountersRemoteDataSource,
     private val localDataSource: CountersLocalDataSource,
+    private val idGenerator: IdGenerator,
     externalScope: CoroutineScope = CoroutineScope(SupervisorJob())
 ) : CountersRepository {
 
@@ -72,6 +74,11 @@ class CountersRepositoryImpl(
 
     override suspend fun searchCounters(query: String?) {
         searchPublisher.emit(query)
+    }
+
+    override suspend fun createCounter(name: String) {
+        localDataSource.createCounter(CounterDTO(id = idGenerator.generateId(), title = name))
+        syncPublisher.emit(Unit)
     }
 
     override suspend fun addCount(counterId: String) {

@@ -19,6 +19,16 @@
         android:id="@+id/countersFragment"
         android:name="com.cornershop.counterstest.presentation.counters.CountersFragment"
         android:label="CountersFragment"
-        tools:layout="@layout/counters_fragment" />
+        tools:layout="@layout/counters_fragment">
+        <action
+            android:id="@+id/toCreateCounterFragment"
+            app:destination="@id/createCounterFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/createCounterFragment"
+        android:name="com.cornershop.counterstest.presentation.create_counter.CreateCounterFragment"
+        android:label="CreateCounterFragment"
+        tools:layout="@layout/create_counter_fragment" />
 
 </navigation>

@@ -7,4 +7,6 @@ sealed class CountersIntention {
     data class Add(val counterId: String) : CountersIntention()
 
     data class Subtract(val counterId: String) : CountersIntention()
+
+    object NavigateToCreateCounter : CountersIntention()
 }

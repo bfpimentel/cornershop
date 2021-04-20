@@ -25,8 +25,9 @@
     <dimen name="welcome_button_margin_bottom">60dp</dimen>
     <!-- Welcome Screen -->
 
-    <!-- Counters Item -->
+    <!-- Counters -->
+    <dimen name="counters_add_counter_container_height">96dp</dimen>
     <dimen name="counters_item_count_min_width">40dp</dimen>
-    <!-- Counters Item -->
+    <!-- Counters -->
 
 </resources>

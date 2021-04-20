@@ -11,4 +11,15 @@ data class CounterDTO(
     @ColumnInfo(name = "count") val count: Int,
     @ColumnInfo(name = "isSynchronized") val isSynchronized: Boolean? = true,
     @ColumnInfo(name = "hasBeenDeleted") val hasBeenDeleted: Boolean? = false
-)
+) {
+
+    constructor(
+        id: String,
+        title: String
+    ) : this(
+        id = id,
+        title = title,
+        count = 0,
+        isSynchronized = false
+    )
+}

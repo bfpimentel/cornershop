@@ -54,8 +54,14 @@ class CountersFragment : Fragment(R.layout.counters_fragment) {
     }
 
     private fun bindInputs() {
-        binding.searchInput.doAfterTextChanged { editable ->
-            viewModel.publish(CountersIntention.SearchCounters(query = editable.toString()))
+        with(binding) {
+            searchInput.doAfterTextChanged { editable ->
+                viewModel.publish(CountersIntention.SearchCounters(query = editable.toString()))
+            }
+
+            addCounter.setOnClickListener {
+                viewModel.publish(CountersIntention.NavigateToCreateCounter)
+            }
         }
 
         viewModel.publish(CountersIntention.SearchCounters())

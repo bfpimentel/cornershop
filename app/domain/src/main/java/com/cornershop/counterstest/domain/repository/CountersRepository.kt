@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 interface CountersRepository {
     fun getCounters(): Flow<List<CounterModel>>
     suspend fun searchCounters(query: String?)
+    suspend fun createCounter(name: String)
     suspend fun addCount(counterId: String)
     suspend fun subtractCount(counterId: String)
     suspend fun deleteCounter(counterId: String)
