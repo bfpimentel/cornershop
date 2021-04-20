@@ -123,7 +123,13 @@ class CountersRepositoryTest {
 
         val deletedCounterId = "deletedCounterId"
 
-        val newCounter = CounterDTO(id = newCounterId, title = newCounterName, count = 0)
+        val newCounter = CounterDTO(
+            id = newCounterId,
+            title = newCounterName,
+            count = 0,
+            isSynchronized = false,
+            hasBeenDeleted = false
+        )
 
         val unsynchronizedCounters = listOf(
             newCounter,
