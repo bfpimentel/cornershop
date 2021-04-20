@@ -22,10 +22,17 @@
 
     <style name="Theme.CreateCounter" parent="Theme.Default" />
 
-    <style name="Theme.CreateCounter.OrangeMenu" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+    <style name="Theme.CreateCounter.ActionMenu" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="android:textColor">@color/black</item>
         <item name="titleTextColor">@color/black</item>
-        <item name="actionMenuTextColor">@color/orange</item>
+        <item name="colorControlNormal">@color/create_counter_save_menu_selector</item>
+        <item name="actionMenuTextColor">@color/create_counter_save_menu_selector</item>
+    </style>
+
+    <style name="Theme.CreateCounter.Input">
+        <item name="colorAccent">@color/orange</item>
+        <item name="colorControlNormal">@android:color/tertiary_text_dark</item>
+        <item name="colorControlActivated">@android:color/holo_orange_light</item>
     </style>
 
 </resources>
