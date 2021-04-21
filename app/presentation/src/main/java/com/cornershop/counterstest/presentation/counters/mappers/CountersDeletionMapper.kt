@@ -15,12 +15,12 @@ class CountersDeletionMapperImpl(private val context: Context) : CountersDeletio
             0 -> throw IllegalArgumentException("List can't be empty")
             1 -> context.getString(
                 R.string.counters_delete_confirmation_question_one_item,
-                itemsToBeDeleted.first().toString()
+                itemsToBeDeleted[0].title
             )
             else -> context.getString(
                 R.string.counters_delete_confirmation_question_more_items,
-                itemsToBeDeleted.dropLast(1).joinToString { ", " },
-                itemsToBeDeleted.last()
+                itemsToBeDeleted.dropLast(1).joinToString(transform = Counter::title),
+                itemsToBeDeleted.last().title
             )
         }
 }

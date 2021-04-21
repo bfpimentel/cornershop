@@ -4,6 +4,7 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ShareCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
@@ -106,17 +107,30 @@ class CountersFragment : Fragment(R.layout.counters_fragment) {
 
             state.countersEvent.handleEvent(countersAdapter::submitList)
             state.deleteConfirmationEvent.handleEvent(::showDeleteConfirmationDialog)
+            state.shareEvent.handleEvent(::shareCounters)
         }
     }
 
     private fun showDeleteConfirmationDialog(text: String) {
         AlertDialog.Builder(requireContext())
-            .setMessage(getString(R.string.counters_delete_confirmation_question_one_item, text))
+            .setMessage(text)
             .setCancelable(true)
             .setOnCancelListener(DialogInterface::dismiss)
             .setPositiveButton(R.string.counters_delete_confirmation_delete) { _, _ ->
                 viewModel.publish(CountersIntention.DeleteSelectedCounters)
             }
             .show()
+    }
+
+    private fun shareCounters(text: String) {
+        ShareCompat.IntentBuilder
+            .from(requireActivity())
+            .setType(SHARE_TYPE)
+            .setText(text)
+            .startChooser()
+    }
+
+    private companion object {
+        private const val SHARE_TYPE = "text/plain"
     }
 }
