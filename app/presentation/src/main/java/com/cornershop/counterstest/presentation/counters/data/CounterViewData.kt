@@ -1,18 +1,30 @@
 package com.cornershop.counterstest.presentation.counters.data
 
 sealed class CounterViewData {
+    abstract val id: String
+    abstract val title: String
     abstract val count: Int
 
-    data class Item(
-        val id: String,
-        val title: String,
+    data class Counter(
+        override val id: String,
+        override val title: String,
         override val count: Int
-    ) : CounterViewData()
+    ) : CounterViewData() {
+
+        companion object {
+            const val IDENTIFIER = 0
+        }
+    }
 
     data class Edit(
-        val id: String,
-        val title: String,
-        val isSelected: Boolean,
-        override val count: Int
-    ) : CounterViewData()
+        override val id: String,
+        override val title: String,
+        override val count: Int,
+        val isSelected: Boolean
+    ) : CounterViewData() {
+
+        companion object {
+            const val IDENTIFIER = 1
+        }
+    }
 }

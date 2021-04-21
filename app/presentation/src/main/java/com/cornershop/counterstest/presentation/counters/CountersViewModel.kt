@@ -50,7 +50,7 @@ class CountersViewModel @Inject constructor(
             is CountersIntention.SearchCounters -> searchCounters(SearchCounters.Params(intention.query))
             is CountersIntention.Add -> addCount(AddCount.Params(intention.counterId))
             is CountersIntention.Subtract -> subtractCount(SubtractCount.Params(intention.counterId))
-            is CountersIntention.StartEditing -> startEditing()
+            is CountersIntention.StartEditing -> startEditing(intention.counterId)
             is CountersIntention.SelectOrDeselectCounter -> selectOrDeselectCounter(intention.counterId)
             is CountersIntention.DeleteSelectedCounters -> deleteSelectedCounters()
             is CountersIntention.ShareSelectedCounters -> shareSelectedCounters()
@@ -66,8 +66,9 @@ class CountersViewModel @Inject constructor(
         }
     }
 
-    private suspend fun startEditing() {
+    private suspend fun startEditing(counterId: String) {
         this.isEditing = true
+        selectedCountersIds.add(counterId)
         updateScreenState()
     }
 
@@ -97,25 +98,24 @@ class CountersViewModel @Inject constructor(
     }
 
     private suspend fun updateScreenState() {
-        val countersViewData =
-            if (isEditing) {
-                this.counters.map { counter ->
-                    CounterViewData.Item(
-                        id = counter.id,
-                        title = counter.title,
-                        count = counter.count
-                    )
-                }
-            } else {
-                this.counters.map { counter ->
-                    CounterViewData.Edit(
-                        id = counter.id,
-                        title = counter.title,
-                        isSelected = selectedCountersIds.contains(counter.id),
-                        count = counter.count
-                    )
-                }
+        val countersViewData = if (isEditing) {
+            this.counters.map { counter ->
+                CounterViewData.Edit(
+                    id = counter.id,
+                    title = counter.title,
+                    isSelected = selectedCountersIds.contains(counter.id),
+                    count = counter.count
+                )
             }
+        } else {
+            this.counters.map { counter ->
+                CounterViewData.Counter(
+                    id = counter.id,
+                    title = counter.title,
+                    count = counter.count
+                )
+            }
+        }
 
         updateState {
             copy(

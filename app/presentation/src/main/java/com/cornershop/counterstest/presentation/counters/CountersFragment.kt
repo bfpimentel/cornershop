@@ -42,9 +42,13 @@ class CountersFragment : Fragment(R.layout.counters_fragment) {
                 viewModel.publish(CountersIntention.Subtract(counterId))
             }
 
-            override fun onCounterLongClick(counterId: String) = Unit
+            override fun onCounterLongClick(counterId: String) {
+                viewModel.publish(CountersIntention.StartEditing(counterId))
+            }
 
-            override fun onCounterClick(counterId: String) = Unit
+            override fun onCounterClick(counterId: String) {
+                viewModel.publish(CountersIntention.SelectOrDeselectCounter(counterId))
+            }
         })
 
         binding.counters.let { counters ->

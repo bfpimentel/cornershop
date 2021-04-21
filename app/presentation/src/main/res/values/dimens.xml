@@ -27,7 +27,8 @@
 
     <!-- Counters -->
     <dimen name="counters_add_counter_container_height">96dp</dimen>
-    <dimen name="counters_item_count_min_width">40dp</dimen>
+    <dimen name="counters_counter_item_count_min_width">40dp</dimen>
+    <dimen name="counters_edit_item_end_padding">80dp</dimen>
     <!-- Counters -->
 
 </resources>

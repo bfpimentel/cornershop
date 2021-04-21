@@ -4,8 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/selectableItemBackground"
-    android:padding="@dimen/spacing_large">
+    android:layout_marginBottom="@dimen/spacing_small"
+    android:background="@drawable/bg_counter_container_default"
+    android:paddingHorizontal="@dimen/spacing_normal"
+    android:paddingVertical="@dimen/spacing_medium">
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/title"
@@ -37,9 +39,9 @@
         style="@style/TextAppearance.MaterialComponents.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/spacing_small"
+        android:layout_marginEnd="@dimen/spacing_tiny"
         android:gravity="center"
-        android:minWidth="@dimen/counters_item_count_min_width"
+        android:minWidth="@dimen/counters_counter_item_count_min_width"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/plus"

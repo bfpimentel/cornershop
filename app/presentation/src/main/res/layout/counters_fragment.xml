@@ -54,12 +54,13 @@
         android:id="@+id/counters"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_none"
+        android:layout_marginHorizontal="@dimen/spacing_small"
         android:layout_marginTop="@dimen/spacing_small"
         android:paddingBottom="@dimen/counters_add_counter_container_height"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/totalItemCount"
-        tools:listitem="@layout/counters_item" />
+        tools:listitem="@layout/counters_counter_item" />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/addCounter"
