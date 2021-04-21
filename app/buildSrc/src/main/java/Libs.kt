@@ -51,7 +51,7 @@ object Libs {
 
     object Test {
         const val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.3"
-        const val mockk = "io.mockk:mockk:1.10.3-jdk8"
+        const val mockk = "io.mockk:mockk:1.11.0"
         const val androidTestCore = "androidx.arch.core:core-testing:2.1.0"
         const val junitAPI = "org.junit.jupiter:junit-jupiter-api:5.7.0"
         const val junitEngine = "org.junit.jupiter:junit-jupiter-engine:5.7.0"

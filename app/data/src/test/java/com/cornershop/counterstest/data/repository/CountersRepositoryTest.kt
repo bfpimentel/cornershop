@@ -247,38 +247,37 @@ class CountersRepositoryTest {
 
     @Test
     fun `should delete counter and sync`() = dispatcher.runBlockingTest {
-        val deletedCounterId = "deletedCounterId"
+        val deletedCountersIds = listOf("deletedCounterId")
 
         val unsynchronizedCounters = listOf(
-            CounterDTO(id = deletedCounterId, title = "title1", count = 1, hasBeenDeleted = true),
+            CounterDTO(id = deletedCountersIds.first(), title = "title1", count = 1, hasBeenDeleted = true),
             CounterDTO(id = "id2", title = "title2", count = 1, hasBeenDeleted = false)
         )
 
-        val deletedCounterIds = listOf(deletedCounterId)
         val countersToBeSynchronized = listOf(CounterBody(id = "id2", title = "title2", count = 1))
 
         val syncBody = SyncCountersBody(
-            deletedCountersIds = deletedCounterIds,
+            deletedCountersIds = deletedCountersIds,
             counters = countersToBeSynchronized
         )
 
         val countersToBeSynchronizedIds = listOf("id2")
 
-        coJustRun { localDataSource.deleteCounters(deletedCounterId) }
+        coJustRun { localDataSource.deleteCounters(deletedCountersIds) }
         coEvery { localDataSource.getUnsynchronizedCounters() } returns unsynchronizedCounters
         coJustRun { remoteDataSource.syncCounters(syncBody) }
         coJustRun { localDataSource.synchronizeCounters(countersToBeSynchronizedIds) }
-        coJustRun { localDataSource.removeDeletedCounters(deletedCounterIds) }
+        coJustRun { localDataSource.removeDeletedCounters(deletedCountersIds) }
 
-        repository.deleteCounters(deletedCounterId)
+        repository.deleteCounters(deletedCountersIds)
         advanceTimeBy(5000L)
 
         coVerify(exactly = 1) {
-            localDataSource.deleteCounters(deletedCounterId)
+            localDataSource.deleteCounters(deletedCountersIds)
             localDataSource.getUnsynchronizedCounters()
             remoteDataSource.syncCounters(syncBody)
             localDataSource.synchronizeCounters(countersToBeSynchronizedIds)
-            localDataSource.removeDeletedCounters(deletedCounterIds)
+            localDataSource.removeDeletedCounters(deletedCountersIds)
         }
         confirmVerified(remoteDataSource, localDataSource, idGenerator)
     }

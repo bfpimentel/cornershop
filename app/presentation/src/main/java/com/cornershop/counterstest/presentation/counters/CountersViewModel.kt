@@ -39,7 +39,7 @@ class CountersViewModel @Inject constructor(
     private lateinit var counters: List<Counter>
 
     private var isEditing: Boolean = false
-    private val selectedCountersIds: MutableList<String> = mutableListOf()
+    private var selectedCountersIds: List<String> = emptyList()
 
     init {
         viewModelScope.launch(dispatchersProvider.io) { getCounters() }
@@ -68,19 +68,20 @@ class CountersViewModel @Inject constructor(
 
     private suspend fun startEditing(counterId: String) {
         this.isEditing = true
-        selectedCountersIds.add(counterId)
-        updateScreenState()
+        selectOrDeselectCounter(counterId)
     }
 
     private suspend fun selectOrDeselectCounter(counterId: String) {
-        if (selectedCountersIds.contains(counterId)) selectedCountersIds.remove(counterId)
-        else selectedCountersIds.add(counterId)
+        this.selectedCountersIds = this.selectedCountersIds.toMutableList().apply {
+            if (contains(counterId)) remove(counterId)
+            else add(counterId)
+        }
         updateScreenState()
     }
 
     private suspend fun deleteSelectedCounters() {
-        deleteCounters(DeleteCounters.Params(selectedCountersIds))
-        selectedCountersIds.removeAll { true }
+        deleteCounters(DeleteCounters.Params(this.selectedCountersIds))
+        this.selectedCountersIds = emptyList()
     }
 
     private suspend fun shareSelectedCounters() {
@@ -89,7 +90,7 @@ class CountersViewModel @Inject constructor(
 
     private suspend fun finishEditing() {
         this.isEditing = false
-        selectedCountersIds.removeAll { true }
+        this.selectedCountersIds = emptyList()
         updateScreenState()
     }
 

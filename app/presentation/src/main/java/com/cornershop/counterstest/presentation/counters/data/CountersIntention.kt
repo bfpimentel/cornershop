@@ -12,11 +12,11 @@ sealed class CountersIntention {
 
     data class SelectOrDeselectCounter(val counterId: String) : CountersIntention()
 
-    object FinishEditing : CountersIntention()
-
     object DeleteSelectedCounters : CountersIntention()
 
     object ShareSelectedCounters : CountersIntention()
+
+    object FinishEditing : CountersIntention()
 
     object NavigateToCreateCounter : CountersIntention()
 }

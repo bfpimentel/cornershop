@@ -3,6 +3,7 @@ package com.cornershop.counterstest.presentation.counters
 import com.cornershop.counterstest.ViewModelTest
 import com.cornershop.counterstest.domain.entity.Counter
 import com.cornershop.counterstest.domain.usecase.AddCount
+import com.cornershop.counterstest.domain.usecase.DeleteCounters
 import com.cornershop.counterstest.domain.usecase.GetCounters
 import com.cornershop.counterstest.domain.usecase.NoParams
 import com.cornershop.counterstest.domain.usecase.SearchCounters
@@ -21,6 +22,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class CountersViewModelTest : ViewModelTest() {
@@ -30,6 +32,7 @@ class CountersViewModelTest : ViewModelTest() {
     private val searchCounters = mockk<SearchCounters>()
     private val addCount = mockk<AddCount>()
     private val subtractCount = mockk<SubtractCount>()
+    private val deleteCounters = mockk<DeleteCounters>()
     private lateinit var viewModel: CountersContract.ViewModel
 
     override fun `setup subject`(dispatchersProvider: DispatchersProvider) {
@@ -41,6 +44,7 @@ class CountersViewModelTest : ViewModelTest() {
             searchCounters = searchCounters,
             addCount = addCount,
             subtractCount = subtractCount,
+            deleteCounters = deleteCounters,
             dispatchersProvider = dispatchersProvider,
             initialState = CountersState()
         )
@@ -49,12 +53,12 @@ class CountersViewModelTest : ViewModelTest() {
     @Test
     fun `should get counters when creating view model`() = runBlockingTest {
         val countersViewData = listOf(
-            CounterViewData(
+            CounterViewData.Counter(
                 id = "id1",
                 title = "title1",
                 count = 1,
             ),
-            CounterViewData(
+            CounterViewData.Counter(
                 id = "id2",
                 title = "title2",
                 count = 2,
@@ -68,11 +72,68 @@ class CountersViewModelTest : ViewModelTest() {
         assertEquals(firstCountersState.countersEvent!!.value, countersViewData)
         assertEquals(firstCountersState.totalItemCount, 2)
         assertEquals(firstCountersState.totalTimesCount, 3)
+        assertEquals(firstCountersState.numberOfSelectedCounters, 0)
+        assertTrue(firstCountersState.layoutEvent.value is CountersState.Layout.Default)
 
         coVerify(exactly = 1) { getCounters(NoParams) }
         confirmEverythingVerified()
 
         countersStateJob.cancel()
+    }
+
+    @Test
+    fun `should edit counters`() = runBlockingTest {
+        val countersViewData = listOf(
+            CounterViewData.Edit(
+                id = "id1",
+                title = "title1",
+                count = 1,
+                isSelected = false
+            ),
+            CounterViewData.Edit(
+                id = "id2",
+                title = "title2",
+                count = 2,
+                isSelected = true
+            )
+        )
+
+        val countersStateValues = arrayListOf<CountersState>()
+        val countersStateJob = launch { viewModel.state.toList(countersStateValues) }
+
+        viewModel.publish(CountersIntention.StartEditing("id1"))
+        viewModel.publish(CountersIntention.SelectOrDeselectCounter("id2"))
+        viewModel.publish(CountersIntention.SelectOrDeselectCounter("id1"))
+
+        val lastCountersState = countersStateValues.last()
+        assertEquals(lastCountersState.countersEvent!!.value, countersViewData)
+        assertEquals(lastCountersState.totalItemCount, 2)
+        assertEquals(lastCountersState.totalTimesCount, 3)
+        assertEquals(lastCountersState.numberOfSelectedCounters, 1)
+        assertTrue(lastCountersState.layoutEvent.value is CountersState.Layout.Editing)
+
+        coVerify(exactly = 1) { getCounters(NoParams) }
+        confirmEverythingVerified()
+
+        countersStateJob.cancel()
+    }
+
+    @Test
+    fun `should delete selected counters`() = runBlockingTest {
+        val deleteCountersParams = DeleteCounters.Params(listOf("id2"))
+
+        coJustRun { deleteCounters(deleteCountersParams) }
+
+        viewModel.publish(CountersIntention.StartEditing("id1"))
+        viewModel.publish(CountersIntention.SelectOrDeselectCounter("id2"))
+        viewModel.publish(CountersIntention.SelectOrDeselectCounter("id1"))
+        viewModel.publish(CountersIntention.DeleteSelectedCounters)
+
+        coVerify(exactly = 1) {
+            getCounters(NoParams)
+            deleteCounters(deleteCountersParams)
+        }
+        confirmEverythingVerified()
     }
 
     @Test
@@ -151,7 +212,8 @@ class CountersViewModelTest : ViewModelTest() {
             getCounters,
             searchCounters,
             addCount,
-            subtractCount
+            subtractCount,
+            deleteCounters
         )
     }
 
