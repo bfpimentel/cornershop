@@ -8,5 +8,15 @@ sealed class CountersIntention {
 
     data class Subtract(val counterId: String) : CountersIntention()
 
+    object StartEditing : CountersIntention()
+
+    data class SelectOrDeselectCounter(val counterId: String) : CountersIntention()
+
+    object FinishEditing : CountersIntention()
+
+    object DeleteSelectedCounters : CountersIntention()
+
+    object ShareSelectedCounters : CountersIntention()
+
     object NavigateToCreateCounter : CountersIntention()
 }

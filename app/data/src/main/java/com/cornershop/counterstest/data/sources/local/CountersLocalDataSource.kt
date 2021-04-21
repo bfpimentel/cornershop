@@ -50,10 +50,10 @@ interface CountersLocalDataSource {
         """
         UPDATE Counters SET
             hasBeenDeleted = '1'
-        WHERE id = :counterId 
+        WHERE id in (:countersToBeDeletedIds) 
         """
     )
-    suspend fun deleteCounter(counterId: String)
+    suspend fun deleteCounters(countersToBeDeletedIds: List<String>)
 
     @Query(
         """

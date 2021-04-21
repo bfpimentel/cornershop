@@ -264,17 +264,17 @@ class CountersRepositoryTest {
 
         val countersToBeSynchronizedIds = listOf("id2")
 
-        coJustRun { localDataSource.deleteCounter(deletedCounterId) }
+        coJustRun { localDataSource.deleteCounters(deletedCounterId) }
         coEvery { localDataSource.getUnsynchronizedCounters() } returns unsynchronizedCounters
         coJustRun { remoteDataSource.syncCounters(syncBody) }
         coJustRun { localDataSource.synchronizeCounters(countersToBeSynchronizedIds) }
         coJustRun { localDataSource.removeDeletedCounters(deletedCounterIds) }
 
-        repository.deleteCounter(deletedCounterId)
+        repository.deleteCounters(deletedCounterId)
         advanceTimeBy(5000L)
 
         coVerify(exactly = 1) {
-            localDataSource.deleteCounter(deletedCounterId)
+            localDataSource.deleteCounters(deletedCounterId)
             localDataSource.getUnsynchronizedCounters()
             remoteDataSource.syncCounters(syncBody)
             localDataSource.synchronizeCounters(countersToBeSynchronizedIds)

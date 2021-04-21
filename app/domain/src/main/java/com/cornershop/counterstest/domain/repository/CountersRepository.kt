@@ -9,5 +9,5 @@ interface CountersRepository {
     suspend fun createCounter(name: String)
     suspend fun addCount(counterId: String)
     suspend fun subtractCount(counterId: String)
-    suspend fun deleteCounter(counterId: String)
+    suspend fun deleteCounters(countersToBeDeletedIds: List<String>)
 }
