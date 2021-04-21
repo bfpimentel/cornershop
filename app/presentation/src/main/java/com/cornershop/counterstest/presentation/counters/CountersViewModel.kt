@@ -89,6 +89,7 @@ class CountersViewModel @Inject constructor(
 
     private suspend fun finishEditing() {
         this.isEditing = false
+        selectedCountersIds.removeAll { true }
         updateScreenState()
     }
 
@@ -117,11 +118,20 @@ class CountersViewModel @Inject constructor(
             }
         }
 
+        val layout = if (isEditing) CountersState.Layout.Editing else CountersState.Layout.Default
+
+        val numberOfSelectedCounters = countersViewData
+            .filterIsInstance<CounterViewData.Edit>()
+            .filter(CounterViewData.Edit::isSelected)
+            .count()
+
         updateState {
             copy(
                 countersEvent = countersViewData.toEvent(),
                 totalItemCount = countersViewData.size,
-                totalTimesCount = countersViewData.sumBy(CounterViewData::count)
+                totalTimesCount = countersViewData.sumBy(CounterViewData::count),
+                layoutEvent = layout.toEvent(),
+                numberOfSelectedCounters = numberOfSelectedCounters
             )
         }
     }

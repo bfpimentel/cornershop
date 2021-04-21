@@ -15,8 +15,10 @@
     <!-- Counters Screen -->
     <string name="counters_search_counters">Search Counters</string>
     <string name="counters_add_counters">Add counters</string>
-    <string name="counters_item_minus">-</string>
-    <string name="counters_item_plus">+</string>
+    <string name="counters_counter_save">Save</string>
+    <string name="counters_menu_delete">Delete</string>
+    <string name="counters_menu_share">Share</string>
+    <string name="counters_editing_toolbar_title">%d selected</string>
     <!-- Counters Screen -->
 
     <!-- Create Counter Screen -->
@@ -50,7 +52,6 @@
     <string name="no_counters">No counters yet</string>
     <string name="no_results">No results</string>
     <string name="no_counters_phrase">“When I started counting my blessings, my whole life turned around.”\n— Willie Nelson</string>
-    <string name="n_selected">%d selected</string>
     <string name="error_load_counters_title">Couldn’t load the counters</string>
     <string name="error_creating_counter_title">Couldn’t create the counter</string>
     <string name="error_updating_counter_title">Couldn’t update the “%s” counter to %d</string>
@@ -61,10 +62,8 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="dismiss">Dismiss</string>
-    <string name="share">Share</string>
     <string name="examples">Examples</string>
     <string name="examples_description">Select an example to add it to your counters.</string>
-    <string name="delete">Delete</string>
     <string name="delete_x_question">Delete "%s"?</string>
     <string name="n_per_counter_name">%d × %s</string>
 

@@ -2,6 +2,7 @@ package com.cornershop.counterstest.presentation.counters
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -66,6 +67,20 @@ class CountersFragment : Fragment(R.layout.counters_fragment) {
             addCounter.setOnClickListener {
                 viewModel.publish(CountersIntention.NavigateToCreateCounter)
             }
+
+            editingToolbar.setNavigationOnClickListener {
+                viewModel.publish(CountersIntention.FinishEditing)
+            }
+
+            editingToolbar.menu.findItem(R.id.deleteCounters).setOnMenuItemClickListener {
+                viewModel.publish(CountersIntention.DeleteSelectedCounters)
+                true
+            }
+
+            editingToolbar.menu.findItem(R.id.shareCounters).setOnMenuItemClickListener {
+                viewModel.publish(CountersIntention.ShareSelectedCounters)
+                true
+            }
         }
 
         viewModel.publish(CountersIntention.SearchCounters())
@@ -76,9 +91,18 @@ class CountersFragment : Fragment(R.layout.counters_fragment) {
             with(binding) {
                 totalItemCount.text = getString(R.string.counters_total_items_count, state.totalItemCount)
                 totalTimesCount.text = getString(R.string.counters_total_times_count, state.totalTimesCount)
+                editingToolbar.title = getString(
+                    R.string.counters_editing_toolbar_title,
+                    state.numberOfSelectedCounters
+                )
+
+                state.layoutEvent.handleEvent { layout ->
+                    toolbarLayout.isVisible = layout.isToolbarVisible
+                    searchInputLayout.isVisible = layout.isSearchInputVisible
+                }
             }
 
-            state.countersEvent?.handleEvent { counters ->
+            state.countersEvent.handleEvent { counters ->
                 countersAdapter.submitList(counters)
             }
         }

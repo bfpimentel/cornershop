@@ -7,6 +7,7 @@ data class CountersState(
     val countersEvent: Event<List<CounterViewData>>? = null,
     val totalItemCount: Int = 0,
     val totalTimesCount: Int = 0,
+    val numberOfSelectedCounters: Int = 0,
     val layoutEvent: Event<Layout> = Layout.Default.toEvent()
 ) {
 

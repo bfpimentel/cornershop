@@ -56,9 +56,9 @@ class CountersAdapter @AssistedInject constructor(
         override fun bind(item: CounterViewData) = with(binding) {
             item as CounterViewData.Edit
 
+            title.text = item.title
             root.isSelected = item.isSelected
             selectedIcon.isInvisible = !item.isSelected
-            title.text = item.title
             root.setOnClickListener { listener.onCounterClick(counterId = item.id) }
         }
     }

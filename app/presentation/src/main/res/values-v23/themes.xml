@@ -23,7 +23,7 @@
 
     <style name="Theme.CreateCounter" parent="Theme.Default" />
 
-    <style name="Theme.CreateCounter.ActionMenu" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+    <style name="Theme.CreateCounter.Toolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="android:textColor">@color/black</item>
         <item name="titleTextColor">@color/black</item>
         <item name="colorControlNormal">@color/create_counter_save_menu_selector</item>

@@ -28,7 +28,6 @@
         android:layout_marginEnd="@dimen/spacing_tiny"
         android:background="?attr/selectableItemBackground"
         android:padding="@dimen/spacing_small"
-        android:text="@string/counters_item_minus"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/count"
         app:layout_constraintTop_toTopOf="parent"
