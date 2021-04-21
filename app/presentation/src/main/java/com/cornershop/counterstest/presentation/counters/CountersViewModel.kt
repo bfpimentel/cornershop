@@ -12,6 +12,8 @@ import com.cornershop.counterstest.domain.usecase.SubtractCount
 import com.cornershop.counterstest.presentation.counters.data.CounterViewData
 import com.cornershop.counterstest.presentation.counters.data.CountersIntention
 import com.cornershop.counterstest.presentation.counters.data.CountersState
+import com.cornershop.counterstest.presentation.counters.mappers.CountersDeletionMapper
+import com.cornershop.counterstest.presentation.counters.mappers.CountersSharingMapper
 import com.cornershop.counterstest.shared.dispatchers.DispatchersProvider
 import com.cornershop.counterstest.shared.mvi.StateViewModelImpl
 import com.cornershop.counterstest.shared.mvi.toEvent
@@ -29,6 +31,8 @@ class CountersViewModel @Inject constructor(
     private val addCount: AddCount,
     private val subtractCount: SubtractCount,
     private val deleteCounters: DeleteCounters,
+    private val deletionMapper: CountersDeletionMapper,
+    private val sharingMapper: CountersSharingMapper,
     dispatchersProvider: DispatchersProvider,
     @CountersStateQualifier initialState: CountersState
 ) : StateViewModelImpl<CountersState, CountersIntention>(
@@ -52,6 +56,7 @@ class CountersViewModel @Inject constructor(
             is CountersIntention.Subtract -> subtractCount(SubtractCount.Params(intention.counterId))
             is CountersIntention.StartEditing -> startEditing(intention.counterId)
             is CountersIntention.SelectOrDeselectCounter -> selectOrDeselectCounter(intention.counterId)
+            is CountersIntention.TryDeleting -> tryDeleting()
             is CountersIntention.DeleteSelectedCounters -> deleteSelectedCounters()
             is CountersIntention.ShareSelectedCounters -> shareSelectedCounters()
             is CountersIntention.FinishEditing -> finishEditing()
@@ -79,13 +84,19 @@ class CountersViewModel @Inject constructor(
         updateScreenState()
     }
 
+    private suspend fun tryDeleting() {
+        val itemsToBeDeleted = this.counters.filter { counter -> this.selectedCountersIds.contains(counter.id) }
+        updateState { copy(deleteConfirmationEvent = deletionMapper.map(itemsToBeDeleted).toEvent()) }
+    }
+
     private suspend fun deleteSelectedCounters() {
         deleteCounters(DeleteCounters.Params(this.selectedCountersIds))
         this.selectedCountersIds = emptyList()
     }
 
     private suspend fun shareSelectedCounters() {
-        // TODO
+        val itemsToBeShared = this.counters.filter { counter -> this.selectedCountersIds.contains(counter.id) }
+        updateState { copy(shareEvent = sharingMapper.map(itemsToBeShared).toEvent()) }
     }
 
     private suspend fun finishEditing() {
@@ -100,7 +111,7 @@ class CountersViewModel @Inject constructor(
     }
 
     private suspend fun updateScreenState() {
-        val countersViewData = if (isEditing) {
+        val countersViewData = if (this.isEditing) {
             this.counters.map { counter ->
                 CounterViewData.Edit(
                     id = counter.id,
@@ -119,7 +130,7 @@ class CountersViewModel @Inject constructor(
             }
         }
 
-        val layout = if (isEditing) CountersState.Layout.Editing else CountersState.Layout.Default
+        val layout = if (this.isEditing) CountersState.Layout.Editing else CountersState.Layout.Default
 
         val numberOfSelectedCounters = countersViewData
             .filterIsInstance<CounterViewData.Edit>()

@@ -8,7 +8,9 @@ data class CountersState(
     val totalItemCount: Int = 0,
     val totalTimesCount: Int = 0,
     val numberOfSelectedCounters: Int = 0,
-    val layoutEvent: Event<Layout> = Layout.Default.toEvent()
+    val layoutEvent: Event<Layout> = Layout.Default.toEvent(),
+    val deleteConfirmationEvent: Event<String>? = null,
+    val shareEvent: Event<String>? = null
 ) {
 
     sealed class Layout(

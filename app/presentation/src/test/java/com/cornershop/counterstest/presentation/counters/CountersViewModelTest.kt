@@ -137,6 +137,69 @@ class CountersViewModelTest : ViewModelTest() {
     }
 
     @Test
+    fun `should stop editing counters`() = runBlockingTest {
+        val countersViewData = listOf(
+            CounterViewData.Counter(
+                id = "id1",
+                title = "title1",
+                count = 1,
+            ),
+            CounterViewData.Counter(
+                id = "id2",
+                title = "title2",
+                count = 2,
+            )
+        )
+
+        val countersViewDataWhileEditing = listOf(
+            CounterViewData.Edit(
+                id = "id1",
+                title = "title1",
+                count = 1,
+                isSelected = true
+            ),
+            CounterViewData.Edit(
+                id = "id2",
+                title = "title2",
+                count = 2,
+                isSelected = false
+            )
+        )
+
+        val countersStateValues = arrayListOf<CountersState>()
+        val countersStateJob = launch { viewModel.state.toList(countersStateValues) }
+
+        viewModel.publish(CountersIntention.StartEditing("id1"))
+        viewModel.publish(CountersIntention.FinishEditing)
+
+        val firstCountersState = countersStateValues[0]
+        assertEquals(firstCountersState.countersEvent!!.value, countersViewData)
+        assertEquals(firstCountersState.totalItemCount, 2)
+        assertEquals(firstCountersState.totalTimesCount, 3)
+        assertEquals(firstCountersState.numberOfSelectedCounters, 0)
+        assertTrue(firstCountersState.layoutEvent.value is CountersState.Layout.Default)
+
+        val secondCountersState = countersStateValues[1]
+        assertEquals(secondCountersState.countersEvent!!.value, countersViewDataWhileEditing)
+        assertEquals(secondCountersState.totalItemCount, 2)
+        assertEquals(secondCountersState.totalTimesCount, 3)
+        assertEquals(secondCountersState.numberOfSelectedCounters, 1)
+        assertTrue(secondCountersState.layoutEvent.value is CountersState.Layout.Editing)
+
+        val thirdCountersState = countersStateValues[2]
+        assertEquals(thirdCountersState.countersEvent!!.value, countersViewData)
+        assertEquals(thirdCountersState.totalItemCount, 2)
+        assertEquals(thirdCountersState.totalTimesCount, 3)
+        assertEquals(thirdCountersState.numberOfSelectedCounters, 0)
+        assertTrue(thirdCountersState.layoutEvent.value is CountersState.Layout.Default)
+
+        coVerify(exactly = 1) { getCounters(NoParams) }
+        confirmEverythingVerified()
+
+        countersStateJob.cancel()
+    }
+
+    @Test
     fun `should search counters`() = runBlockingTest {
         val query = "query"
 

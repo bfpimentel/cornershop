@@ -12,6 +12,8 @@ sealed class CountersIntention {
 
     data class SelectOrDeselectCounter(val counterId: String) : CountersIntention()
 
+    object TryDeleting : CountersIntention()
+
     object DeleteSelectedCounters : CountersIntention()
 
     object ShareSelectedCounters : CountersIntention()

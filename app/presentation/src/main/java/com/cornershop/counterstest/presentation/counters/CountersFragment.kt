@@ -1,7 +1,9 @@
 package com.cornershop.counterstest.presentation.counters
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
@@ -73,7 +75,7 @@ class CountersFragment : Fragment(R.layout.counters_fragment) {
             }
 
             editingToolbar.menu.findItem(R.id.deleteCounters).setOnMenuItemClickListener {
-                viewModel.publish(CountersIntention.DeleteSelectedCounters)
+                viewModel.publish(CountersIntention.TryDeleting)
                 true
             }
 
@@ -102,9 +104,19 @@ class CountersFragment : Fragment(R.layout.counters_fragment) {
                 }
             }
 
-            state.countersEvent.handleEvent { counters ->
-                countersAdapter.submitList(counters)
-            }
+            state.countersEvent.handleEvent(countersAdapter::submitList)
+            state.deleteConfirmationEvent.handleEvent(::showDeleteConfirmationDialog)
         }
+    }
+
+    private fun showDeleteConfirmationDialog(text: String) {
+        AlertDialog.Builder(requireContext())
+            .setMessage(getString(R.string.counters_delete_confirmation_question_one_item, text))
+            .setCancelable(true)
+            .setOnCancelListener(DialogInterface::dismiss)
+            .setPositiveButton(R.string.counters_delete_confirmation_delete) { _, _ ->
+                viewModel.publish(CountersIntention.DeleteSelectedCounters)
+            }
+            .show()
     }
 }
