@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
@@ -79,6 +80,7 @@ class CountersViewModelTest : ViewModelTest() {
         assertEquals(firstCountersState.totalItemCount, 2)
         assertEquals(firstCountersState.totalTimesCount, 3)
         assertEquals(firstCountersState.numberOfSelectedCounters, 0)
+        assertFalse(firstCountersState.areMenusEnabled)
         assertTrue(firstCountersState.layoutEvent.value is CountersState.Layout.Default)
 
         coVerify(exactly = 1) { getCounters(NoParams) }
@@ -116,6 +118,7 @@ class CountersViewModelTest : ViewModelTest() {
         assertEquals(lastCountersState.totalItemCount, 2)
         assertEquals(lastCountersState.totalTimesCount, 3)
         assertEquals(lastCountersState.numberOfSelectedCounters, 1)
+        assertTrue(lastCountersState.areMenusEnabled)
         assertTrue(lastCountersState.layoutEvent.value is CountersState.Layout.Editing)
 
         coVerify(exactly = 1) { getCounters(NoParams) }
@@ -143,6 +146,7 @@ class CountersViewModelTest : ViewModelTest() {
         viewModel.publish(CountersIntention.DeleteSelectedCounters)
 
         val lastCountersState = countersStateValues.last()
+        assertTrue(lastCountersState.areMenusEnabled)
         assertEquals(lastCountersState.deleteConfirmationEvent!!.value, itemsToBeDeletedText)
 
         coVerify(exactly = 1) {
@@ -171,6 +175,7 @@ class CountersViewModelTest : ViewModelTest() {
         viewModel.publish(CountersIntention.ShareSelectedCounters)
 
         val lastCountersState = countersStateValues.last()
+        assertTrue(lastCountersState.areMenusEnabled)
         assertEquals(lastCountersState.shareEvent!!.value, itemsToBeSharedText)
 
         coVerify(exactly = 1) {
@@ -237,6 +242,7 @@ class CountersViewModelTest : ViewModelTest() {
         assertEquals(thirdCountersState.totalItemCount, 2)
         assertEquals(thirdCountersState.totalTimesCount, 3)
         assertEquals(thirdCountersState.numberOfSelectedCounters, 0)
+        assertFalse(thirdCountersState.areMenusEnabled)
         assertTrue(thirdCountersState.layoutEvent.value is CountersState.Layout.Default)
 
         coVerify(exactly = 1) { getCounters(NoParams) }

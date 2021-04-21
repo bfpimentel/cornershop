@@ -11,7 +11,8 @@ interface CountersSharingMapper {
 class CountersSharingMapperImpl(private val context: Context) : CountersSharingMapper {
 
     override fun map(itemsToBeShared: List<Counter>): String =
-        itemsToBeShared.joinToString(separator = "\n") { counter ->
+        if (itemsToBeShared.isEmpty()) throw IllegalArgumentException("List can't be empty")
+        else itemsToBeShared.joinToString(separator = "\n") { counter ->
             context.getString(R.string.counters_share_item, counter.count, counter.title)
         }
 }
