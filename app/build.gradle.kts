@@ -38,6 +38,7 @@ subprojects {
     tasks.withType<KotlinCompile> {
         kotlinOptions {
             languageVersion = "1.4"
+            jvmTarget = Config.Versions.Kotlin.jvmTarget
             freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
             freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlinx.coroutines.FlowPreview"
         }

@@ -9,7 +9,7 @@
         android:id="@+id/toolbarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/Theme.CreateCounter.ActionMenu"
+        android:theme="@style/Theme.CreateCounter.Toolbar"
         app:elevation="@dimen/spacing_none"
         app:layout_constraintTop_toTopOf="parent">
 

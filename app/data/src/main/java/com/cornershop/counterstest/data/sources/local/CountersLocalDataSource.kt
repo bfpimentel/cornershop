@@ -49,11 +49,12 @@ interface CountersLocalDataSource {
     @Query(
         """
         UPDATE Counters SET
-            hasBeenDeleted = '1'
-        WHERE id = :counterId 
+            hasBeenDeleted = '1',
+            isSynchronized = '0'
+        WHERE id in (:countersToBeDeletedIds) 
         """
     )
-    suspend fun deleteCounter(counterId: String)
+    suspend fun deleteCounters(countersToBeDeletedIds: List<String>)
 
     @Query(
         """

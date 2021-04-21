@@ -91,8 +91,8 @@ class CountersRepositoryImpl(
         syncPublisher.emit(Unit)
     }
 
-    override suspend fun deleteCounter(counterId: String) {
-        localDataSource.deleteCounter(counterId)
+    override suspend fun deleteCounters(countersToBeDeletedIds: List<String>) {
+        localDataSource.deleteCounters(countersToBeDeletedIds)
         syncPublisher.emit(Unit)
     }
 

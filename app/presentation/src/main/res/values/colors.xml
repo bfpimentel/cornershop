@@ -13,6 +13,7 @@
 
     <!-- Counters Screen -->
     <color name="counters_add_counter_container_background">#CCFFFFFF</color>
+    <color name="counters_bg_container_selected">#33FF9500</color>
     <!-- Counters Screen -->
 
 </resources>
