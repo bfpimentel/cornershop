@@ -6,7 +6,7 @@
         android:id="@+id/saveCounter"
         android:enabled="false"
         android:title="@string/create_counter_save"
-        app:iconTint="@color/create_counter_save_menu_selector"
+        app:iconTint="@color/menu_color_selector"
         app:showAsAction="always" />
 
 </menu>

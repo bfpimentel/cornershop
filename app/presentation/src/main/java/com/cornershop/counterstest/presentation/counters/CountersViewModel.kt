@@ -143,6 +143,7 @@ class CountersViewModel @Inject constructor(
                 totalItemCount = countersViewData.size,
                 totalTimesCount = countersViewData.sumBy(CounterViewData::count),
                 layoutEvent = layout.toEvent(),
+                areMenusEnabled = numberOfSelectedCounters > 0,
                 numberOfSelectedCounters = numberOfSelectedCounters
             )
         }

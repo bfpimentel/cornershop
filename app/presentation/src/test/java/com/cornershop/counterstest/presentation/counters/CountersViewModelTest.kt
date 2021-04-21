@@ -11,6 +11,8 @@ import com.cornershop.counterstest.domain.usecase.SubtractCount
 import com.cornershop.counterstest.presentation.counters.data.CounterViewData
 import com.cornershop.counterstest.presentation.counters.data.CountersIntention
 import com.cornershop.counterstest.presentation.counters.data.CountersState
+import com.cornershop.counterstest.presentation.counters.mappers.CountersDeletionMapper
+import com.cornershop.counterstest.presentation.counters.mappers.CountersSharingMapper
 import com.cornershop.counterstest.shared.dispatchers.DispatchersProvider
 import com.cornershop.counterstest.shared.navigator.NavigatorRouter
 import io.mockk.coEvery
@@ -33,6 +35,8 @@ class CountersViewModelTest : ViewModelTest() {
     private val addCount = mockk<AddCount>()
     private val subtractCount = mockk<SubtractCount>()
     private val deleteCounters = mockk<DeleteCounters>()
+    private val deletionMapper = mockk<CountersDeletionMapper>()
+    private val sharingMapper = mockk<CountersSharingMapper>()
     private lateinit var viewModel: CountersContract.ViewModel
 
     override fun `setup subject`(dispatchersProvider: DispatchersProvider) {
@@ -45,6 +49,8 @@ class CountersViewModelTest : ViewModelTest() {
             addCount = addCount,
             subtractCount = subtractCount,
             deleteCounters = deleteCounters,
+            deletionMapper = deletionMapper,
+            sharingMapper = sharingMapper,
             dispatchersProvider = dispatchersProvider,
             initialState = CountersState()
         )
@@ -121,19 +127,59 @@ class CountersViewModelTest : ViewModelTest() {
     @Test
     fun `should delete selected counters`() = runBlockingTest {
         val deleteCountersParams = DeleteCounters.Params(listOf("id2"))
+        val itemsToBeDeleted = listOf(Counter(id = "id2", title = "title2", count = 2))
+        val itemsToBeDeletedText = "itemsToBeDeletedText"
 
+        coEvery { deletionMapper.map(itemsToBeDeleted) } returns itemsToBeDeletedText
         coJustRun { deleteCounters(deleteCountersParams) }
+
+        val countersStateValues = arrayListOf<CountersState>()
+        val countersStateJob = launch { viewModel.state.toList(countersStateValues) }
 
         viewModel.publish(CountersIntention.StartEditing("id1"))
         viewModel.publish(CountersIntention.SelectOrDeselectCounter("id2"))
         viewModel.publish(CountersIntention.SelectOrDeselectCounter("id1"))
+        viewModel.publish(CountersIntention.TryDeleting)
         viewModel.publish(CountersIntention.DeleteSelectedCounters)
+
+        val lastCountersState = countersStateValues.last()
+        assertEquals(lastCountersState.deleteConfirmationEvent!!.value, itemsToBeDeletedText)
 
         coVerify(exactly = 1) {
             getCounters(NoParams)
+            deletionMapper.map(itemsToBeDeleted)
             deleteCounters(deleteCountersParams)
         }
         confirmEverythingVerified()
+
+        countersStateJob.cancel()
+    }
+
+    @Test
+    fun `should share selected counters`() = runBlockingTest {
+        val itemsToBeShared = listOf(Counter(id = "id2", title = "title2", count = 2))
+        val itemsToBeSharedText = "itemsToBeSharedText"
+
+        coEvery { sharingMapper.map(itemsToBeShared) } returns itemsToBeSharedText
+
+        val countersStateValues = arrayListOf<CountersState>()
+        val countersStateJob = launch { viewModel.state.toList(countersStateValues) }
+
+        viewModel.publish(CountersIntention.StartEditing("id1"))
+        viewModel.publish(CountersIntention.SelectOrDeselectCounter("id2"))
+        viewModel.publish(CountersIntention.SelectOrDeselectCounter("id1"))
+        viewModel.publish(CountersIntention.ShareSelectedCounters)
+
+        val lastCountersState = countersStateValues.last()
+        assertEquals(lastCountersState.shareEvent!!.value, itemsToBeSharedText)
+
+        coVerify(exactly = 1) {
+            getCounters(NoParams)
+            sharingMapper.map(itemsToBeShared)
+        }
+        confirmEverythingVerified()
+
+        countersStateJob.cancel()
     }
 
     @Test
@@ -276,7 +322,9 @@ class CountersViewModelTest : ViewModelTest() {
             searchCounters,
             addCount,
             subtractCount,
-            deleteCounters
+            deleteCounters,
+            deletionMapper,
+            sharingMapper
         )
     }
 

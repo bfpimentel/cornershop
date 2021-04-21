@@ -98,6 +98,8 @@ class CountersFragment : Fragment(R.layout.counters_fragment) {
                     R.string.counters_editing_toolbar_title,
                     state.numberOfSelectedCounters
                 )
+                editingToolbar.menu.findItem(R.id.deleteCounters).isEnabled = state.areMenusEnabled
+                editingToolbar.menu.findItem(R.id.shareCounters).isEnabled = state.areMenusEnabled
 
                 state.layoutEvent.handleEvent { layout ->
                     toolbarLayout.isVisible = layout.isToolbarVisible

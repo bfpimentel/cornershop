@@ -10,7 +10,8 @@ interface CountersSharingMapper {
 
 class CountersSharingMapperImpl(private val context: Context) : CountersSharingMapper {
 
-    override fun map(itemsToBeShared: List<Counter>): String = itemsToBeShared.map { counter ->
-        context.getString(R.string.counters_share_item, counter.count, counter.title)
-    }.joinToString(separator = "\n") { it }
+    override fun map(itemsToBeShared: List<Counter>): String =
+        itemsToBeShared.joinToString(separator = "\n") { counter ->
+            context.getString(R.string.counters_share_item, counter.count, counter.title)
+        }
 }

@@ -4,13 +4,15 @@
 
     <item
         android:id="@+id/deleteCounters"
-        android:icon="@drawable/ic_delete"
+        android:enabled="false"
+        android:icon="@drawable/ic_delete_selector"
         android:title="@string/counters_menu_delete"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/shareCounters"
-        android:icon="@drawable/ic_share"
+        android:enabled="false"
+        android:icon="@drawable/ic_share_selector"
         android:title="@string/counters_menu_share"
         app:showAsAction="ifRoom" />
 
