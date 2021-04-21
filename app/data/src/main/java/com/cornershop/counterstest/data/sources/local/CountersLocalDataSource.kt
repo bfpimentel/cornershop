@@ -49,7 +49,8 @@ interface CountersLocalDataSource {
     @Query(
         """
         UPDATE Counters SET
-            hasBeenDeleted = '1'
+            hasBeenDeleted = '1',
+            isSynchronized = '0'
         WHERE id in (:countersToBeDeletedIds) 
         """
     )

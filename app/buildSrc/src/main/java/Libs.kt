@@ -34,6 +34,7 @@ object Libs {
         const val moshi = "com.squareup.moshi:moshi-kotlin:1.11.0"
         const val retrofit = "com.squareup.retrofit2:retrofit:2.9.0"
         const val retrofitMoshi = "com.squareup.retrofit2:converter-moshi:2.9.0"
+        const val interceptor = "com.squareup.okhttp3:logging-interceptor:4.9.1"
     }
 
     object Room {

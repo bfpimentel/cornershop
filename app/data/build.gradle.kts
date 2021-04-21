@@ -43,6 +43,7 @@ dependencies {
     api(Libs.Networking.moshi)
     api(Libs.Networking.retrofit)
     api(Libs.Networking.retrofitMoshi)
+    api(Libs.Networking.interceptor)
 
     api(Libs.Room.runtime)
     implementation(Libs.Room.ktx)
