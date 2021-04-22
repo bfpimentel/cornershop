@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.cornershop.counterstest.databinding.ExamplesItemBinding
 import com.cornershop.counterstest.presentation.examples.data.ExampleViewData
+import com.google.android.material.chip.Chip
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -29,7 +30,13 @@ class ExamplesAdapter @AssistedInject constructor(
     inner class ViewHolder(private val binding: ExamplesItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: ExampleViewData) = with(binding) {
-
+            label.text = item.title
+            item.examples.map { example ->
+                Chip(root.context).apply {
+                    text = example
+                    setOnClickListener { listener.onExampleClick(example) }
+                }
+            }.forEach(items::addView)
         }
     }
 

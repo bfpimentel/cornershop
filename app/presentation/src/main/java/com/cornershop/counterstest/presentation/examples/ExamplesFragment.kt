@@ -26,9 +26,10 @@ class ExamplesFragment : Fragment(R.layout.examples_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         bindAdapter()
-        bindInputs()
         bindOutputs()
+        bindInputs()
     }
 
     private fun bindAdapter() {
@@ -42,13 +43,15 @@ class ExamplesFragment : Fragment(R.layout.examples_fragment) {
         }
     }
 
-    private fun bindInputs() {
-        binding.toolbar.setNavigationOnClickListener { viewModel.publish(ExamplesIntention.Close) }
-    }
-
     private fun bindOutputs() {
         watch(viewModel.state) { state ->
             state.examplesEvent.handleEvent(examplesAdapter::submitList)
         }
+    }
+
+    private fun bindInputs() {
+        binding.toolbar.setNavigationOnClickListener { viewModel.publish(ExamplesIntention.Close) }
+
+        viewModel.publish(ExamplesIntention.GetExamples)
     }
 }
