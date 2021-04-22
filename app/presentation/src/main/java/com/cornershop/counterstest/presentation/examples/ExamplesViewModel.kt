@@ -7,6 +7,7 @@ import com.cornershop.counterstest.presentation.examples.data.ExamplesState
 import com.cornershop.counterstest.presentation.examples.mappers.ExamplesViewDataMapper
 import com.cornershop.counterstest.shared.dispatchers.DispatchersProvider
 import com.cornershop.counterstest.shared.mvi.StateViewModelImpl
+import com.cornershop.counterstest.shared.mvi.toEvent
 import com.cornershop.counterstest.shared.navigator.NavigatorRouter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -27,15 +28,18 @@ class ExamplesViewModel @Inject constructor(
         when (intention) {
             is ExamplesIntention.GetExamples -> getExamples()
             is ExamplesIntention.SelectExample -> selectExample(intention.name)
+            is ExamplesIntention.Close -> navigator.pop()
         }
     }
 
     private suspend fun getExamples() {
-        updateState { copy(examples = mapper.getExamples()) }
+        updateState { copy(examplesEvent = mapper.getExamples().toEvent()) }
     }
 
     private suspend fun selectExample(name: String) {
-//        createCounter(CreateCounter.Params(name))
-//        navigator.pop()
+        createCounter(CreateCounter.Params(name))
+
+        val directions = ExamplesFragmentDirections.backToCountersFragment()
+        navigator.navigate(directions)
     }
 }

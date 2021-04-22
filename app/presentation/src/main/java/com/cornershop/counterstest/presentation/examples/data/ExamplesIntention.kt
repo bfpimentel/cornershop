@@ -5,4 +5,6 @@ sealed class ExamplesIntention {
     object GetExamples : ExamplesIntention()
 
     data class SelectExample(val name: String) : ExamplesIntention()
+
+    object Close : ExamplesIntention()
 }

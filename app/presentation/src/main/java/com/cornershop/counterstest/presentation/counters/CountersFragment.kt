@@ -26,7 +26,7 @@ class CountersFragment : Fragment(R.layout.counters_fragment) {
     private val viewModel: CountersContract.ViewModel by viewModels<CountersViewModel>()
 
     @Inject
-    lateinit var adapterFactory: CountersAdapterFactory
+    lateinit var adapterFactory: CountersAdapter.Factory
     private lateinit var countersAdapter: CountersAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -37,7 +37,7 @@ class CountersFragment : Fragment(R.layout.counters_fragment) {
     }
 
     private fun bindAdapter() {
-        this.countersAdapter = adapterFactory.create(object : CounterListener {
+        this.countersAdapter = adapterFactory.create(object : CountersContract.ItemListener {
             override fun onAddClick(counterId: String) {
                 viewModel.publish(CountersIntention.Add(counterId))
             }

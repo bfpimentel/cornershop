@@ -29,6 +29,21 @@
         android:id="@+id/createCounterFragment"
         android:name="com.cornershop.counterstest.presentation.create_counter.CreateCounterFragment"
         android:label="CreateCounterFragment"
-        tools:layout="@layout/create_counter_fragment" />
+        tools:layout="@layout/create_counter_fragment">
+        <action
+            android:id="@+id/toExamplesFragment"
+            app:destination="@id/examplesFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/examplesFragment"
+        android:name="com.cornershop.counterstest.presentation.examples.ExamplesFragment"
+        android:label="ExamplesFragment"
+        tools:layout="@layout/examples_fragment">
+        <action
+            android:id="@+id/backToCountersFragment"
+            app:destination="@id/countersFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 
 </navigation>
