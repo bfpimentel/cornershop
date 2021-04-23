@@ -1,6 +1,7 @@
 package com.cornershop.counterstest.shared.navigator
 
 import androidx.navigation.NavController
+import com.cornershop.counterstest.R
 import com.cornershop.counterstest.TestDispatchersProvider
 import com.cornershop.counterstest.presentation.welcome.WelcomeFragmentDirections
 import com.cornershop.counterstest.shared.dispatchers.DispatchersProvider
@@ -61,6 +62,21 @@ class NavigatorTest {
         navigator.pop()
 
         verify(exactly = 1) { navController.popBackStack() }
+        confirmVerified(navController)
+    }
+
+    @Test
+    fun `should bind navigator and pop with destination`() = testCoroutineDispatcher.runBlockingTest {
+        val navController = mockk<NavController>(relaxed = true)
+        val destinationId = R.id.countersFragment
+        val inclusive = true
+
+        every { navController.popBackStack(destinationId, inclusive) } returns true
+
+        navigator.bind(navController)
+        navigator.pop(destinationId, inclusive)
+
+        verify(exactly = 1) { navController.popBackStack(destinationId, inclusive) }
         confirmVerified(navController)
     }
 
