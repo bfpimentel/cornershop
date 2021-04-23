@@ -1,15 +1,20 @@
 package com.cornershop.counterstest.data.di
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.room.Room
 import com.cornershop.counterstest.data.R
 import com.cornershop.counterstest.data.database.CountersDatabase
 import com.cornershop.counterstest.data.generator.IdGenerator
 import com.cornershop.counterstest.data.generator.IdGeneratorImpl
 import com.cornershop.counterstest.data.repository.CountersRepositoryImpl
+import com.cornershop.counterstest.data.repository.PreferencesRepositoryImpl
 import com.cornershop.counterstest.data.sources.local.CountersLocalDataSource
+import com.cornershop.counterstest.data.sources.local.PreferencesLocalDataSource
+import com.cornershop.counterstest.data.sources.local.PreferencesLocalDataSourceImpl
 import com.cornershop.counterstest.data.sources.remote.CountersRemoteDataSource
 import com.cornershop.counterstest.domain.repository.CountersRepository
+import com.cornershop.counterstest.domain.repository.PreferencesRepository
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -30,7 +35,7 @@ object DataModules {
 
     private const val REQUEST_TIMEOUT = 60L
 
-    // region NETWORKING
+    // region REMOTE
     @Provides
     @Singleton
     fun provideMoshi(): Moshi = Moshi.Builder()
@@ -69,11 +74,7 @@ object DataModules {
         retrofit.create(CountersRemoteDataSource::class.java)
     // endregion
 
-    // region DATABASE
-    @Provides
-    @Singleton
-    fun provideIdGenerator(): IdGenerator = IdGeneratorImpl()
-
+    // region LOCAL
     @Provides
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context) =
@@ -85,13 +86,28 @@ object DataModules {
 
     @Provides
     @Singleton
+    fun provideIdGenerator(): IdGenerator = IdGeneratorImpl()
+
+    @Provides
+    @Singleton
+    fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences =
+        context.getSharedPreferences(context.packageName, Context.MODE_PRIVATE)
+
+    @Provides
+    @Singleton
+    fun providePreferencesLocalDataSource(sharedPreferences: SharedPreferences): PreferencesLocalDataSource =
+        PreferencesLocalDataSourceImpl(sharedPreferences = sharedPreferences)
+
+    @Provides
+    @Singleton
     fun provideCountersLocalDataSource(countersDatabase: CountersDatabase): CountersLocalDataSource =
         countersDatabase.createCountersLocalDataSource()
     // endregion
 
+    // region REPOSITORY
     @Provides
     @Singleton
-    fun providesCountersRepository(
+    fun provideCountersRepository(
         remoteDataSource: CountersRemoteDataSource,
         localDataSource: CountersLocalDataSource,
         idGenerator: IdGenerator,
@@ -100,4 +116,10 @@ object DataModules {
         localDataSource = localDataSource,
         idGenerator = idGenerator
     )
+
+    @Provides
+    @Singleton
+    fun providePreferencesRepository(preferencesLocalDataSource: PreferencesLocalDataSource): PreferencesRepository =
+        PreferencesRepositoryImpl(preferencesLocalDataSource = preferencesLocalDataSource)
+    // endregion
 }

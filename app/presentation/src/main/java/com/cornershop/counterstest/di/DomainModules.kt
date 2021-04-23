@@ -1,10 +1,13 @@
 package com.cornershop.counterstest.di
 
 import com.cornershop.counterstest.domain.repository.CountersRepository
+import com.cornershop.counterstest.domain.repository.PreferencesRepository
 import com.cornershop.counterstest.domain.usecase.AddCount
 import com.cornershop.counterstest.domain.usecase.CreateCounter
 import com.cornershop.counterstest.domain.usecase.DeleteCounters
+import com.cornershop.counterstest.domain.usecase.FetchAndSaveCounters
 import com.cornershop.counterstest.domain.usecase.GetCounters
+import com.cornershop.counterstest.domain.usecase.IsFirstAccess
 import com.cornershop.counterstest.domain.usecase.SearchCounters
 import com.cornershop.counterstest.domain.usecase.SubtractCount
 import dagger.Module
@@ -16,6 +19,16 @@ import dagger.hilt.android.scopes.ViewModelScoped
 @Module
 @InstallIn(ViewModelComponent::class)
 object DomainUseCaseModule {
+
+    @Provides
+    @ViewModelScoped
+    fun provideIsFirstAccess(preferencesRepository: PreferencesRepository): IsFirstAccess =
+        IsFirstAccess(repository = preferencesRepository)
+
+    @Provides
+    @ViewModelScoped
+    fun provideFetchAndSaveCounters(countersRepository: CountersRepository): FetchAndSaveCounters =
+        FetchAndSaveCounters(repository = countersRepository)
 
     @Provides
     @ViewModelScoped

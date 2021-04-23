@@ -42,25 +42,25 @@ class CountersRepositoryImpl(
         }
     }
 
+    override suspend fun fetchAndSaveCounters() {
+        if (isFirstAccess) {
+            remoteDataSource.getCounters()
+                .map { counterResponse ->
+                    CounterDTO(
+                        id = counterResponse.id,
+                        count = counterResponse.count,
+                        title = counterResponse.title
+                    )
+                }
+                .run { localDataSource.insertCounters(this) }
+            isFirstAccess = false
+        }
+    }
+
     override fun getCounters(): Flow<List<CounterModel>> =
         searchPublisher
             .debounce(SEARCH_DEBOUNCE_INTERVAL)
             .flatMapLatest { query -> localDataSource.getCounters(query.orEmpty()) }
-            .map {
-                if (isFirstAccess) {
-                    remoteDataSource.getCounters()
-                        .map { counterResponse ->
-                            CounterDTO(
-                                id = counterResponse.id,
-                                count = counterResponse.count,
-                                title = counterResponse.title
-                            )
-                        }
-                        .run { localDataSource.insertCounters(this) }
-                    isFirstAccess = false
-                }
-                it
-            }
             .distinctUntilChanged()
             .map { response ->
                 response.map {

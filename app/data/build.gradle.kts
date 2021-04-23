@@ -40,6 +40,8 @@ android {
 dependencies {
     implementation(project(Config.Projects.domain))
 
+    api(Libs.Android.dataStore)
+
     api(Libs.Networking.moshi)
     api(Libs.Networking.retrofit)
     api(Libs.Networking.retrofitMoshi)
