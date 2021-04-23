@@ -96,6 +96,20 @@ class CreateCounterViewModelTest : ViewModelTest() {
         confirmEverythingVerified()
     }
 
+    @Test
+    fun `should navigate to examples`() = runBlockingTest {
+        val directions = CreateCounterFragmentDirections.toExamplesFragment()
+
+        coJustRun { navigator.navigate(directions) }
+
+        viewModel.publish(CreateCounterIntention.NavigateToExamples)
+
+        coVerify(exactly = 1) {
+            navigator.navigate(directions)
+        }
+        confirmEverythingVerified()
+    }
+
     private fun confirmEverythingVerified() {
         confirmVerified(
             navigator,
