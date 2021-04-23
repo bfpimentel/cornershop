@@ -1,5 +1,6 @@
 package com.cornershop.counterstest.presentation.examples
 
+import com.cornershop.counterstest.R
 import com.cornershop.counterstest.di.NavigatorRouterQualifier
 import com.cornershop.counterstest.domain.usecase.CreateCounter
 import com.cornershop.counterstest.presentation.examples.data.ExamplesIntention
@@ -38,8 +39,6 @@ class ExamplesViewModel @Inject constructor(
 
     private suspend fun selectExample(name: String) {
         createCounter(CreateCounter.Params(name))
-
-        val directions = ExamplesFragmentDirections.backToCountersFragment()
-        navigator.navigate(directions)
+        navigator.pop(R.id.countersFragment)
     }
 }

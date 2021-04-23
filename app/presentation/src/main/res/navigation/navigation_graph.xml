@@ -12,7 +12,10 @@
         tools:layout="@layout/welcome_fragment">
         <action
             android:id="@+id/toCountersFragment"
-            app:destination="@id/countersFragment" />
+            app:destination="@id/countersFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/navigation_graph"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -22,8 +25,7 @@
         tools:layout="@layout/counters_fragment">
         <action
             android:id="@+id/toCreateCounterFragment"
-            app:destination="@id/createCounterFragment"
-            app:popUpTo="@id/createCounterFragment" />
+            app:destination="@id/createCounterFragment" />
     </fragment>
 
     <dialog
@@ -40,10 +42,6 @@
         android:id="@+id/examplesFragment"
         android:name="com.cornershop.counterstest.presentation.examples.ExamplesFragment"
         android:label="ExamplesFragment"
-        tools:layout="@layout/examples_fragment">
-        <action
-            android:id="@+id/backToCountersFragment"
-            app:destination="@id/countersFragment" />
-    </dialog>
+        tools:layout="@layout/examples_fragment" />
 
 </navigation>

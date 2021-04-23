@@ -35,7 +35,7 @@ class ExamplesFragment : DialogFragment(R.layout.examples_fragment) {
     }
 
     private fun bindAdapter() {
-        this.examplesAdapter = this.adapterFactory.create { name ->
+        examplesAdapter = adapterFactory.create { name ->
             viewModel.publish(ExamplesIntention.SelectExample(name))
         }
 
