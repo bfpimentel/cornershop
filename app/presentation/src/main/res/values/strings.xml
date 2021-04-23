@@ -31,32 +31,36 @@
     <string name="create_counter_name_label">Name</string>
     <string name="create_counter_name_hint">Cups of coffee</string>
     <string name="create_counter_disclaimer">Give it a name. Creative block? See examples.</string>
+    <string name="create_counter_disclaimer_example_span">examples</string>
     <!-- Create Counter Screen -->
 
-    <!-- Examples -->
-    <string-array name="drinks_array">
+    <!-- Examples Screen -->
+    <string name="examples_title">Examples</string>
+    <string name="examples_description">Select an example to add it to your counters.</string>
+    <string name="examples_drinks_title">Drinks</string>
+    <string-array name="examples_drinks_array">
         <item>Cups of coffee</item>
         <item>Glasses of water</item>
         <item>Tequila shots</item>
         <item>Caipirinhas</item>
     </string-array>
-    <string-array name="food_array">
+    <string name="examples_food_title">Food</string>
+    <string-array name="examples_food_array">
         <item>Hot-dogs</item>
         <item>Cupcakes eaten</item>
         <item>Chicken sandwich</item>
     </string-array>
-    <string-array name="misc_array">
+    <string name="examples_misc_title">Misc</string>
+    <string-array name="examples_misc_array">
         <item>Times sneezed</item>
         <item>Naps</item>
         <item>Day dreaming</item>
     </string-array>
-    <!-- Examples -->
+    <!-- Examples Screen -->
 
     <!-- Others -->
     <string name="no_counters">No counters yet</string>
     <string name="no_results">No results</string>
     <string name="no_counters_phrase">“When I started counting my blessings, my whole life turned around.”\n— Willie Nelson</string>
-    <string name="examples">Examples</string>
-    <string name="examples_description">Select an example to add it to your counters.</string>
 
 </resources>

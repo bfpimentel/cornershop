@@ -6,5 +6,7 @@ sealed class CreateCounterIntention {
 
     object Save : CreateCounterIntention()
 
+    object NavigateToExamples : CreateCounterIntention()
+
     object Close : CreateCounterIntention()
 }

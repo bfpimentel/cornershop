@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.cornershop.counterstest.R
 import com.cornershop.counterstest.databinding.CountersFragmentBinding
 import com.cornershop.counterstest.presentation.counters.data.CountersIntention
-import com.cornershop.counterstest.shared.extensions.viewBinding
 import com.cornershop.counterstest.shared.extensions.watch
 import com.cornershop.counterstest.shared.mvi.handleEvent
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,22 +21,24 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class CountersFragment : Fragment(R.layout.counters_fragment) {
 
-    private val binding by viewBinding(CountersFragmentBinding::bind)
+    private lateinit var binding: CountersFragmentBinding
     private val viewModel: CountersContract.ViewModel by viewModels<CountersViewModel>()
 
     @Inject
-    lateinit var adapterFactory: CountersAdapterFactory
+    lateinit var adapterFactory: CountersAdapter.Factory
     private lateinit var countersAdapter: CountersAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding = CountersFragmentBinding.bind(view)
+
         bindAdapter()
-        bindInputs()
         bindOutputs()
+        bindInputs()
     }
 
     private fun bindAdapter() {
-        this.countersAdapter = adapterFactory.create(object : CounterListener {
+        this.countersAdapter = adapterFactory.create(object : CountersContract.ItemListener {
             override fun onAddClick(counterId: String) {
                 viewModel.publish(CountersIntention.Add(counterId))
             }
@@ -58,6 +59,30 @@ class CountersFragment : Fragment(R.layout.counters_fragment) {
         binding.counters.let { counters ->
             counters.adapter = countersAdapter
             counters.layoutManager = LinearLayoutManager(context)
+        }
+    }
+
+    private fun bindOutputs() {
+        watch(viewModel.state) { state ->
+            with(binding) {
+                totalItemCount.text = getString(R.string.counters_total_items_count, state.totalItemCount)
+                totalTimesCount.text = getString(R.string.counters_total_times_count, state.totalTimesCount)
+                editingToolbar.title = getString(
+                    R.string.counters_editing_toolbar_title,
+                    state.numberOfSelectedCounters
+                )
+                editingToolbar.menu.findItem(R.id.deleteCounters).isEnabled = state.areMenusEnabled
+                editingToolbar.menu.findItem(R.id.shareCounters).isEnabled = state.areMenusEnabled
+
+                state.layoutEvent.handleEvent { layout ->
+                    toolbarLayout.isVisible = layout.isToolbarVisible
+                    searchInputLayout.isVisible = layout.isSearchInputVisible
+                }
+            }
+
+            state.countersEvent.handleEvent(countersAdapter::submitList)
+            state.deleteConfirmationEvent.handleEvent(::showDeleteConfirmationDialog)
+            state.shareEvent.handleEvent(::shareCounters)
         }
     }
 
@@ -87,30 +112,6 @@ class CountersFragment : Fragment(R.layout.counters_fragment) {
         }
 
         viewModel.publish(CountersIntention.SearchCounters())
-    }
-
-    private fun bindOutputs() {
-        watch(viewModel.state) { state ->
-            with(binding) {
-                totalItemCount.text = getString(R.string.counters_total_items_count, state.totalItemCount)
-                totalTimesCount.text = getString(R.string.counters_total_times_count, state.totalTimesCount)
-                editingToolbar.title = getString(
-                    R.string.counters_editing_toolbar_title,
-                    state.numberOfSelectedCounters
-                )
-                editingToolbar.menu.findItem(R.id.deleteCounters).isEnabled = state.areMenusEnabled
-                editingToolbar.menu.findItem(R.id.shareCounters).isEnabled = state.areMenusEnabled
-
-                state.layoutEvent.handleEvent { layout ->
-                    toolbarLayout.isVisible = layout.isToolbarVisible
-                    searchInputLayout.isVisible = layout.isSearchInputVisible
-                }
-            }
-
-            state.countersEvent.handleEvent(countersAdapter::submitList)
-            state.deleteConfirmationEvent.handleEvent(::showDeleteConfirmationDialog)
-            state.shareEvent.handleEvent(::shareCounters)
-        }
     }
 
     private fun showDeleteConfirmationDialog(text: String) {

@@ -15,8 +15,13 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 
 class CountersAdapter @AssistedInject constructor(
-    @Assisted private val listener: CounterListener
+    @Assisted private val listener: CountersContract.ItemListener
 ) : ListAdapter<CounterViewData, CountersAdapter.ViewHolder>(Diff) {
+
+    @AssistedFactory
+    interface Factory {
+        fun create(listener: CountersContract.ItemListener): CountersAdapter
+    }
 
     override fun getItemViewType(position: Int): Int =
         if (getItem(position) is CounterViewData.Counter) CounterViewData.Counter.IDENTIFIER
@@ -63,23 +68,11 @@ class CountersAdapter @AssistedInject constructor(
         }
     }
 
-    companion object Diff : DiffUtil.ItemCallback<CounterViewData>() {
+    private companion object Diff : DiffUtil.ItemCallback<CounterViewData>() {
         override fun areItemsTheSame(oldItem: CounterViewData, newItem: CounterViewData): Boolean =
             oldItem.id == newItem.id
 
         override fun areContentsTheSame(oldItem: CounterViewData, newItem: CounterViewData): Boolean =
             oldItem == newItem
     }
-}
-
-@AssistedFactory
-interface CountersAdapterFactory {
-    fun create(listener: CounterListener): CountersAdapter
-}
-
-interface CounterListener {
-    fun onCounterLongClick(counterId: String)
-    fun onCounterClick(counterId: String)
-    fun onAddClick(counterId: String)
-    fun onSubtractClick(counterId: String)
 }

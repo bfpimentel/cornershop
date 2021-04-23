@@ -25,15 +25,25 @@ class CreateCounterViewModel @Inject constructor(
 
     override suspend fun handleIntentions(intention: CreateCounterIntention) {
         when (intention) {
-            is CreateCounterIntention.SetName -> {
-                this.name = intention.name
-                updateState { copy(canSave = name.isNotEmpty()) }
-            }
-            is CreateCounterIntention.Save -> {
-                createCounter(CreateCounter.Params(name))
-                navigator.pop()
-            }
+            is CreateCounterIntention.SetName -> setName(intention.name)
+            is CreateCounterIntention.Save -> save()
+            is CreateCounterIntention.NavigateToExamples -> navigateToExamples()
             is CreateCounterIntention.Close -> navigator.pop()
         }
+    }
+
+    private suspend fun setName(name: String) {
+        this.name = name
+        updateState { copy(canSave = name.isNotEmpty()) }
+    }
+
+    private suspend fun save() {
+        createCounter(CreateCounter.Params(name))
+        navigator.pop()
+    }
+
+    private suspend fun navigateToExamples() {
+        val directions = CreateCounterFragmentDirections.toExamplesFragment()
+        navigator.navigate(directions)
     }
 }

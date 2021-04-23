@@ -1,7 +1,9 @@
 package com.cornershop.counterstest.shared.navigator
 
+import androidx.annotation.IdRes
 import androidx.navigation.NavController
 import androidx.navigation.NavDirections
+import androidx.navigation.navOptions
 import com.cornershop.counterstest.shared.dispatchers.DispatchersProvider
 import kotlinx.coroutines.withContext
 
@@ -12,8 +14,7 @@ interface NavigatorBinder {
 
 interface NavigatorRouter {
     suspend fun navigate(directions: NavDirections)
-    suspend fun replace(directions: NavDirections)
-    suspend fun pop()
+    suspend fun pop(@IdRes destinationId: Int? = null, inclusive: Boolean = false)
 }
 
 interface Navigator : NavigatorBinder, NavigatorRouter
@@ -31,19 +32,14 @@ class NavigatorImpl(private val dispatchersProvider: DispatchersProvider) : Navi
     }
 
     override suspend fun navigate(directions: NavDirections) {
-        withContext(dispatchersProvider.ui) {
-            navController?.navigate(directions)
-        }
+        withContext(dispatchersProvider.ui) { navController?.navigate(directions) }
     }
 
-    override suspend fun replace(directions: NavDirections) {
-        pop()
-        navigate(directions)
-    }
-
-    override suspend fun pop() {
+    override suspend fun pop(@IdRes destinationId: Int?, inclusive: Boolean) {
         withContext(dispatchersProvider.ui) {
-            navController?.popBackStack()
+            destinationId
+                ?.let { destinationId -> navController?.popBackStack(destinationId, inclusive) }
+                ?: run { navController?.popBackStack() }
         }
     }
 }
