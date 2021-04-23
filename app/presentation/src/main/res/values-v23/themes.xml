@@ -46,7 +46,7 @@
         <item name="actionMenuTextColor">@color/menu_color_selector</item>
     </style>
 
-    <style name="Theme.CreateCounter.Input">
+    <style name="Theme.CreateCounter.Input" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
         <item name="colorAccent">@color/orange</item>
         <item name="colorControlNormal">@android:color/tertiary_text_dark</item>
         <item name="colorControlActivated">@android:color/holo_orange_light</item>

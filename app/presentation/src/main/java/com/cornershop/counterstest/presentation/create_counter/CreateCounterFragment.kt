@@ -12,20 +12,20 @@ import androidx.fragment.app.viewModels
 import com.cornershop.counterstest.R
 import com.cornershop.counterstest.databinding.CreateCounterFragmentBinding
 import com.cornershop.counterstest.presentation.create_counter.data.CreateCounterIntention
-import com.cornershop.counterstest.shared.extensions.viewBinding
 import com.cornershop.counterstest.shared.extensions.watch
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class CreateCounterFragment : DialogFragment(R.layout.create_counter_fragment) {
 
-    private val binding by viewBinding(CreateCounterFragmentBinding::bind)
+    private lateinit var binding: CreateCounterFragmentBinding
     private val viewModel: CreateCounterContract.ViewModel by viewModels<CreateCounterViewModel>()
 
     override fun getTheme(): Int = R.style.Theme_CreateCounter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding = CreateCounterFragmentBinding.bind(view)
 
         bindHintView()
         bindOutputs()

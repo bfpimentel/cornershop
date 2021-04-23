@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.cornershop.counterstest.R
 import com.cornershop.counterstest.databinding.ExamplesFragmentBinding
 import com.cornershop.counterstest.presentation.examples.data.ExamplesIntention
-import com.cornershop.counterstest.shared.extensions.viewBinding
 import com.cornershop.counterstest.shared.extensions.watch
 import com.cornershop.counterstest.shared.mvi.handleEvent
 import dagger.hilt.android.AndroidEntryPoint
@@ -17,7 +16,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class ExamplesFragment : DialogFragment(R.layout.examples_fragment) {
 
-    private val binding by viewBinding(ExamplesFragmentBinding::bind)
+    private lateinit var binding: ExamplesFragmentBinding
     private val viewModel: ExamplesContract.ViewModel by viewModels<ExamplesViewModel>()
 
     @Inject
@@ -28,6 +27,7 @@ class ExamplesFragment : DialogFragment(R.layout.examples_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding = ExamplesFragmentBinding.bind(view)
 
         bindAdapter()
         bindOutputs()
