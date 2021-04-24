@@ -82,7 +82,7 @@ class CountersViewModelTest : ViewModelTest() {
         assertEquals(firstCountersState.totalTimesCount, 3)
         assertEquals(firstCountersState.numberOfSelectedCounters, 0)
         assertFalse(firstCountersState.areMenusEnabled)
-        assertTrue(firstCountersState.layoutEvent.value is CountersState.Layout.Default)
+        assertTrue(firstCountersState.topLayoutEvent.value is CountersState.TopLayout.Default)
 
         coVerify(exactly = 1) { getCounters(NoParams) }
         confirmEverythingVerified()
@@ -120,7 +120,7 @@ class CountersViewModelTest : ViewModelTest() {
         assertEquals(lastCountersState.totalTimesCount, 3)
         assertEquals(lastCountersState.numberOfSelectedCounters, 1)
         assertTrue(lastCountersState.areMenusEnabled)
-        assertTrue(lastCountersState.layoutEvent.value is CountersState.Layout.Editing)
+        assertTrue(lastCountersState.topLayoutEvent.value is CountersState.TopLayout.Editing)
 
         coVerify(exactly = 1) { getCounters(NoParams) }
         confirmEverythingVerified()
@@ -229,14 +229,14 @@ class CountersViewModelTest : ViewModelTest() {
         assertEquals(firstCountersState.totalItemCount, 2)
         assertEquals(firstCountersState.totalTimesCount, 3)
         assertEquals(firstCountersState.numberOfSelectedCounters, 0)
-        assertTrue(firstCountersState.layoutEvent.value is CountersState.Layout.Default)
+        assertTrue(firstCountersState.topLayoutEvent.value is CountersState.TopLayout.Default)
 
         val secondCountersState = countersStateValues[1]
         assertEquals(secondCountersState.countersEvent!!.value, countersViewDataWhileEditing)
         assertEquals(secondCountersState.totalItemCount, 2)
         assertEquals(secondCountersState.totalTimesCount, 3)
         assertEquals(secondCountersState.numberOfSelectedCounters, 1)
-        assertTrue(secondCountersState.layoutEvent.value is CountersState.Layout.Editing)
+        assertTrue(secondCountersState.topLayoutEvent.value is CountersState.TopLayout.Editing)
 
         val thirdCountersState = countersStateValues[2]
         assertEquals(thirdCountersState.countersEvent!!.value, countersViewData)
@@ -244,7 +244,7 @@ class CountersViewModelTest : ViewModelTest() {
         assertEquals(thirdCountersState.totalTimesCount, 3)
         assertEquals(thirdCountersState.numberOfSelectedCounters, 0)
         assertFalse(thirdCountersState.areMenusEnabled)
-        assertTrue(thirdCountersState.layoutEvent.value is CountersState.Layout.Default)
+        assertTrue(thirdCountersState.topLayoutEvent.value is CountersState.TopLayout.Default)
 
         coVerify(exactly = 1) { getCounters(NoParams) }
         confirmEverythingVerified()

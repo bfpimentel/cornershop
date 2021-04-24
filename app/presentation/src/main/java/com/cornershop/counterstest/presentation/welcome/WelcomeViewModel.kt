@@ -9,6 +9,7 @@ import com.cornershop.counterstest.presentation.welcome.data.WelcomeIntention
 import com.cornershop.counterstest.presentation.welcome.data.WelcomeState
 import com.cornershop.counterstest.shared.dispatchers.DispatchersProvider
 import com.cornershop.counterstest.shared.mvi.StateViewModelImpl
+import com.cornershop.counterstest.shared.mvi.toEvent
 import com.cornershop.counterstest.shared.navigator.NavigatorRouter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -54,20 +55,26 @@ class WelcomeViewModel @Inject constructor(
         hasFetchedCounters: Boolean,
         continuation: (suspend () -> Unit)? = null
     ) {
+        updateState { copy(isButtonEnabled = true) }
+
         try {
             if (hasFetchedCounters) {
-                updateState { copy(isLoading = false) }
+                updateState { copy(isButtonEnabled = false) }
                 return
             }
 
             fetchAndSaveCounters(NoParams)
 
-            continuation?.invoke()
+            updateState { copy(isButtonEnabled = false) }
 
-            updateState { copy(isLoading = false) }
+            continuation?.invoke()
         } catch (error: Exception) {
-            // TODO: Need to show error
-            updateState { copy(isLoading = false) }
+            updateState {
+                copy(
+                    isButtonEnabled = false,
+                    errorEvent = continuation?.let { Unit.toEvent() }
+                )
+            }
         }
     }
 }

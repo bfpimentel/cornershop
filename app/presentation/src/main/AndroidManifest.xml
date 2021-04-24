@@ -14,7 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Default"
         android:usesCleartextTraffic="true">
-        <activity android:name=".presentation.MainActivity">
+        <activity
+            android:name=".presentation.MainActivity"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

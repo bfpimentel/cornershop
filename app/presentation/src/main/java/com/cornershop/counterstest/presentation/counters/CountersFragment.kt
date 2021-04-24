@@ -73,10 +73,17 @@ class CountersFragment : Fragment(R.layout.counters_fragment) {
                 )
                 editingToolbar.menu.findItem(R.id.deleteCounters).isEnabled = state.areMenusEnabled
                 editingToolbar.menu.findItem(R.id.shareCounters).isEnabled = state.areMenusEnabled
+                searchInput.isEnabled = state.isSearchEnabled
 
-                state.layoutEvent.handleEvent { layout ->
+                state.topLayoutEvent.handleEvent { layout ->
                     toolbarLayout.isVisible = layout.isToolbarVisible
                     searchInputLayout.isVisible = layout.isSearchInputVisible
+                }
+
+                state.mainLayoutEvent.handleEvent { layout ->
+                    defaultContainer.isVisible = layout.isDefaultContainerVisible
+                    noCountersContainer.isVisible = layout.isNoCountersVisible
+                    noResultsLabel.isVisible = layout.isNoResultsVisible
                 }
             }
 
@@ -115,7 +122,7 @@ class CountersFragment : Fragment(R.layout.counters_fragment) {
     }
 
     private fun showDeleteConfirmationDialog(text: String) {
-        AlertDialog.Builder(requireContext(), R.style.Theme_Default_Dialog)
+        AlertDialog.Builder(requireContext(), R.style.Theme_Alert)
             .setMessage(text)
             .setCancelable(true)
             .setOnCancelListener(DialogInterface::dismiss)
