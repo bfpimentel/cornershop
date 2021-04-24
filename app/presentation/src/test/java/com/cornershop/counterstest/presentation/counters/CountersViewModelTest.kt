@@ -42,7 +42,7 @@ class CountersViewModelTest : ViewModelTest() {
     private lateinit var viewModel: CountersContract.ViewModel
 
     @BeforeEach
-    fun `setup subject`(dispatchersProvider: DispatchersProvider) {
+    fun `setup subject`() {
         coEvery { getCounters(NoParams) } returns flowOf(counters)
 
         viewModel = CountersViewModel(
