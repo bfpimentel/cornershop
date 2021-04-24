@@ -8,7 +8,7 @@ interface CountersRepository {
     fun getCounters(): Flow<List<CounterModel>>
     suspend fun searchCounters(query: String?)
     suspend fun createCounter(name: String)
-    suspend fun addCount(counterId: String)
-    suspend fun subtractCount(counterId: String)
+    suspend fun increaseCount(counterId: String)
+    suspend fun decreaseCount(counterId: String)
     suspend fun deleteCounters(countersToBeDeletedIds: List<String>)
 }

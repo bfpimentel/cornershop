@@ -16,22 +16,24 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_small"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/minus"
+        app:layout_constraintEnd_toStartOf="@id/decrease"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Cups of coffee" />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/minus"
+        android:id="@+id/decrease"
         android:layout_width="@dimen/spacing_large"
         android:layout_height="@dimen/spacing_large"
         android:layout_marginEnd="@dimen/spacing_tiny"
         android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
         android:padding="@dimen/spacing_small"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/count"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_counter_minus" />
+        app:srcCompat="@drawable/ic_counter_minus_selector" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/count"
@@ -43,15 +45,17 @@
         android:minWidth="@dimen/counters_counter_item_count_min_width"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/plus"
+        app:layout_constraintEnd_toStartOf="@id/increase"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="10" />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/plus"
+        android:id="@+id/increase"
         android:layout_width="@dimen/spacing_large"
         android:layout_height="@dimen/spacing_large"
         android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
         android:padding="@dimen/spacing_small"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

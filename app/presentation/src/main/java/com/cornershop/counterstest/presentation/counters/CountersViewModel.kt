@@ -3,12 +3,12 @@ package com.cornershop.counterstest.presentation.counters
 import androidx.lifecycle.viewModelScope
 import com.cornershop.counterstest.di.NavigatorRouterQualifier
 import com.cornershop.counterstest.domain.entity.Counter
-import com.cornershop.counterstest.domain.usecase.AddCount
+import com.cornershop.counterstest.domain.usecase.IncreaseCount
 import com.cornershop.counterstest.domain.usecase.DeleteCounters
 import com.cornershop.counterstest.domain.usecase.GetCounters
 import com.cornershop.counterstest.domain.usecase.NoParams
 import com.cornershop.counterstest.domain.usecase.SearchCounters
-import com.cornershop.counterstest.domain.usecase.SubtractCount
+import com.cornershop.counterstest.domain.usecase.DecreaseCount
 import com.cornershop.counterstest.presentation.counters.data.CounterViewData
 import com.cornershop.counterstest.presentation.counters.data.CountersIntention
 import com.cornershop.counterstest.presentation.counters.data.CountersState
@@ -28,8 +28,8 @@ class CountersViewModel @Inject constructor(
     @NavigatorRouterQualifier private val navigator: NavigatorRouter,
     private val getCounters: GetCounters,
     private val searchCounters: SearchCounters,
-    private val addCount: AddCount,
-    private val subtractCount: SubtractCount,
+    private val increaseCount: IncreaseCount,
+    private val decreaseCount: DecreaseCount,
     private val deleteCounters: DeleteCounters,
     private val deletionMapper: CountersDeletionMapper,
     private val sharingMapper: CountersSharingMapper,
@@ -52,8 +52,8 @@ class CountersViewModel @Inject constructor(
     override suspend fun handleIntentions(intention: CountersIntention) {
         when (intention) {
             is CountersIntention.SearchCounters -> searchCounters(SearchCounters.Params(intention.query))
-            is CountersIntention.Add -> addCount(AddCount.Params(intention.counterId))
-            is CountersIntention.Subtract -> subtractCount(SubtractCount.Params(intention.counterId))
+            is CountersIntention.Increase -> increaseCount(IncreaseCount.Params(intention.counterId))
+            is CountersIntention.Decrease -> decreaseCount(DecreaseCount.Params(intention.counterId))
             is CountersIntention.StartEditing -> startEditing(intention.counterId)
             is CountersIntention.SelectOrDeselectCounter -> selectOrDeselectCounter(intention.counterId)
             is CountersIntention.TryDeleting -> tryDeleting()

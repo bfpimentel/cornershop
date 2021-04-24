@@ -34,7 +34,7 @@ interface CountersLocalDataSource {
         WHERE id = :counterId
         """
     )
-    suspend fun addCount(counterId: String)
+    suspend fun increaseCount(counterId: String)
 
     @Query(
         """
@@ -44,7 +44,7 @@ interface CountersLocalDataSource {
         WHERE id = :counterId
         """
     )
-    suspend fun subtractCount(counterId: String)
+    suspend fun decreaseCount(counterId: String)
 
     @Query(
         """

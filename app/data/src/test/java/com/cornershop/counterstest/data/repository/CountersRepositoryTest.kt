@@ -189,7 +189,7 @@ class CountersRepositoryTest {
     }
 
     @Test
-    fun `should add to counter and sync`() = dispatcher.runBlockingTest {
+    fun `should increase count and sync`() = dispatcher.runBlockingTest {
         val counterId = "counterId"
         val deletedCounterId = "deletedCounterId"
 
@@ -208,17 +208,17 @@ class CountersRepositoryTest {
 
         val countersToBeSynchronizedIds = listOf(counterId)
 
-        coJustRun { countersLocalDataSource.addCount(counterId) }
+        coJustRun { countersLocalDataSource.increaseCount(counterId) }
         coEvery { countersLocalDataSource.getUnsynchronizedCounters() } returns unsynchronizedCounters
         coJustRun { countersRemoteDataSource.syncCounters(syncBody) }
         coJustRun { countersLocalDataSource.synchronizeCounters(countersToBeSynchronizedIds) }
         coJustRun { countersLocalDataSource.removeDeletedCounters(deletedCounterIds) }
 
-        repository.addCount(counterId)
+        repository.increaseCount(counterId)
         advanceTimeBy(5000L)
 
         coVerify(exactly = 1) {
-            countersLocalDataSource.addCount(counterId)
+            countersLocalDataSource.increaseCount(counterId)
             countersLocalDataSource.getUnsynchronizedCounters()
             countersRemoteDataSource.syncCounters(syncBody)
             countersLocalDataSource.synchronizeCounters(countersToBeSynchronizedIds)
@@ -228,7 +228,7 @@ class CountersRepositoryTest {
     }
 
     @Test
-    fun `should subtract to counter and sync`() = dispatcher.runBlockingTest {
+    fun `should decrease count and sync`() = dispatcher.runBlockingTest {
         val counterId = "counterId"
         val deletedCounterId = "deletedCounterId"
 
@@ -247,17 +247,17 @@ class CountersRepositoryTest {
 
         val countersToBeSynchronizedIds = listOf(counterId)
 
-        coJustRun { countersLocalDataSource.subtractCount(counterId) }
+        coJustRun { countersLocalDataSource.decreaseCount(counterId) }
         coEvery { countersLocalDataSource.getUnsynchronizedCounters() } returns unsynchronizedCounters
         coJustRun { countersRemoteDataSource.syncCounters(syncBody) }
         coJustRun { countersLocalDataSource.synchronizeCounters(countersToBeSynchronizedIds) }
         coJustRun { countersLocalDataSource.removeDeletedCounters(deletedCounterIds) }
 
-        repository.subtractCount(counterId)
+        repository.decreaseCount(counterId)
         advanceTimeBy(5000L)
 
         coVerify(exactly = 1) {
-            countersLocalDataSource.subtractCount(counterId)
+            countersLocalDataSource.decreaseCount(counterId)
             countersLocalDataSource.getUnsynchronizedCounters()
             countersRemoteDataSource.syncCounters(syncBody)
             countersLocalDataSource.synchronizeCounters(countersToBeSynchronizedIds)
@@ -304,7 +304,7 @@ class CountersRepositoryTest {
     }
 
     @Test
-    fun `should add multiple times in debounce interval, syncing just one time`() = dispatcher.runBlockingTest {
+    fun `should increase multiple times in debounce interval, syncing just one time`() = dispatcher.runBlockingTest {
         val additions = 5
 
         val counterId = "counterId"
@@ -325,17 +325,17 @@ class CountersRepositoryTest {
 
         val countersToBeSynchronizedIds = listOf(counterId)
 
-        coJustRun { countersLocalDataSource.addCount(counterId) }
+        coJustRun { countersLocalDataSource.increaseCount(counterId) }
         coEvery { countersLocalDataSource.getUnsynchronizedCounters() } returns unsynchronizedCounters
         coJustRun { countersRemoteDataSource.syncCounters(syncBody) }
         coJustRun { countersLocalDataSource.synchronizeCounters(countersToBeSynchronizedIds) }
         coJustRun { countersLocalDataSource.removeDeletedCounters(deletedCounterIds) }
 
-        repeat((1..additions).count()) { repository.addCount(counterId) }
+        repeat((1..additions).count()) { repository.increaseCount(counterId) }
         advanceTimeBy(5000L)
 
         coVerify(exactly = additions) {
-            countersLocalDataSource.addCount(counterId)
+            countersLocalDataSource.increaseCount(counterId)
         }
         coVerify(exactly = 1) {
             countersLocalDataSource.getUnsynchronizedCounters()
@@ -347,7 +347,7 @@ class CountersRepositoryTest {
     }
 
     @Test
-    fun `should add multiple times in debounce interval and one after it, syncing two times`() =
+    fun `should increase multiple times in debounce interval and one after it, syncing two times`() =
         dispatcher.runBlockingTest {
             val additions = 5
 
@@ -369,19 +369,19 @@ class CountersRepositoryTest {
 
             val countersToBeSynchronizedIds = listOf(counterId)
 
-            coJustRun { countersLocalDataSource.addCount(counterId) }
+            coJustRun { countersLocalDataSource.increaseCount(counterId) }
             coEvery { countersLocalDataSource.getUnsynchronizedCounters() } returns unsynchronizedCounters
             coJustRun { countersRemoteDataSource.syncCounters(syncBody) }
             coJustRun { countersLocalDataSource.synchronizeCounters(countersToBeSynchronizedIds) }
             coJustRun { countersLocalDataSource.removeDeletedCounters(deletedCounterIds) }
 
-            repeat((1..additions).count()) { repository.addCount(counterId) }
+            repeat((1..additions).count()) { repository.increaseCount(counterId) }
             advanceTimeBy(5000L)
-            repository.addCount(counterId)
+            repository.increaseCount(counterId)
             advanceTimeBy(5000L)
 
             coVerify(exactly = additions + 1) {
-                countersLocalDataSource.addCount(counterId)
+                countersLocalDataSource.increaseCount(counterId)
             }
             coVerify(exactly = 2) {
                 countersLocalDataSource.getUnsynchronizedCounters()
@@ -410,15 +410,15 @@ class CountersRepositoryTest {
             counters = countersToBeSynchronized
         )
 
-        coJustRun { countersLocalDataSource.addCount(counterId) }
+        coJustRun { countersLocalDataSource.increaseCount(counterId) }
         coEvery { countersLocalDataSource.getUnsynchronizedCounters() } returns unsynchronizedCounters
         coEvery { countersRemoteDataSource.syncCounters(syncBody) } throws IllegalStateException()
 
-        repository.addCount(counterId)
+        repository.increaseCount(counterId)
         advanceTimeBy(5000L)
 
         coVerify(exactly = 1) {
-            countersLocalDataSource.addCount(counterId)
+            countersLocalDataSource.increaseCount(counterId)
             countersLocalDataSource.getUnsynchronizedCounters()
             countersRemoteDataSource.syncCounters(syncBody)
         }

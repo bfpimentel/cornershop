@@ -75,13 +75,13 @@ class CountersRepositoryImpl(
         syncPublisher.emit(Unit)
     }
 
-    override suspend fun addCount(counterId: String) {
-        countersLocalDataSource.addCount(counterId)
+    override suspend fun increaseCount(counterId: String) {
+        countersLocalDataSource.increaseCount(counterId)
         syncPublisher.emit(Unit)
     }
 
-    override suspend fun subtractCount(counterId: String) {
-        countersLocalDataSource.subtractCount(counterId)
+    override suspend fun decreaseCount(counterId: String) {
+        countersLocalDataSource.decreaseCount(counterId)
         syncPublisher.emit(Unit)
     }
 

@@ -2,18 +2,17 @@ package com.cornershop.counterstest.presentation.counters
 
 import com.cornershop.counterstest.ViewModelTest
 import com.cornershop.counterstest.domain.entity.Counter
-import com.cornershop.counterstest.domain.usecase.AddCount
+import com.cornershop.counterstest.domain.usecase.DecreaseCount
 import com.cornershop.counterstest.domain.usecase.DeleteCounters
 import com.cornershop.counterstest.domain.usecase.GetCounters
+import com.cornershop.counterstest.domain.usecase.IncreaseCount
 import com.cornershop.counterstest.domain.usecase.NoParams
 import com.cornershop.counterstest.domain.usecase.SearchCounters
-import com.cornershop.counterstest.domain.usecase.SubtractCount
 import com.cornershop.counterstest.presentation.counters.data.CounterViewData
 import com.cornershop.counterstest.presentation.counters.data.CountersIntention
 import com.cornershop.counterstest.presentation.counters.data.CountersState
 import com.cornershop.counterstest.presentation.counters.mappers.CountersDeletionMapper
 import com.cornershop.counterstest.presentation.counters.mappers.CountersSharingMapper
-import com.cornershop.counterstest.shared.dispatchers.DispatchersProvider
 import com.cornershop.counterstest.shared.navigator.NavigatorRouter
 import io.mockk.coEvery
 import io.mockk.coJustRun
@@ -34,8 +33,8 @@ class CountersViewModelTest : ViewModelTest() {
     private val navigator = mockk<NavigatorRouter>()
     private val getCounters = mockk<GetCounters>()
     private val searchCounters = mockk<SearchCounters>()
-    private val addCount = mockk<AddCount>()
-    private val subtractCount = mockk<SubtractCount>()
+    private val increaseCount = mockk<IncreaseCount>()
+    private val decreaseCount = mockk<DecreaseCount>()
     private val deleteCounters = mockk<DeleteCounters>()
     private val deletionMapper = mockk<CountersDeletionMapper>()
     private val sharingMapper = mockk<CountersSharingMapper>()
@@ -49,8 +48,8 @@ class CountersViewModelTest : ViewModelTest() {
             navigator = navigator,
             getCounters = getCounters,
             searchCounters = searchCounters,
-            addCount = addCount,
-            subtractCount = subtractCount,
+            increaseCount = increaseCount,
+            decreaseCount = decreaseCount,
             deleteCounters = deleteCounters,
             deletionMapper = deletionMapper,
             sharingMapper = sharingMapper,
@@ -271,35 +270,35 @@ class CountersViewModelTest : ViewModelTest() {
     }
 
     @Test
-    fun `should add count`() = runBlockingTest {
+    fun `should increase count`() = runBlockingTest {
         val counterId = "counterId"
 
-        val addCountParams = AddCount.Params(counterId)
+        val increaseCountParams = IncreaseCount.Params(counterId)
 
-        coJustRun { addCount(addCountParams) }
+        coJustRun { increaseCount(increaseCountParams) }
 
-        viewModel.publish(CountersIntention.Add(counterId))
+        viewModel.publish(CountersIntention.Increase(counterId))
 
         coVerify(exactly = 1) {
             getCounters(NoParams)
-            addCount(addCountParams)
+            increaseCount(increaseCountParams)
         }
         confirmEverythingVerified()
     }
 
     @Test
-    fun `should subtract count`() = runBlockingTest {
+    fun `should decrease count`() = runBlockingTest {
         val counterId = "counterId"
 
-        val subtractCountParams = SubtractCount.Params(counterId)
+        val decreaseCountParams = DecreaseCount.Params(counterId)
 
-        coJustRun { subtractCount(subtractCountParams) }
+        coJustRun { decreaseCount(decreaseCountParams) }
 
-        viewModel.publish(CountersIntention.Subtract(counterId))
+        viewModel.publish(CountersIntention.Decrease(counterId))
 
         coVerify(exactly = 1) {
             getCounters(NoParams)
-            subtractCount(subtractCountParams)
+            decreaseCount(decreaseCountParams)
         }
         confirmEverythingVerified()
     }
@@ -324,8 +323,8 @@ class CountersViewModelTest : ViewModelTest() {
             navigator,
             getCounters,
             searchCounters,
-            addCount,
-            subtractCount,
+            increaseCount,
+            decreaseCount,
             deleteCounters,
             deletionMapper,
             sharingMapper

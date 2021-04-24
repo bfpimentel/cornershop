@@ -56,6 +56,7 @@ class WelcomeViewModel @Inject constructor(
     ) {
         try {
             if (hasFetchedCounters) {
+                updateState { copy(isLoading = false) }
                 return
             }
 

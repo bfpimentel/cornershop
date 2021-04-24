@@ -39,12 +39,12 @@ class CountersFragment : Fragment(R.layout.counters_fragment) {
 
     private fun bindAdapter() {
         this.countersAdapter = adapterFactory.create(object : CountersContract.ItemListener {
-            override fun onAddClick(counterId: String) {
-                viewModel.publish(CountersIntention.Add(counterId))
+            override fun onIncreaseClick(counterId: String) {
+                viewModel.publish(CountersIntention.Increase(counterId))
             }
 
-            override fun onSubtractClick(counterId: String) {
-                viewModel.publish(CountersIntention.Subtract(counterId))
+            override fun onDecreaseClick(counterId: String) {
+                viewModel.publish(CountersIntention.Decrease(counterId))
             }
 
             override fun onCounterLongClick(counterId: String) {
@@ -115,7 +115,7 @@ class CountersFragment : Fragment(R.layout.counters_fragment) {
     }
 
     private fun showDeleteConfirmationDialog(text: String) {
-        AlertDialog.Builder(requireContext())
+        AlertDialog.Builder(requireContext(), R.style.Theme_Default_Dialog)
             .setMessage(text)
             .setCancelable(true)
             .setOnCancelListener(DialogInterface::dismiss)
