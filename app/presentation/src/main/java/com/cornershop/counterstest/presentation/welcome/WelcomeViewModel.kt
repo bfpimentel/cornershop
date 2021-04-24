@@ -3,7 +3,7 @@ package com.cornershop.counterstest.presentation.welcome
 import androidx.lifecycle.viewModelScope
 import com.cornershop.counterstest.di.NavigatorRouterQualifier
 import com.cornershop.counterstest.domain.usecase.FetchAndSaveCounters
-import com.cornershop.counterstest.domain.usecase.IsFirstAccess
+import com.cornershop.counterstest.domain.usecase.HasFetchedCounters
 import com.cornershop.counterstest.domain.usecase.NoParams
 import com.cornershop.counterstest.presentation.welcome.data.WelcomeIntention
 import com.cornershop.counterstest.presentation.welcome.data.WelcomeState
@@ -17,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class WelcomeViewModel @Inject constructor(
     @NavigatorRouterQualifier private val navigator: NavigatorRouter,
-    private val isFirstAccess: IsFirstAccess,
+    private val hasFetchedCounters: HasFetchedCounters,
     private val fetchAndSaveCounters: FetchAndSaveCounters,
     dispatchersProvider: DispatchersProvider,
     @WelcomeStateQualifier initialState: WelcomeState
@@ -25,8 +25,6 @@ class WelcomeViewModel @Inject constructor(
     dispatchersProvider = dispatchersProvider,
     initialState = initialState
 ), WelcomeContract.ViewModel {
-
-    private var countersHaveBeenSaved: Boolean = false
 
     init {
         viewModelScope.launch(dispatchersProvider.io) { fetchAndSaveCounters() }
@@ -39,7 +37,7 @@ class WelcomeViewModel @Inject constructor(
     }
 
     private suspend fun navigateToCounters() {
-        if (this.countersHaveBeenSaved) {
+        if (hasFetchedCounters(NoParams)) {
             navigator.navigate(WelcomeFragmentDirections.toCountersFragment())
             return
         }
@@ -49,22 +47,13 @@ class WelcomeViewModel @Inject constructor(
 
     private suspend fun fetchAndSaveCounters(continuation: (suspend () -> Unit)? = null) {
         try {
-            val isFirstAccess = isFirstAccess(NoParams)
-
-            if (!isFirstAccess) {
-                this.countersHaveBeenSaved = true
-                updateState { copy(isLoading = false) }
+            if (hasFetchedCounters(NoParams)) {
                 return
             }
 
             fetchAndSaveCounters(NoParams)
 
-            continuation?.let { nullSafeContinuation ->
-                this.countersHaveBeenSaved = true
-                nullSafeContinuation()
-            } ?: run {
-                this.countersHaveBeenSaved = true
-            }
+            continuation?.invoke()
 
             updateState { copy(isLoading = false) }
         } catch (error: Exception) {

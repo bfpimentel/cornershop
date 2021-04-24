@@ -3,17 +3,20 @@ package com.cornershop.counterstest.data.sources.local
 import android.content.SharedPreferences
 
 interface PreferencesLocalDataSource {
-    suspend fun isFirstAccess(): Boolean
+    suspend fun hasFetchedCounters(): Boolean
+    suspend fun setHasFetchedCounters()
 }
 
 class PreferencesLocalDataSourceImpl(private val sharedPreferences: SharedPreferences) : PreferencesLocalDataSource {
 
-    override suspend fun isFirstAccess(): Boolean =
-        sharedPreferences.getBoolean(IS_FIRST_ACCESS_KEY, true).also { isFirstAccess ->
-            if (isFirstAccess) sharedPreferences.edit().putBoolean(IS_FIRST_ACCESS_KEY, false).apply()
-        }
+    override suspend fun hasFetchedCounters(): Boolean =
+        sharedPreferences.getBoolean(HAS_FETCHED_COUNTERS_KEY, false)
+
+    override suspend fun setHasFetchedCounters() {
+        sharedPreferences.edit().putBoolean(HAS_FETCHED_COUNTERS_KEY, true).apply()
+    }
 
     private companion object {
-        const val IS_FIRST_ACCESS_KEY = "IS_FIRST_ACCESS"
+        const val HAS_FETCHED_COUNTERS_KEY = "HAS_FETCHED_COUNTERS"
     }
 }

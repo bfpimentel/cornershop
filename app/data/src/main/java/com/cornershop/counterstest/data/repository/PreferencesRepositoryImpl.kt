@@ -7,5 +7,7 @@ class PreferencesRepositoryImpl(
     private val preferencesLocalDataSource: PreferencesLocalDataSource
 ) : PreferencesRepository {
 
-    override suspend fun isFirstAccess(): Boolean = preferencesLocalDataSource.isFirstAccess()
+    override suspend fun hasFetchedCounters(): Boolean = preferencesLocalDataSource.hasFetchedCounters()
+
+    override suspend fun setHasFetchedCounters() = preferencesLocalDataSource.setHasFetchedCounters()
 }

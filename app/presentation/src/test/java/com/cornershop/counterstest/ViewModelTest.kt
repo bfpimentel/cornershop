@@ -16,19 +16,12 @@ abstract class ViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
-    private lateinit var coroutineDispatcher: TestCoroutineDispatcher
-    private lateinit var dispatchersProvider: DispatchersProvider
-
-    abstract fun `setup subject`(dispatchersProvider: DispatchersProvider)
+    private val coroutineDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
+    protected val dispatchersProvider: DispatchersProvider = TestDispatchersProvider(coroutineDispatcher)
 
     @BeforeEach
-    fun `setup subject`() {
-        coroutineDispatcher = TestCoroutineDispatcher()
-        dispatchersProvider = TestDispatchersProvider(coroutineDispatcher)
-
+    fun `setup dispatcher and subject`() {
         Dispatchers.setMain(coroutineDispatcher)
-
-        `setup subject`(dispatchersProvider)
     }
 
     @AfterEach

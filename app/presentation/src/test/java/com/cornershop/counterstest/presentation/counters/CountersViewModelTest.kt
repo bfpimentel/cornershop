@@ -26,6 +26,7 @@ import kotlinx.coroutines.launch
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class CountersViewModelTest : ViewModelTest() {
@@ -40,8 +41,9 @@ class CountersViewModelTest : ViewModelTest() {
     private val sharingMapper = mockk<CountersSharingMapper>()
     private lateinit var viewModel: CountersContract.ViewModel
 
-    override fun `setup subject`(dispatchersProvider: DispatchersProvider) {
-        mockInit()
+    @BeforeEach
+    fun `setup subject`(dispatchersProvider: DispatchersProvider) {
+        coEvery { getCounters(NoParams) } returns flowOf(counters)
 
         viewModel = CountersViewModel(
             navigator = navigator,
@@ -315,10 +317,6 @@ class CountersViewModelTest : ViewModelTest() {
             navigator.navigate(directions)
         }
         confirmEverythingVerified()
-    }
-
-    private fun mockInit() {
-        coEvery { getCounters(NoParams) } returns flowOf(counters)
     }
 
     private fun confirmEverythingVerified() {

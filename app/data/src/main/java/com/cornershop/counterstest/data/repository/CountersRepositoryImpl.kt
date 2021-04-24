@@ -23,16 +23,14 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class CountersRepositoryImpl(
-    private val remoteDataSource: CountersRemoteDataSource,
-    private val localDataSource: CountersLocalDataSource,
+    private val countersRemoteDataSource: CountersRemoteDataSource,
+    private val countersLocalDataSource: CountersLocalDataSource,
     private val idGenerator: IdGenerator,
     externalScope: CoroutineScope = CoroutineScope(SupervisorJob())
 ) : CountersRepository {
 
     private val syncPublisher = MutableSharedFlow<Unit>(replay = 0)
     private val searchPublisher = MutableStateFlow<String?>(null)
-
-    private var isFirstAccess = true // TODO: Remove after persisting user information
 
     init {
         externalScope.launch {
@@ -43,24 +41,20 @@ class CountersRepositoryImpl(
     }
 
     override suspend fun fetchAndSaveCounters() {
-        if (isFirstAccess) {
-            remoteDataSource.getCounters()
-                .map { counterResponse ->
-                    CounterDTO(
-                        id = counterResponse.id,
-                        count = counterResponse.count,
-                        title = counterResponse.title
-                    )
-                }
-                .run { localDataSource.insertCounters(this) }
-            isFirstAccess = false
-        }
+        countersRemoteDataSource.getCounters()
+            .map { counterResponse ->
+                CounterDTO(
+                    id = counterResponse.id,
+                    count = counterResponse.count,
+                    title = counterResponse.title
+                )
+            }.run { countersLocalDataSource.insertCounters(this) }
     }
 
     override fun getCounters(): Flow<List<CounterModel>> =
         searchPublisher
             .debounce(SEARCH_DEBOUNCE_INTERVAL)
-            .flatMapLatest { query -> localDataSource.getCounters(query.orEmpty()) }
+            .flatMapLatest { query -> countersLocalDataSource.getCounters(query.orEmpty()) }
             .distinctUntilChanged()
             .map { response ->
                 response.map {
@@ -77,28 +71,28 @@ class CountersRepositoryImpl(
     }
 
     override suspend fun createCounter(name: String) {
-        localDataSource.createCounter(CounterDTO(id = idGenerator.generateId(), title = name))
+        countersLocalDataSource.createCounter(CounterDTO(id = idGenerator.generateId(), title = name))
         syncPublisher.emit(Unit)
     }
 
     override suspend fun addCount(counterId: String) {
-        localDataSource.addCount(counterId)
+        countersLocalDataSource.addCount(counterId)
         syncPublisher.emit(Unit)
     }
 
     override suspend fun subtractCount(counterId: String) {
-        localDataSource.subtractCount(counterId)
+        countersLocalDataSource.subtractCount(counterId)
         syncPublisher.emit(Unit)
     }
 
     override suspend fun deleteCounters(countersToBeDeletedIds: List<String>) {
-        localDataSource.deleteCounters(countersToBeDeletedIds)
+        countersLocalDataSource.deleteCounters(countersToBeDeletedIds)
         syncPublisher.emit(Unit)
     }
 
     private suspend fun synchronizeCounters() {
         try {
-            val unsynchronizedCounters = localDataSource.getUnsynchronizedCounters()
+            val unsynchronizedCounters = countersLocalDataSource.getUnsynchronizedCounters()
 
             val deletedCountersIds = unsynchronizedCounters
                 .filter { it.hasBeenDeleted == true }
@@ -114,15 +108,15 @@ class CountersRepositoryImpl(
                     )
                 }
 
-            remoteDataSource.syncCounters(
+            countersRemoteDataSource.syncCounters(
                 SyncCountersBody(
                     deletedCountersIds = deletedCountersIds,
                     counters = countersToBeSynchronized
                 )
             )
 
-            localDataSource.synchronizeCounters(counterIds = countersToBeSynchronized.map(CounterBody::id))
-            localDataSource.removeDeletedCounters(deletedCountersIds)
+            countersLocalDataSource.synchronizeCounters(counterIds = countersToBeSynchronized.map(CounterBody::id))
+            countersLocalDataSource.removeDeletedCounters(deletedCountersIds)
         } catch (error: Exception) {
             Log.d("SYNC_ERROR", "Couldn't sync database", error)
         }

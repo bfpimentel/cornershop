@@ -7,8 +7,9 @@ import com.cornershop.counterstest.domain.usecase.CreateCounter
 import com.cornershop.counterstest.domain.usecase.DeleteCounters
 import com.cornershop.counterstest.domain.usecase.FetchAndSaveCounters
 import com.cornershop.counterstest.domain.usecase.GetCounters
-import com.cornershop.counterstest.domain.usecase.IsFirstAccess
+import com.cornershop.counterstest.domain.usecase.HasFetchedCounters
 import com.cornershop.counterstest.domain.usecase.SearchCounters
+import com.cornershop.counterstest.domain.usecase.SetHasFetchedCounters
 import com.cornershop.counterstest.domain.usecase.SubtractCount
 import dagger.Module
 import dagger.Provides
@@ -22,13 +23,23 @@ object DomainUseCaseModule {
 
     @Provides
     @ViewModelScoped
-    fun provideIsFirstAccess(preferencesRepository: PreferencesRepository): IsFirstAccess =
-        IsFirstAccess(repository = preferencesRepository)
+    fun provideHasFetchedCounters(preferencesRepository: PreferencesRepository): HasFetchedCounters =
+        HasFetchedCounters(repository = preferencesRepository)
 
     @Provides
     @ViewModelScoped
-    fun provideFetchAndSaveCounters(countersRepository: CountersRepository): FetchAndSaveCounters =
-        FetchAndSaveCounters(repository = countersRepository)
+    fun provideSetHasFetchedCounters(preferencesRepository: PreferencesRepository): SetHasFetchedCounters =
+        SetHasFetchedCounters(repository = preferencesRepository)
+
+    @Provides
+    @ViewModelScoped
+    fun provideFetchAndSaveCounters(
+        countersRepository: CountersRepository,
+        setHasFetchedCounters: SetHasFetchedCounters
+    ): FetchAndSaveCounters = FetchAndSaveCounters(
+        repository = countersRepository,
+        setHasFetchedCounters = setHasFetchedCounters
+    )
 
     @Provides
     @ViewModelScoped

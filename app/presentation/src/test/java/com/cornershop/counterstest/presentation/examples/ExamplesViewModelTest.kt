@@ -7,7 +7,6 @@ import com.cornershop.counterstest.presentation.examples.data.ExampleViewData
 import com.cornershop.counterstest.presentation.examples.data.ExamplesIntention
 import com.cornershop.counterstest.presentation.examples.data.ExamplesState
 import com.cornershop.counterstest.presentation.examples.mappers.ExamplesViewDataMapper
-import com.cornershop.counterstest.shared.dispatchers.DispatchersProvider
 import com.cornershop.counterstest.shared.navigator.NavigatorRouter
 import io.mockk.coEvery
 import io.mockk.coJustRun
@@ -17,6 +16,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class ExamplesViewModelTest : ViewModelTest() {
@@ -26,7 +26,8 @@ class ExamplesViewModelTest : ViewModelTest() {
     private val examplesViewDataMapper = mockk<ExamplesViewDataMapper>()
     private lateinit var viewModel: ExamplesContract.ViewModel
 
-    override fun `setup subject`(dispatchersProvider: DispatchersProvider) {
+    @BeforeEach
+    fun `setup subject`() {
         viewModel = ExamplesViewModel(
             navigator = navigator,
             createCounter = createCounter,

@@ -4,7 +4,6 @@ import com.cornershop.counterstest.ViewModelTest
 import com.cornershop.counterstest.domain.usecase.CreateCounter
 import com.cornershop.counterstest.presentation.create_counter.data.CreateCounterIntention
 import com.cornershop.counterstest.presentation.create_counter.data.CreateCounterState
-import com.cornershop.counterstest.shared.dispatchers.DispatchersProvider
 import com.cornershop.counterstest.shared.navigator.NavigatorRouter
 import io.mockk.coJustRun
 import io.mockk.coVerify
@@ -15,6 +14,7 @@ import kotlinx.coroutines.launch
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class CreateCounterViewModelTest : ViewModelTest() {
@@ -23,7 +23,8 @@ class CreateCounterViewModelTest : ViewModelTest() {
     private val createCounter = mockk<CreateCounter>()
     private lateinit var viewModel: CreateCounterContract.ViewModel
 
-    override fun `setup subject`(dispatchersProvider: DispatchersProvider) {
+    @BeforeEach
+    fun `setup subject`() {
         viewModel = CreateCounterViewModel(
             navigator = navigator,
             createCounter = createCounter,

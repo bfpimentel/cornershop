@@ -108,12 +108,12 @@ object DataModules {
     @Provides
     @Singleton
     fun provideCountersRepository(
-        remoteDataSource: CountersRemoteDataSource,
-        localDataSource: CountersLocalDataSource,
+        countersRemoteDataSource: CountersRemoteDataSource,
+        countersLocalDataSource: CountersLocalDataSource,
         idGenerator: IdGenerator,
     ): CountersRepository = CountersRepositoryImpl(
-        remoteDataSource = remoteDataSource,
-        localDataSource = localDataSource,
+        countersRemoteDataSource = countersRemoteDataSource,
+        countersLocalDataSource = countersLocalDataSource,
         idGenerator = idGenerator
     )
 
