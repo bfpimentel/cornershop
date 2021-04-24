@@ -7,7 +7,9 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.confirmVerified
 import io.mockk.mockk
+import org.junit.BeforeClass
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class StateViewModelTest : ViewModelTest() {
@@ -15,7 +17,8 @@ class StateViewModelTest : ViewModelTest() {
     private val getStringFromInteger = mockk<GetStringFromInteger>()
     private lateinit var viewModel: GenericContract.ViewModel
 
-    override fun `setup subject`(dispatchersProvider: DispatchersProvider) {
+    @BeforeEach
+    fun `setup subject`() {
         viewModel = GenericViewModel(
             getStringFromInteger = getStringFromInteger,
             dispatchersProvider = dispatchersProvider,
