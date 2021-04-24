@@ -1,46 +1,21 @@
 # Cornershop Android Development Test
 
-## Before you begin
-You will need to create a private GitHub repository using the information that we provided in this README. When you finish your test, our team will provide through email the corresponding github accounts to share your app.
+## Some notes
 
-If you have any questions, please reach rocio.herrera@cornershopapp.com or cristopher@cornershopapp.com. Specially if they are related to UI design.
+I am not the best UI/UX guy, so I tried to show my architecture, libraries and design pattern knowledge at most of the time.
 
-## The test
-Create an Android app for counting things. You'll need to meet high expectations for quality and functionality. It must meet at least the following:
+Each of the features has its on [branch](https://github.com/bfpimentel/cornershop/branches) and almost of them are mapped inside the issue [Feature Roadmap](https://github.com/bfpimentel/cornershop/issues/1). I followed the [**conventional**](https://www.conventionalcommits.org/en/v1.0.0/) [commits messages](https://github.com/bfpimentel/cornershop/commits/develop).
 
-* **States are crucial**, you must handle each state transition properly
-* Add a named counter to a list of counters.
-* Increment any of the counters.
-* Decrement any of the counters.
-* Delete a counter.
-* Show a sum of all the counter values.
-* Search counters.
-* Enable sharing counters.
-* Handle batch deletion.
-* Unreliable networks are a thing. State management and error handling is **important**.
-* Persist data back to the server.
-* Must **not** feel like a learning exercise. Think you're building it to publish for the Google Play Store.
+## A decision I made and my motivation
 
-#### Build this app using the following spec: https://www.figma.com/file/qBcG5Poxunyct1HEyvERXN/Counters-for-Android
+I refactored the server to follow a offline-first way to persist data. Why?
 
-Some other important notes:
+- I thought the way of how the API was done was not performatic, the needing of increasing and decreasing one by one was a big bottleneck.
+- I made the application to be as non obstructive as possible, so I removed the individual increasing and decreasing endpoints and created a sync endpoint, which is called in background at a debounce of 5 seconds on any method that update a counter.
+- So, the app is responsible for creating and storing all the counters. Fetching the counters already on the server is done just one time.
+- That is something that I would do in a day-to-day basis, I'd talk to the back-end, the product owners and discuss if it would be a good feature to have.
 
-* Showing off the knowledge of mobile architectures is essential.
-* Offer support to Android API >= 21.
-* The app should persist the counter list if the network is not available (i.e Airplane Mode).
-* Create incremental commits instead of a single commit with the whole project
-* **Test your app to the latest Android API**
-
-Bonus points:
-
-* Avoid God activities/fragments.
-* Minimal use of external dependencies.
-* Tests are good: Unit, Instrumented, and UI. 
-* Handle orientation changes.
-
-
-**Remember**: The UI is super important. Don't build anything that doesn't feel right for Android.
-
+I know I may lose points with this decision, but when "Thinking I'm building it to publish for the Google Play Store", I thought that was the best way to go.
 
 ## Install and start the server
 
@@ -49,7 +24,42 @@ $ npm install
 $ npm start
 ```
 
-## API endpoints / examples
+## Architecture Explanation
+
+I choose to modularize just the project layers instead of the features because there were just two screens and there are no plans to add more. I focused on ease to maintain and on Clean Architecture principles.
+
+<p align="middle">
+    <img src="./resources/architecture.png">
+    <p style="text-align:center"><i>This is a representation of the architecture, the connection between UseCases is not obligatory, more details below.</i></p>
+    <p style="text-align:center"><i>The arrows on the top can be read as "talks to".</i></p>
+</p>
+
+### :app
+
+This is the presentation layer, it is responsible for what the user sees.
+
+- **Fragment**: The Fragment is responsible to listen to the user inputs and its ViewModel outputs.
+- **ViewModel**: It expects the Fragment inputs and calls the UseCases, from _domain_ module, then, it can output the data to the Fragments via LiveData observers. All the ViewModels in this project also have a Navigator.
+- **Navigator**: It navigates or pops to other fragments.
+
+---
+
+### :domain
+
+This is the domain layer, it holds the business rules of the applications and it is a pure java/kotlin module.
+
+- **UseCase**: It is responsible for the business rules on the application, it talks to the repositories by dependency inversion or to another use cases.
+
+---
+
+### :data
+
+This is the data layer, it does not contain any business rules, it is responsible to get data from local or remote data sources.
+
+- **Repository**: It is just a composition of local or remote data sources, the interfaces on those are from the _domain_ module.
+- **DataSource**: It is responsible to talk with the remote server or local database.
+
+## API Endpoints & Examples
 
 > The following endpoints are expecting a `Content-Type: application/json`
 
@@ -57,65 +67,33 @@ $ npm start
 GET /api/v1/counters
 # []
 
-POST /api/v1/counter
-Request Body: 
-# {title: "bob"}
 
-Response Body:
-# [
-#   {id: "asdf", title: "bob", count: 0}
-# ]
-
-
-POST /api/v1/counter
-Request Body: 
-# {title: "steve"}
-
-Response Body:
-# [
-#   {id: "asdf", title: "bob", count: 0},
-#   {id: "qwer", title: "steve", count: 0}
-# ]
-
-
-POST /api/v1/counter/inc
-Request Body: 
-# {id: "asdf"}
-
-Response Body:
-# [
-#   {id: "asdf", title: "bob", count: 1},
-#   {id: "qwer", title: "steve", count: 0}
-# ]
-
-
-POST /api/v1/counter/dec
+PUT /api/v1/counters/sync
 Request Body:
-# {id: "qwer"}
+# {
+#   "deletedCounterIds": [],
+#   "counters": [
+#     { "id": "-MZ-CFVG--8LbqVX2LaM", "title": "Cupcakes eaten", "count": 3 }
+#   ]
+# }
 
 Response Body:
 # [
-#   {id: "asdf", title: "bob", count: 1},
-#   {id: "qwer", title: "steve", count: 2}
+#   { "id": "-MZ-CFVG--8LbqVX2LaM", "title": "Cupcakes eaten", "count": 3 }
 # ]
 
 
-DELETE /api/v1/counter
+PUT /api/v1/counters/sync
 Request Body:
-# {id: "qwer"}
+# {
+#   "deletedCounterIds": [ "-MZ-CFVG--8LbqVX2LaM" ],
+#   "counters": [
+#     { "id": "-MZ-DTl7e7urGjlsAt3X", "title": "Tequila shots", "count": 30 }
+#   ]
+# }
 
 Response Body:
 # [
-#   {id: "asdf", title: "bob", count: 1}
-# ]
-
-
-GET /api/v1/counters
-Response Body:
-# [
-#   {id: "asdf", title: "bob", count: 1},
+#   { "id": "-MZ-DTl7e7urGjlsAt3X", "title": "Tequila shots", "count": 30 }
 # ]
 ```
-
-> **NOTE:* Each request returns the current state of all counters.
-
