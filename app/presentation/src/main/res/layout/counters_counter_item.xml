@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/spacing_small"
+    android:background="@drawable/bg_counter_container_default"
+    android:paddingHorizontal="@dimen/spacing_normal"
+    android:paddingVertical="@dimen/spacing_medium">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/title"
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:layout_width="@dimen/spacing_none"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_small"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/decrease"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Cups of coffee" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/decrease"
+        android:layout_width="@dimen/spacing_large"
+        android:layout_height="@dimen/spacing_large"
+        android:layout_marginEnd="@dimen/spacing_tiny"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="@dimen/spacing_tiny"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/count"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_counter_minus_selector" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/count"
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_tiny"
+        android:gravity="center"
+        android:minWidth="@dimen/counters_counter_item_count_min_width"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/increase"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="10" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/increase"
+        android:layout_width="@dimen/spacing_large"
+        android:layout_height="@dimen/spacing_large"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="@dimen/spacing_tiny"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_counter_plus" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

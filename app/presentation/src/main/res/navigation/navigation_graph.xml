@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/welcomeFragment">
+
+    <fragment
+        android:id="@+id/welcomeFragment"
+        android:name="com.cornershop.counterstest.presentation.welcome.WelcomeFragment"
+        android:label="WelcomeFragment"
+        tools:layout="@layout/welcome_fragment">
+        <action
+            android:id="@+id/toCountersFragment"
+            app:destination="@id/countersFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/navigation_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/countersFragment"
+        android:name="com.cornershop.counterstest.presentation.counters.CountersFragment"
+        android:label="CountersFragment"
+        tools:layout="@layout/counters_fragment">
+        <action
+            android:id="@+id/toCreateCounterFragment"
+            app:destination="@id/createCounterFragment" />
+    </fragment>
+
+    <dialog
+        android:id="@+id/createCounterFragment"
+        android:name="com.cornershop.counterstest.presentation.create_counter.CreateCounterFragment"
+        android:label="CreateCounterFragment"
+        tools:layout="@layout/create_counter_fragment">
+        <action
+            android:id="@+id/toExamplesFragment"
+            app:destination="@id/examplesFragment" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/examplesFragment"
+        android:name="com.cornershop.counterstest.presentation.examples.ExamplesFragment"
+        android:label="ExamplesFragment"
+        tools:layout="@layout/examples_fragment" />
+
+</navigation>

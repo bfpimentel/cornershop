@@ -1,0 +1,66 @@
+<resources>
+    <string name="app_name">Counters Test</string>
+
+    <!-- Welcome Screen -->
+    <string name="welcome_title">Counters</string>
+    <string name="welcome_description">Capture cups of lattes, frapuccinos, or anything else that can be counted.</string>
+    <string name="welcome_get_started">Get started</string>
+    <string name="welcome_error_message">Could not fetch counters from the server, please verify if the server is running and try again.</string>
+    <string name="welcome_error_button_ok">OK</string>
+    <!-- Welcome Screen -->
+
+    <!-- Counters Screen -->
+    <string name="counters_total_items_count">%d items</string>
+    <string name="counters_total_times_count">%d times</string>
+    <string name="counters_no_counters">No counters yet</string>
+    <string name="counters_no_counters_phrase">“When I started counting my blessings, my whole life turned around.”\n— Willie Nelson</string>
+    <string name="counters_no_results">No results</string>
+    <!-- Counters Screen -->
+
+    <!-- Counters Screen -->
+    <string name="counters_search_counters">Search Counters</string>
+    <string name="counters_add_counters">Add counters</string>
+    <string name="counters_counter_save">Save</string>
+    <string name="counters_menu_delete">Delete</string>
+    <string name="counters_menu_share">Share</string>
+    <string name="counters_editing_toolbar_title">%d selected</string>
+    <string name="counters_delete_confirmation_delete">Delete</string>
+    <string name="counters_delete_confirmation_question_one_item">Delete "%s"?</string>
+    <string name="counters_delete_confirmation_question_more_items">Delete "%s" and %s?</string>
+    <string name="counters_share_item">%d × %s</string>
+    <!-- Counters Screen -->
+
+    <!-- Create Counter Screen -->
+    <string name="create_counter_title">Create counter</string>
+    <string name="create_counter_save">Save</string>
+    <string name="create_counter_name_label">Name</string>
+    <string name="create_counter_name_hint">Cups of coffee</string>
+    <string name="create_counter_disclaimer">Give it a name. Creative block? See examples.</string>L
+    <string name="create_counter_disclaimer_example_span">examples</string>
+    <!-- Create Counter Screen -->
+
+    <!-- Examples Screen -->
+    <string name="examples_title">Examples</string>
+    <string name="examples_description">Select an example to add it to your counters.</string>
+    <string name="examples_drinks_title">Drinks</string>
+    <string-array name="examples_drinks_array">
+        <item>Cups of coffee</item>
+        <item>Glasses of water</item>
+        <item>Tequila shots</item>
+        <item>Caipirinhas</item>
+    </string-array>
+    <string name="examples_food_title">Food</string>
+    <string-array name="examples_food_array">
+        <item>Hot-dogs</item>
+        <item>Cupcakes eaten</item>
+        <item>Chicken sandwich</item>
+    </string-array>
+    <string name="examples_misc_title">Misc</string>
+    <string-array name="examples_misc_array">
+        <item>Times sneezed</item>
+        <item>Naps</item>
+        <item>Day dreaming</item>
+    </string-array>
+    <!-- Examples Screen -->
+
+</resources>
