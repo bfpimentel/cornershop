@@ -4,9 +4,9 @@ sealed class CountersIntention {
 
     data class SearchCounters(val query: String? = null) : CountersIntention()
 
-    data class Add(val counterId: String) : CountersIntention()
+    data class Increase(val counterId: String) : CountersIntention()
 
-    data class Subtract(val counterId: String) : CountersIntention()
+    data class Decrease(val counterId: String) : CountersIntention()
 
     data class StartEditing(val counterId: String) : CountersIntention()
 

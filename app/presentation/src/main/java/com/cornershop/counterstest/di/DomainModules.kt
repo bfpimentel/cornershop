@@ -2,7 +2,7 @@ package com.cornershop.counterstest.di
 
 import com.cornershop.counterstest.domain.repository.CountersRepository
 import com.cornershop.counterstest.domain.repository.PreferencesRepository
-import com.cornershop.counterstest.domain.usecase.AddCount
+import com.cornershop.counterstest.domain.usecase.IncreaseCount
 import com.cornershop.counterstest.domain.usecase.CreateCounter
 import com.cornershop.counterstest.domain.usecase.DeleteCounters
 import com.cornershop.counterstest.domain.usecase.FetchAndSaveCounters
@@ -10,7 +10,7 @@ import com.cornershop.counterstest.domain.usecase.GetCounters
 import com.cornershop.counterstest.domain.usecase.HasFetchedCounters
 import com.cornershop.counterstest.domain.usecase.SearchCounters
 import com.cornershop.counterstest.domain.usecase.SetHasFetchedCounters
-import com.cornershop.counterstest.domain.usecase.SubtractCount
+import com.cornershop.counterstest.domain.usecase.DecreaseCount
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -58,13 +58,13 @@ object DomainUseCaseModule {
 
     @Provides
     @ViewModelScoped
-    fun provideAddCount(countersRepository: CountersRepository): AddCount =
-        AddCount(repository = countersRepository)
+    fun provideAddCount(countersRepository: CountersRepository): IncreaseCount =
+        IncreaseCount(repository = countersRepository)
 
     @Provides
     @ViewModelScoped
-    fun provideSubtractCount(countersRepository: CountersRepository): SubtractCount =
-        SubtractCount(repository = countersRepository)
+    fun provideSubtractCount(countersRepository: CountersRepository): DecreaseCount =
+        DecreaseCount(repository = countersRepository)
 
     @Provides
     @ViewModelScoped

@@ -47,8 +47,9 @@ class CountersAdapter @AssistedInject constructor(
 
             title.text = item.title
             count.text = item.count.toString()
-            plus.setOnClickListener { listener.onAddClick(counterId = item.id) }
-            minus.setOnClickListener { listener.onSubtractClick(counterId = item.id) }
+            increase.setOnClickListener { listener.onIncreaseClick(counterId = item.id) }
+            decrease.setOnClickListener { listener.onDecreaseClick(counterId = item.id) }
+            decrease.isEnabled = item.canDecrease
             root.setOnLongClickListener {
                 listener.onCounterLongClick(counterId = item.id)
                 return@setOnLongClickListener true

@@ -3,12 +3,12 @@ package com.cornershop.counterstest.presentation.counters
 import androidx.lifecycle.viewModelScope
 import com.cornershop.counterstest.di.NavigatorRouterQualifier
 import com.cornershop.counterstest.domain.entity.Counter
-import com.cornershop.counterstest.domain.usecase.AddCount
+import com.cornershop.counterstest.domain.usecase.DecreaseCount
 import com.cornershop.counterstest.domain.usecase.DeleteCounters
 import com.cornershop.counterstest.domain.usecase.GetCounters
+import com.cornershop.counterstest.domain.usecase.IncreaseCount
 import com.cornershop.counterstest.domain.usecase.NoParams
 import com.cornershop.counterstest.domain.usecase.SearchCounters
-import com.cornershop.counterstest.domain.usecase.SubtractCount
 import com.cornershop.counterstest.presentation.counters.data.CounterViewData
 import com.cornershop.counterstest.presentation.counters.data.CountersIntention
 import com.cornershop.counterstest.presentation.counters.data.CountersState
@@ -28,8 +28,8 @@ class CountersViewModel @Inject constructor(
     @NavigatorRouterQualifier private val navigator: NavigatorRouter,
     private val getCounters: GetCounters,
     private val searchCounters: SearchCounters,
-    private val addCount: AddCount,
-    private val subtractCount: SubtractCount,
+    private val increaseCount: IncreaseCount,
+    private val decreaseCount: DecreaseCount,
     private val deleteCounters: DeleteCounters,
     private val deletionMapper: CountersDeletionMapper,
     private val sharingMapper: CountersSharingMapper,
@@ -42,6 +42,7 @@ class CountersViewModel @Inject constructor(
 
     private lateinit var counters: List<Counter>
 
+    private var isSearching: Boolean = false
     private var isEditing: Boolean = false
     private var selectedCountersIds: List<String> = emptyList()
 
@@ -51,9 +52,9 @@ class CountersViewModel @Inject constructor(
 
     override suspend fun handleIntentions(intention: CountersIntention) {
         when (intention) {
-            is CountersIntention.SearchCounters -> searchCounters(SearchCounters.Params(intention.query))
-            is CountersIntention.Add -> addCount(AddCount.Params(intention.counterId))
-            is CountersIntention.Subtract -> subtractCount(SubtractCount.Params(intention.counterId))
+            is CountersIntention.SearchCounters -> searchCounters(intention.query)
+            is CountersIntention.Increase -> increaseCount(IncreaseCount.Params(intention.counterId))
+            is CountersIntention.Decrease -> decreaseCount(DecreaseCount.Params(intention.counterId))
             is CountersIntention.StartEditing -> startEditing(intention.counterId)
             is CountersIntention.SelectOrDeselectCounter -> selectOrDeselectCounter(intention.counterId)
             is CountersIntention.TryDeleting -> tryDeleting()
@@ -69,6 +70,11 @@ class CountersViewModel @Inject constructor(
             this.counters = counters
             updateScreenState()
         }
+    }
+
+    private suspend fun searchCounters(query: String?) {
+        this.isSearching = !query.isNullOrEmpty()
+        searchCounters(SearchCounters.Params(query))
     }
 
     private suspend fun startEditing(counterId: String) {
@@ -130,20 +136,29 @@ class CountersViewModel @Inject constructor(
             }
         }
 
-        val layout = if (this.isEditing) CountersState.Layout.Editing else CountersState.Layout.Default
+        val topLayout = if (this.isEditing) CountersState.TopLayout.Editing else CountersState.TopLayout.Default
+        val mainLayout = when {
+            this.isSearching && countersViewData.isEmpty() -> CountersState.MainLayout.NoResults
+            countersViewData.isEmpty() -> CountersState.MainLayout.NoCounters
+            else -> CountersState.MainLayout.Default
+        }
 
         val numberOfSelectedCounters = countersViewData
             .filterIsInstance<CounterViewData.Edit>()
             .filter(CounterViewData.Edit::isSelected)
             .count()
 
+        val isSearchEnabled = mainLayout != CountersState.MainLayout.NoCounters
+
         updateState {
             copy(
                 countersEvent = countersViewData.toEvent(),
                 totalItemCount = countersViewData.size,
                 totalTimesCount = countersViewData.sumBy(CounterViewData::count),
-                layoutEvent = layout.toEvent(),
+                topLayoutEvent = topLayout.toEvent(),
+                mainLayoutEvent = mainLayout.toEvent(),
                 areMenusEnabled = numberOfSelectedCounters > 0,
+                isSearchEnabled = isSearchEnabled,
                 numberOfSelectedCounters = numberOfSelectedCounters
             )
         }

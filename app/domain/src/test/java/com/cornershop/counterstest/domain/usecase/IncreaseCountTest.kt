@@ -8,20 +8,20 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Test
 
-class AddCountTest {
+class IncreaseCountTest {
 
     private val countersRepository = mockk<CountersRepository>()
-    private val useCase = AddCount(countersRepository)
+    private val useCase = IncreaseCount(countersRepository)
 
     @Test
-    fun `should search counters`() = runBlockingTest {
+    fun `should increase count`() = runBlockingTest {
         val counterId = "counterId"
 
-        coJustRun { countersRepository.addCount(counterId) }
+        coJustRun { countersRepository.increaseCount(counterId) }
 
-        useCase(AddCount.Params(counterId))
+        useCase(IncreaseCount.Params(counterId))
 
-        coVerify(exactly = 1) { countersRepository.addCount(counterId) }
+        coVerify(exactly = 1) { countersRepository.increaseCount(counterId) }
         confirmVerified(countersRepository)
     }
 }

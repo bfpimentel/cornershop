@@ -11,7 +11,7 @@ interface CountersContract {
     interface ItemListener {
         fun onCounterLongClick(counterId: String)
         fun onCounterClick(counterId: String)
-        fun onAddClick(counterId: String)
-        fun onSubtractClick(counterId: String)
+        fun onIncreaseClick(counterId: String)
+        fun onDecreaseClick(counterId: String)
     }
 }

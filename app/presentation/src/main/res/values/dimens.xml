@@ -29,6 +29,11 @@
     <dimen name="counters_add_counter_container_height">96dp</dimen>
     <dimen name="counters_counter_item_count_min_width">40dp</dimen>
     <dimen name="counters_edit_item_end_padding">80dp</dimen>
+    <dimen name="counters_search_stroke_width">0.5dp</dimen>
     <!-- Counters -->
+
+    <!-- Create Counter -->
+    <dimen name="create_counter_input_height">48dp</dimen>
+    <!-- Create Counter -->
 
 </resources>

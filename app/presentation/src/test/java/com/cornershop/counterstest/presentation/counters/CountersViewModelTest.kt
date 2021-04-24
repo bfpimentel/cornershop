@@ -2,31 +2,31 @@ package com.cornershop.counterstest.presentation.counters
 
 import com.cornershop.counterstest.ViewModelTest
 import com.cornershop.counterstest.domain.entity.Counter
-import com.cornershop.counterstest.domain.usecase.AddCount
+import com.cornershop.counterstest.domain.usecase.DecreaseCount
 import com.cornershop.counterstest.domain.usecase.DeleteCounters
 import com.cornershop.counterstest.domain.usecase.GetCounters
+import com.cornershop.counterstest.domain.usecase.IncreaseCount
 import com.cornershop.counterstest.domain.usecase.NoParams
 import com.cornershop.counterstest.domain.usecase.SearchCounters
-import com.cornershop.counterstest.domain.usecase.SubtractCount
 import com.cornershop.counterstest.presentation.counters.data.CounterViewData
 import com.cornershop.counterstest.presentation.counters.data.CountersIntention
 import com.cornershop.counterstest.presentation.counters.data.CountersState
 import com.cornershop.counterstest.presentation.counters.mappers.CountersDeletionMapper
 import com.cornershop.counterstest.presentation.counters.mappers.CountersSharingMapper
-import com.cornershop.counterstest.shared.dispatchers.DispatchersProvider
 import com.cornershop.counterstest.shared.navigator.NavigatorRouter
 import io.mockk.coEvery
 import io.mockk.coJustRun
 import io.mockk.coVerify
 import io.mockk.confirmVerified
 import io.mockk.mockk
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class CountersViewModelTest : ViewModelTest() {
@@ -34,30 +34,11 @@ class CountersViewModelTest : ViewModelTest() {
     private val navigator = mockk<NavigatorRouter>()
     private val getCounters = mockk<GetCounters>()
     private val searchCounters = mockk<SearchCounters>()
-    private val addCount = mockk<AddCount>()
-    private val subtractCount = mockk<SubtractCount>()
+    private val increaseCount = mockk<IncreaseCount>()
+    private val decreaseCount = mockk<DecreaseCount>()
     private val deleteCounters = mockk<DeleteCounters>()
     private val deletionMapper = mockk<CountersDeletionMapper>()
     private val sharingMapper = mockk<CountersSharingMapper>()
-    private lateinit var viewModel: CountersContract.ViewModel
-
-    @BeforeEach
-    fun `setup subject`() {
-        coEvery { getCounters(NoParams) } returns flowOf(counters)
-
-        viewModel = CountersViewModel(
-            navigator = navigator,
-            getCounters = getCounters,
-            searchCounters = searchCounters,
-            addCount = addCount,
-            subtractCount = subtractCount,
-            deleteCounters = deleteCounters,
-            deletionMapper = deletionMapper,
-            sharingMapper = sharingMapper,
-            dispatchersProvider = dispatchersProvider,
-            initialState = CountersState()
-        )
-    }
 
     @Test
     fun `should get counters when creating view model`() = runBlockingTest {
@@ -74,6 +55,8 @@ class CountersViewModelTest : ViewModelTest() {
             )
         )
 
+        val viewModel = getViewModelInstance()
+
         val countersStateValues = arrayListOf<CountersState>()
         val countersStateJob = launch { viewModel.state.toList(countersStateValues) }
 
@@ -83,7 +66,65 @@ class CountersViewModelTest : ViewModelTest() {
         assertEquals(firstCountersState.totalTimesCount, 3)
         assertEquals(firstCountersState.numberOfSelectedCounters, 0)
         assertFalse(firstCountersState.areMenusEnabled)
-        assertTrue(firstCountersState.layoutEvent.value is CountersState.Layout.Default)
+        assertTrue(firstCountersState.isSearchEnabled)
+        assertEquals(firstCountersState.topLayoutEvent.value, CountersState.TopLayout.Default)
+        assertEquals(firstCountersState.mainLayoutEvent.value, CountersState.MainLayout.Default)
+
+        coVerify(exactly = 1) { getCounters(NoParams) }
+        confirmEverythingVerified()
+
+        countersStateJob.cancel()
+    }
+
+    @Test
+    fun `should show no result layout when searching and its result is empty`() = runBlockingTest {
+        val query = "query"
+
+        val searchCountersParams = SearchCounters.Params(query)
+
+        coJustRun { searchCounters(searchCountersParams) }
+
+        val viewModel = getViewModelInstance {
+            coEvery { getCounters(NoParams) } returns flow {
+                emit(counters)
+                delay(1000L)
+                emit(emptyList())
+            }
+        }
+
+        val countersStateValues = arrayListOf<CountersState>()
+        val countersStateJob = launch { viewModel.state.toList(countersStateValues) }
+
+        viewModel.publish(CountersIntention.SearchCounters(query))
+        advanceTimeBy(1500L)
+
+        val lastCountersState = countersStateValues.last()
+        assertEquals(lastCountersState.countersEvent!!.value, emptyList<CounterViewData>())
+        assertTrue(lastCountersState.isSearchEnabled)
+        assertEquals(lastCountersState.topLayoutEvent.value, CountersState.TopLayout.Default)
+        assertEquals(lastCountersState.mainLayoutEvent.value, CountersState.MainLayout.NoResults)
+
+        coVerify(exactly = 1) {
+            getCounters(NoParams)
+            searchCounters(searchCountersParams)
+        }
+        confirmEverythingVerified()
+
+        countersStateJob.cancel()
+    }
+
+    @Test
+    fun `should show no content layout when searching and its result is empty`() = runBlockingTest {
+        val viewModel = getViewModelInstance { coEvery { getCounters(NoParams) } returns flowOf(emptyList()) }
+
+        val countersStateValues = arrayListOf<CountersState>()
+        val countersStateJob = launch { viewModel.state.toList(countersStateValues) }
+
+        val lastCountersState = countersStateValues.last()
+        assertEquals(lastCountersState.countersEvent!!.value, emptyList<CounterViewData>())
+        assertFalse(lastCountersState.isSearchEnabled)
+        assertEquals(lastCountersState.topLayoutEvent.value, CountersState.TopLayout.Default)
+        assertEquals(lastCountersState.mainLayoutEvent.value, CountersState.MainLayout.NoCounters)
 
         coVerify(exactly = 1) { getCounters(NoParams) }
         confirmEverythingVerified()
@@ -108,6 +149,8 @@ class CountersViewModelTest : ViewModelTest() {
             )
         )
 
+        val viewModel = getViewModelInstance()
+
         val countersStateValues = arrayListOf<CountersState>()
         val countersStateJob = launch { viewModel.state.toList(countersStateValues) }
 
@@ -121,7 +164,7 @@ class CountersViewModelTest : ViewModelTest() {
         assertEquals(lastCountersState.totalTimesCount, 3)
         assertEquals(lastCountersState.numberOfSelectedCounters, 1)
         assertTrue(lastCountersState.areMenusEnabled)
-        assertTrue(lastCountersState.layoutEvent.value is CountersState.Layout.Editing)
+        assertEquals(lastCountersState.topLayoutEvent.value, CountersState.TopLayout.Editing)
 
         coVerify(exactly = 1) { getCounters(NoParams) }
         confirmEverythingVerified()
@@ -137,6 +180,8 @@ class CountersViewModelTest : ViewModelTest() {
 
         coEvery { deletionMapper.map(itemsToBeDeleted) } returns itemsToBeDeletedText
         coJustRun { deleteCounters(deleteCountersParams) }
+
+        val viewModel = getViewModelInstance()
 
         val countersStateValues = arrayListOf<CountersState>()
         val countersStateJob = launch { viewModel.state.toList(countersStateValues) }
@@ -167,6 +212,8 @@ class CountersViewModelTest : ViewModelTest() {
         val itemsToBeSharedText = "itemsToBeSharedText"
 
         coEvery { sharingMapper.map(itemsToBeShared) } returns itemsToBeSharedText
+
+        val viewModel = getViewModelInstance()
 
         val countersStateValues = arrayListOf<CountersState>()
         val countersStateJob = launch { viewModel.state.toList(countersStateValues) }
@@ -219,6 +266,8 @@ class CountersViewModelTest : ViewModelTest() {
             )
         )
 
+        val viewModel = getViewModelInstance()
+
         val countersStateValues = arrayListOf<CountersState>()
         val countersStateJob = launch { viewModel.state.toList(countersStateValues) }
 
@@ -230,14 +279,14 @@ class CountersViewModelTest : ViewModelTest() {
         assertEquals(firstCountersState.totalItemCount, 2)
         assertEquals(firstCountersState.totalTimesCount, 3)
         assertEquals(firstCountersState.numberOfSelectedCounters, 0)
-        assertTrue(firstCountersState.layoutEvent.value is CountersState.Layout.Default)
+        assertEquals(firstCountersState.topLayoutEvent.value, CountersState.TopLayout.Default)
 
         val secondCountersState = countersStateValues[1]
         assertEquals(secondCountersState.countersEvent!!.value, countersViewDataWhileEditing)
         assertEquals(secondCountersState.totalItemCount, 2)
         assertEquals(secondCountersState.totalTimesCount, 3)
         assertEquals(secondCountersState.numberOfSelectedCounters, 1)
-        assertTrue(secondCountersState.layoutEvent.value is CountersState.Layout.Editing)
+        assertEquals(secondCountersState.topLayoutEvent.value, CountersState.TopLayout.Editing)
 
         val thirdCountersState = countersStateValues[2]
         assertEquals(thirdCountersState.countersEvent!!.value, countersViewData)
@@ -245,7 +294,7 @@ class CountersViewModelTest : ViewModelTest() {
         assertEquals(thirdCountersState.totalTimesCount, 3)
         assertEquals(thirdCountersState.numberOfSelectedCounters, 0)
         assertFalse(thirdCountersState.areMenusEnabled)
-        assertTrue(thirdCountersState.layoutEvent.value is CountersState.Layout.Default)
+        assertEquals(thirdCountersState.topLayoutEvent.value, CountersState.TopLayout.Default)
 
         coVerify(exactly = 1) { getCounters(NoParams) }
         confirmEverythingVerified()
@@ -261,6 +310,8 @@ class CountersViewModelTest : ViewModelTest() {
 
         coJustRun { searchCounters(searchCountersParams) }
 
+        val viewModel = getViewModelInstance()
+
         viewModel.publish(CountersIntention.SearchCounters(query))
 
         coVerify(exactly = 1) {
@@ -271,35 +322,39 @@ class CountersViewModelTest : ViewModelTest() {
     }
 
     @Test
-    fun `should add count`() = runBlockingTest {
+    fun `should increase count`() = runBlockingTest {
         val counterId = "counterId"
 
-        val addCountParams = AddCount.Params(counterId)
+        val increaseCountParams = IncreaseCount.Params(counterId)
 
-        coJustRun { addCount(addCountParams) }
+        coJustRun { increaseCount(increaseCountParams) }
 
-        viewModel.publish(CountersIntention.Add(counterId))
+        val viewModel = getViewModelInstance()
+
+        viewModel.publish(CountersIntention.Increase(counterId))
 
         coVerify(exactly = 1) {
             getCounters(NoParams)
-            addCount(addCountParams)
+            increaseCount(increaseCountParams)
         }
         confirmEverythingVerified()
     }
 
     @Test
-    fun `should subtract count`() = runBlockingTest {
+    fun `should decrease count`() = runBlockingTest {
         val counterId = "counterId"
 
-        val subtractCountParams = SubtractCount.Params(counterId)
+        val decreaseCountParams = DecreaseCount.Params(counterId)
 
-        coJustRun { subtractCount(subtractCountParams) }
+        coJustRun { decreaseCount(decreaseCountParams) }
 
-        viewModel.publish(CountersIntention.Subtract(counterId))
+        val viewModel = getViewModelInstance()
+
+        viewModel.publish(CountersIntention.Decrease(counterId))
 
         coVerify(exactly = 1) {
             getCounters(NoParams)
-            subtractCount(subtractCountParams)
+            decreaseCount(decreaseCountParams)
         }
         confirmEverythingVerified()
     }
@@ -310,6 +365,8 @@ class CountersViewModelTest : ViewModelTest() {
 
         coJustRun { navigator.navigate(directions) }
 
+        val viewModel = getViewModelInstance()
+
         viewModel.publish(CountersIntention.NavigateToCreateCounter)
 
         coVerify(exactly = 1) {
@@ -319,13 +376,32 @@ class CountersViewModelTest : ViewModelTest() {
         confirmEverythingVerified()
     }
 
+    private fun getViewModelInstance(
+        doFirst: () -> Unit = { coEvery { getCounters(NoParams) } returns flowOf(counters) }
+    ): CountersContract.ViewModel {
+        doFirst()
+
+        return CountersViewModel(
+            navigator = navigator,
+            getCounters = getCounters,
+            searchCounters = searchCounters,
+            increaseCount = increaseCount,
+            decreaseCount = decreaseCount,
+            deleteCounters = deleteCounters,
+            deletionMapper = deletionMapper,
+            sharingMapper = sharingMapper,
+            dispatchersProvider = dispatchersProvider,
+            initialState = CountersState()
+        )
+    }
+
     private fun confirmEverythingVerified() {
         confirmVerified(
             navigator,
             getCounters,
             searchCounters,
-            addCount,
-            subtractCount,
+            increaseCount,
+            decreaseCount,
             deleteCounters,
             deletionMapper,
             sharingMapper

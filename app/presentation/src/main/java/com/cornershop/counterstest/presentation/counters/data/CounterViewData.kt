@@ -11,6 +11,9 @@ sealed class CounterViewData {
         override val count: Int
     ) : CounterViewData() {
 
+        val canDecrease: Boolean
+            get() = count > 0
+
         companion object {
             const val IDENTIFIER = 0
         }

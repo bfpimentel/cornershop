@@ -26,14 +26,25 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.google.android.material.textfield.TextInputEditText
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/nameLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_normal"
+        android:text="@string/create_counter_name_label"
+        android:textColor="@color/orange"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbarLayout" />
+
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/nameInput"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/spacing_medium"
-        android:layout_marginTop="@dimen/spacing_small"
+        android:layout_height="@dimen/create_counter_input_height"
+        android:layout_marginHorizontal="@dimen/spacing_normal"
         android:hint="@string/create_counter_name_hint"
-        app:layout_constraintTop_toBottomOf="@id/toolbarLayout" />
+        android:textColorHint="@color/gray"
+        android:theme="@style/Theme.CreateCounter.Input"
+        app:layout_constraintTop_toBottomOf="@id/nameLabel" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/hint"

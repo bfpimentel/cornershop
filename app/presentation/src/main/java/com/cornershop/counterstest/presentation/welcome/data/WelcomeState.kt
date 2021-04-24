@@ -1,3 +1,8 @@
 package com.cornershop.counterstest.presentation.welcome.data
 
-data class WelcomeState(val isLoading: Boolean = true)
+import com.cornershop.counterstest.shared.mvi.Event
+
+data class WelcomeState(
+    val isButtonEnabled: Boolean = true,
+    val errorEvent: Event<Unit>? = null
+)
