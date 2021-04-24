@@ -24,13 +24,3 @@ countersRouter.put("/sync", async (req: Request, res: Response) => {
     res.status(500).send(error.message);
   }
 });
-
-countersRouter.post("/", async (req: Request, res: Response) => {
-  try {
-    const newCounter: Counter = await counterService.create(req.body["title"]);
-
-    res.status(200).send(newCounter);
-  } catch (error) {
-    res.status(500).send(error.message);
-  }
-});
