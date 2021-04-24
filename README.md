@@ -6,6 +6,8 @@ I am not the best UI/UX guy, so I tried to show my architecture, libraries and d
 
 Each of the features has its on [branch](https://github.com/bfpimentel/cornershop/branches) and almost of them are mapped inside the issue [Feature Roadmap](https://github.com/bfpimentel/cornershop/issues/1). I followed the [**conventional**](https://www.conventionalcommits.org/en/v1.0.0/) [commits messages](https://github.com/bfpimentel/cornershop/commits/develop).
 
+The code coverage tool that I use (codecov.io) was not working properly, I couldn't see any coverage reports in the web app, so I tried to cover at least 80% of code looking on the basic report.
+
 ## A decision I made and my motivation
 
 I refactored the server to follow a offline-first way to persist data. Why?
@@ -17,12 +19,16 @@ I refactored the server to follow a offline-first way to persist data. Why?
 
 I know I may lose points with this decision, but when "Thinking I'm building it to publish for the Google Play Store", I thought that was the best way to go.
 
-## Install and start the server
+## Running the Application
 
-```
-$ npm install
-$ npm start
-```
+1. Clone repository
+2. Start server
+   ```
+   $ cd server
+   $ npm install
+   $ npm start
+   ```
+3. Run Android project in Android Studio
 
 ## Architecture Explanation
 
