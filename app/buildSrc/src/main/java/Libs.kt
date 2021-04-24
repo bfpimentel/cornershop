@@ -22,7 +22,6 @@ object Libs {
         const val fragment = "androidx.fragment:fragment-ktx:1.3.0-beta02"
         const val materialDesign = "com.google.android.material:material:1.3.0-alpha04"
         const val lifecycleCommon = "androidx.lifecycle:lifecycle-common-java8:2.2.0"
-        const val dataStore = "androidx.datastore:datastore:1.0.0-beta01"
     }
 
     object Navigation {

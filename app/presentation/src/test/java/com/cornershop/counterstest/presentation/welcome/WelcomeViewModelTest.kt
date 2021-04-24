@@ -64,7 +64,7 @@ class WelcomeViewModelTest : ViewModelTest() {
     fun `should try again when first fetching was unsuccessful`() = runBlockingTest {
         val directions = WelcomeFragmentDirections.toCountersFragment()
 
-        coEvery { hasFetchedCounters(NoParams) } returns false andThen false andThen false andThen true
+        coEvery { hasFetchedCounters(NoParams) } returns false andThen false andThen true
         coEvery { fetchAndSaveCounters(NoParams) } throws IllegalArgumentException() andThen Unit
         coJustRun { navigator.navigate(directions) }
 
@@ -72,7 +72,7 @@ class WelcomeViewModelTest : ViewModelTest() {
 
         coVerify(exactly = 1) { navigator.navigate(directions) }
         coVerify(exactly = 2) { fetchAndSaveCounters(NoParams) }
-        coVerify(exactly = 4) { hasFetchedCounters(NoParams) }
+        coVerify(exactly = 3) { hasFetchedCounters(NoParams) }
         confirmEverythingVerified()
     }
 

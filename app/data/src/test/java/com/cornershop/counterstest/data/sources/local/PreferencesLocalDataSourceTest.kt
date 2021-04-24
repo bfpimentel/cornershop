@@ -1,7 +1,6 @@
 package com.cornershop.counterstest.data.sources.local
 
 import android.content.SharedPreferences
-import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.confirmVerified
 import io.mockk.every
@@ -13,38 +12,40 @@ import org.junit.jupiter.api.Test
 
 class PreferencesLocalDataSourceTest {
 
-    private val sharedPreferences = mockk<SharedPreferences>()
+    private val sharedPreferences = mockk<SharedPreferences>(relaxed = true)
     private val dataSource: PreferencesLocalDataSource = PreferencesLocalDataSourceImpl(sharedPreferences)
 
     @Test
-    fun `should return true if there key does not exist and save it as false later`() = runBlockingTest {
-        val isFirstAccess = true
+    fun `should return shared preferences value when asking if has fetched counters`() = runBlockingTest {
+        val hasFetchedCounters = true
 
-        every { sharedPreferences.getBoolean(IS_FIRST_ACCESS_KEY, true) } returns isFirstAccess
-        justRun { sharedPreferences.edit().putBoolean(IS_FIRST_ACCESS_KEY, false).apply() }
+        every { sharedPreferences.getBoolean(HAS_FETCHED_COUNTERS_KEY, false) } returns hasFetchedCounters
 
-        assertEquals(dataSource.hasFetchedCounters(), isFirstAccess)
+        assertEquals(dataSource.hasFetchedCounters(), hasFetchedCounters)
 
-        coVerify(exactly = 1) {
-            sharedPreferences.getBoolean(IS_FIRST_ACCESS_KEY, true)
-            sharedPreferences.edit().putBoolean(IS_FIRST_ACCESS_KEY, false).apply()
-        }
+        coVerify(exactly = 1) { sharedPreferences.getBoolean(HAS_FETCHED_COUNTERS_KEY, false) }
         confirmVerified(sharedPreferences)
     }
 
     @Test
-    fun `should just return false when key exists`() = runBlockingTest {
-        val isFirstAccess = false
+    fun `should put true value on fetched key`() = runBlockingTest {
+        val editor = mockk<SharedPreferences.Editor>()
 
-        coEvery { sharedPreferences.getBoolean(IS_FIRST_ACCESS_KEY, true) } returns isFirstAccess
+        every { sharedPreferences.edit() } returns editor
+        every { editor.putBoolean(HAS_FETCHED_COUNTERS_KEY, true) } returns editor
+        justRun { editor.apply() }
 
-        assertEquals(dataSource.hasFetchedCounters(), isFirstAccess)
+        dataSource.setHasFetchedCounters()
 
-        coVerify(exactly = 1) { sharedPreferences.getBoolean(IS_FIRST_ACCESS_KEY, true) }
-        confirmVerified(sharedPreferences)
+        coVerify(exactly = 1) {
+            sharedPreferences.edit()
+            editor.putBoolean(HAS_FETCHED_COUNTERS_KEY, true)
+            editor.apply()
+        }
+        confirmVerified(sharedPreferences, editor)
     }
 
     private companion object {
-        const val IS_FIRST_ACCESS_KEY = "IS_FIRST_ACCESS"
+        const val HAS_FETCHED_COUNTERS_KEY = "HAS_FETCHED_COUNTERS"
     }
 }

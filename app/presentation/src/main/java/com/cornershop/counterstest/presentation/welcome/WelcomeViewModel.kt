@@ -27,7 +27,10 @@ class WelcomeViewModel @Inject constructor(
 ), WelcomeContract.ViewModel {
 
     init {
-        viewModelScope.launch(dispatchersProvider.io) { fetchAndSaveCounters() }
+        viewModelScope.launch(dispatchersProvider.io) {
+            val hasFetchedCounters = hasFetchedCounters(NoParams)
+            fetchAndSaveCounters(hasFetchedCounters)
+        }
     }
 
     override suspend fun handleIntentions(intention: WelcomeIntention) {
@@ -37,17 +40,22 @@ class WelcomeViewModel @Inject constructor(
     }
 
     private suspend fun navigateToCounters() {
-        if (hasFetchedCounters(NoParams)) {
+        val hasFetchedCounters = hasFetchedCounters(NoParams)
+
+        if (hasFetchedCounters) {
             navigator.navigate(WelcomeFragmentDirections.toCountersFragment())
             return
         }
 
-        fetchAndSaveCounters(::navigateToCounters)
+        fetchAndSaveCounters(hasFetchedCounters, ::navigateToCounters)
     }
 
-    private suspend fun fetchAndSaveCounters(continuation: (suspend () -> Unit)? = null) {
+    private suspend fun fetchAndSaveCounters(
+        hasFetchedCounters: Boolean,
+        continuation: (suspend () -> Unit)? = null
+    ) {
         try {
-            if (hasFetchedCounters(NoParams)) {
+            if (hasFetchedCounters) {
                 return
             }
 
