@@ -29,7 +29,7 @@ class WelcomeFragment : Fragment(R.layout.welcome_fragment) {
 
     private fun bindOutputs() {
         watch(viewModel.state) { state ->
-            binding.startButton.isEnabled = !state.isButtonEnabled
+            binding.startButton.isEnabled = state.isButtonEnabled
 
             state.errorEvent.handleEvent { showErrorDialog() }
         }

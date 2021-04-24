@@ -41,37 +41,39 @@ class WelcomeViewModel @Inject constructor(
     }
 
     private suspend fun navigateToCounters() {
+        val navigate = suspend { navigator.navigate(WelcomeFragmentDirections.toCountersFragment()) }
+
         val hasFetchedCounters = hasFetchedCounters(NoParams)
 
         if (hasFetchedCounters) {
-            navigator.navigate(WelcomeFragmentDirections.toCountersFragment())
+            navigate()
             return
         }
 
-        fetchAndSaveCounters(hasFetchedCounters, ::navigateToCounters)
+        fetchAndSaveCounters(hasFetchedCounters, navigate::invoke)
     }
 
     private suspend fun fetchAndSaveCounters(
         hasFetchedCounters: Boolean,
         continuation: (suspend () -> Unit)? = null
     ) {
-        updateState { copy(isButtonEnabled = true) }
+        updateState { copy(isButtonEnabled = false) }
 
         try {
             if (hasFetchedCounters) {
-                updateState { copy(isButtonEnabled = false) }
+                updateState { copy(isButtonEnabled = true) }
                 return
             }
 
             fetchAndSaveCounters(NoParams)
 
-            updateState { copy(isButtonEnabled = false) }
+            updateState { copy(isButtonEnabled = true) }
 
             continuation?.invoke()
         } catch (error: Exception) {
             updateState {
                 copy(
-                    isButtonEnabled = false,
+                    isButtonEnabled = true,
                     errorEvent = continuation?.let { Unit.toEvent() }
                 )
             }

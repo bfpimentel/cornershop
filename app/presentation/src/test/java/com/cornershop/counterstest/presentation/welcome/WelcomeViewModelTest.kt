@@ -12,6 +12,12 @@ import io.mockk.coJustRun
 import io.mockk.coVerify
 import io.mockk.confirmVerified
 import io.mockk.mockk
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class WelcomeViewModelTest : ViewModelTest() {
@@ -19,22 +25,16 @@ class WelcomeViewModelTest : ViewModelTest() {
     private val navigator = mockk<NavigatorRouter>()
     private val hasFetchedCounters = mockk<HasFetchedCounters>()
     private val fetchAndSaveCounters = mockk<FetchAndSaveCounters>()
-    private val viewModel: WelcomeContract.ViewModel
-        get() = WelcomeViewModel(
-            navigator = navigator,
-            dispatchersProvider = dispatchersProvider,
-            hasFetchedCounters = this@WelcomeViewModelTest.hasFetchedCounters,
-            fetchAndSaveCounters = fetchAndSaveCounters,
-            initialState = initialState
-        )
 
     @Test
-    fun `should navigate to counters when first fetching is successful`() = runBlockingTest {
+    fun `should just navigate to counters when first fetching is successful`() = runBlockingTest {
         val directions = WelcomeFragmentDirections.toCountersFragment()
 
         coEvery { hasFetchedCounters(NoParams) } returns false andThen true
         coJustRun { fetchAndSaveCounters(NoParams) }
         coJustRun { navigator.navigate(directions) }
+
+        val viewModel = getViewModelInstance()
 
         viewModel.publish(WelcomeIntention.NavigateToCounters)
 
@@ -53,6 +53,8 @@ class WelcomeViewModelTest : ViewModelTest() {
         coEvery { hasFetchedCounters(NoParams) } returns true andThen true
         coJustRun { navigator.navigate(directions) }
 
+        val viewModel = getViewModelInstance()
+
         viewModel.publish(WelcomeIntention.NavigateToCounters)
 
         coVerify(exactly = 1) { navigator.navigate(directions) }
@@ -61,20 +63,44 @@ class WelcomeViewModelTest : ViewModelTest() {
     }
 
     @Test
-    fun `should try again when first fetching was unsuccessful`() = runBlockingTest {
-        val directions = WelcomeFragmentDirections.toCountersFragment()
+    fun `should show error when fetching comes from intention and it fails`() = runBlockingTest {
+        coEvery { hasFetchedCounters(NoParams) } returns false andThen false
+        coEvery { fetchAndSaveCounters(NoParams) } throws IllegalStateException() andThenThrows IllegalStateException()
 
-        coEvery { hasFetchedCounters(NoParams) } returns false andThen false andThen true
-        coEvery { fetchAndSaveCounters(NoParams) } throws IllegalArgumentException() andThen Unit
-        coJustRun { navigator.navigate(directions) }
+        val viewModel = getViewModelInstance()
+
+        val welcomeStateValues = arrayListOf<WelcomeState>()
+        val welcomeStateJob = launch { viewModel.state.toList(welcomeStateValues) }
 
         viewModel.publish(WelcomeIntention.NavigateToCounters)
 
-        coVerify(exactly = 1) { navigator.navigate(directions) }
-        coVerify(exactly = 2) { fetchAndSaveCounters(NoParams) }
-        coVerify(exactly = 3) { hasFetchedCounters(NoParams) }
+        val firstWelcomeState = welcomeStateValues[0]
+        assertTrue(firstWelcomeState.isButtonEnabled)
+        assertNull(firstWelcomeState.errorEvent)
+        val secondWelcomeState = welcomeStateValues[1]
+        assertFalse(secondWelcomeState.isButtonEnabled)
+        assertNull(secondWelcomeState.errorEvent)
+        val thirdWelcomeState = welcomeStateValues[2]
+        assertTrue(thirdWelcomeState.isButtonEnabled)
+        assertNotNull(thirdWelcomeState.errorEvent)
+
+        coVerify(exactly = 2) {
+            fetchAndSaveCounters(NoParams)
+            hasFetchedCounters(NoParams)
+        }
         confirmEverythingVerified()
+
+        welcomeStateJob.cancel()
     }
+
+    private fun getViewModelInstance(): WelcomeContract.ViewModel =
+        WelcomeViewModel(
+            navigator = navigator,
+            dispatchersProvider = dispatchersProvider,
+            hasFetchedCounters = this@WelcomeViewModelTest.hasFetchedCounters,
+            fetchAndSaveCounters = fetchAndSaveCounters,
+            initialState = initialState
+        )
 
     private fun confirmEverythingVerified() {
         confirmVerified(
