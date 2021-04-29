@@ -1,7 +1,7 @@
 import org.gradle.api.JavaVersion
 
 object Config {
-    const val applicationId = "com.cornershop.counterstest"
+    const val applicationId = "dev.pimentel.counters"
 
     object Versions {
         private const val major = 0

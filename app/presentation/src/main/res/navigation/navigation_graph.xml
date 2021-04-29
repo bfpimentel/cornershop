@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/welcomeFragment"
-        android:name="com.cornershop.counterstest.presentation.welcome.WelcomeFragment"
+        android:name="dev.pimentel.counters.presentation.welcome.WelcomeFragment"
         android:label="WelcomeFragment"
         tools:layout="@layout/welcome_fragment">
         <action
@@ -20,7 +20,7 @@
 
     <fragment
         android:id="@+id/countersFragment"
-        android:name="com.cornershop.counterstest.presentation.counters.CountersFragment"
+        android:name="dev.pimentel.counters.presentation.counters.CountersFragment"
         android:label="CountersFragment"
         tools:layout="@layout/counters_fragment">
         <action
@@ -30,7 +30,7 @@
 
     <dialog
         android:id="@+id/createCounterFragment"
-        android:name="com.cornershop.counterstest.presentation.create_counter.CreateCounterFragment"
+        android:name="dev.pimentel.counters.presentation.create_counter.CreateCounterFragment"
         android:label="CreateCounterFragment"
         tools:layout="@layout/create_counter_fragment">
         <action
@@ -40,7 +40,7 @@
 
     <dialog
         android:id="@+id/examplesFragment"
-        android:name="com.cornershop.counterstest.presentation.examples.ExamplesFragment"
+        android:name="dev.pimentel.counters.presentation.examples.ExamplesFragment"
         android:label="ExamplesFragment"
         tools:layout="@layout/examples_fragment" />
 
