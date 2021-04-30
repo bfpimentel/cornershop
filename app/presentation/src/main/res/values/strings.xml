@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Counters Test</string>
+    <string name="app_name">Counters</string>
 
     <!-- Welcome Screen -->
     <string name="welcome_title">Counters</string>

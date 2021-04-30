@@ -1,4 +1,4 @@
-# Counter Android App 
+# Counters Android App 
 
 Project using the latest Android APIs and best practices, using asynchronous communication with the local database and remote server.
 
