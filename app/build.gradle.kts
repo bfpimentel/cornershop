@@ -4,7 +4,6 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        jcenter()
     }
 
     dependencies {
@@ -23,8 +22,7 @@ plugins {
 allprojects {
     repositories {
         google()
-        maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
-        jcenter()
+        mavenCentral()
     }
 }
 

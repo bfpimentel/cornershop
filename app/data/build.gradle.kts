@@ -48,6 +48,7 @@ dependencies {
     api(Libs.Room.runtime)
     implementation(Libs.Room.ktx)
     kapt(Libs.Room.compiler)
+    kapt("org.xerial:sqlite-jdbc:3.34.0") // M1 Fix
 
     implementation(Libs.Hilt.android)
     kapt(Libs.Hilt.compiler)

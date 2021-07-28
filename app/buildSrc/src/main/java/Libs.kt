@@ -1,11 +1,11 @@
 object Libs {
-    private const val kotlinVersion = "1.4.32"
-    private const val hiltVersion = "2.33-beta"
+    private const val kotlinVersion = "1.5.20"
+    private const val hiltVersion = "2.37"
     private const val navVersion = "2.3.5"
 
     object Gradle {
         const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        const val android = "com.android.tools.build:gradle:4.1.3"
+        const val android = "com.android.tools.build:gradle:7.0.0"
         const val junit5 = "de.mannodermaus.gradle.plugins:android-junit5:1.7.1.1"
         const val hilt = "com.google.dagger:hilt-android-gradle-plugin:$hiltVersion"
         const val navigation = "androidx.navigation:navigation-safe-args-gradle-plugin:$navVersion"
